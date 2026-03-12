@@ -9,7 +9,7 @@ CT Toolkit is an open-source Python library that brings the **Nested Agency Arch
 
 ### The Problem It Solves
 
-An LLM system can drift from its initial value commitments over time. The paper defines this phenomenon as **Sequential Self-Compression (SSC)**: the model progressively compresses its prior normative states in service of immediate objective functions. This risk is significant in single-model systems — and **systemic** in multi-agent architectures, where an SSC event at the orchestrator level cascades across the entire sub-agent population.
+An agentic system can drift from its initial value commitments over time. The paper defines this phenomenon as **Sequential Self-Compression (SSC)**: the model progressively compresses its prior normative states in service of immediate objective functions. This risk is significant in single-model systems — and **systemic** in multi-agent architectures, where an SSC event at the orchestrator level cascades across the entire sub-agent population.
 
 ### The Approach
 
@@ -27,7 +27,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3) | ✅ Complete |
 | Template + Kernel compatibility matrix | ✅ Complete |
 | Documentation | ✅ Complete |
-| Test coverage | ✅ 30/30 tests passing |
+| Test coverage | ✅ 121/121 tests passing |
 
 ---
 
@@ -145,8 +145,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [ ] **Cloud vault service** — Inaccessible vault with customer authorization
 - [ ] **Dashboard** — Identity Health Score visualization, log explorer
 - [ ] **Webhook / alert system** — Notifications on critical divergence events
-- [ ] **PyPI package** — Official `pip install ct-toolkit` release
-- [ ] **GitHub Actions CI** — Automated test pipeline
+- [x] **PyPI package** — Official `pip install ct-toolkit` release
+- [x] **GitHub Actions CI** — Automated test pipeline (initial setup)
 - [ ] **Enterprise licensing** — Compliance certification for defense / finance sectors
 
 ---

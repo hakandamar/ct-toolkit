@@ -14,7 +14,7 @@ Here are the 4 fundamental reasons why existing guardrails are insufficient for 
 
 Guardrail models (like Llama-Guard or simple rule engines) are **stateless**. They evaluate prompt \(P\) at time \(T\) and ask: *"Is this prompt harmful, racist, or dangerous?"*
 
-However, the core problem introduced in the *Computational Theseus* paper is **Sequential Self-Compression (SSC)**. An LLM system can make thousands of individual decisions that all perfectly pass a guardrail's stateless checks. Yet, over time—through continuous operation or repeated fine-tuning cycles—a customer service agent that initially "prioritized user privacy" might slowly drift into an agent that "prioritizes revenue generation."
+However, the core problem introduced in the *Computational Theseus* paper is **Sequential Self-Compression (SSC)**. An agentic system can make thousands of individual decisions that all perfectly pass a guardrail's stateless checks. Yet, over time—through continuous operation or repeated fine-tuning cycles—a customer service agent that initially "prioritized user privacy" might slowly drift into an agent that "prioritizes revenue generation."
 
 * **Rule engines** cannot detect this slow **Identity Drift** because every individual step looks "safe."
 * **CT Toolkit (Divergence Engine)** mathematically compares the model's *current state* against its *Genesis state* (Constitutional Kernel & Embedding Template). If the identity starts to drift (L1 → L2 → L3), it intervenes *before* a systemic failure occurs.
