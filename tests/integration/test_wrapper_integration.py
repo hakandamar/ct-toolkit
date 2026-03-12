@@ -1,0 +1,192 @@
+"""
+tests/integration/test_wrapper_integration.py
+======================================
+Integration tests for TheseusWrapper, ensuring L1 -> L2 -> L3 divergence flows
+are properly triggered and logged using a mocked OpenAI client.
+"""
+
+import pytest
+from unittest.mock import MagicMock, patch
+from pathlib import Path
+
+from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
+from ct_toolkit.core.compatibility import CompatibilityLevel
+from ct_toolkit.divergence.engine import DivergenceTier
+from ct_toolkit.divergence.l2_judge import JudgeVerdict
+
+
+# ── Fixtures ────────────────────────────────────────────────────────────────
+
+@pytest.fixture
+def mock_openai_client():
+    """Returns a mocked OpenAI client."""
+    client = MagicMock()
+    client.__class__.__module__ = "openai"
+    
+    # Setup default mock response
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock()]
+    mock_response.choices[0].message.content = "I am a helpful assistant."
+    mock_response.model = "gpt-4o-mini-mock"
+    client.chat.completions.create.return_value = mock_response
+    
+    return client
+
+
+@pytest.fixture
+def mock_judge_client():
+    """Returns a mocked OpenAI client specifically for the L2/L3 judge."""
+    client = MagicMock()
+    client.__class__.__module__ = "openai"
+    
+    # L2 Judge expected JSON output
+    mock_response = MagicMock()
+    mock_response.choices = [MagicMock()]
+    mock_response.choices[0].message.content = '{"verdict": "aligned", "confidence": 0.9, "reason": "No conflict detected."}'
+    mock_response.model = "gpt-4o-mini-mock"
+    client.chat.completions.create.return_value = mock_response
+    
+    return client
+
+
+@pytest.fixture
+def wrapper(mock_openai_client, mock_judge_client, tmp_path):
+    """Returns a configured TheseusWrapper with mocked clients."""
+    config = WrapperConfig(
+        template="general",
+        kernel_name="default",
+        vault_path=str(tmp_path / "test_provenance.db"),
+        divergence_l1_threshold=0.15,
+        divergence_l2_threshold=0.30,
+        divergence_l3_threshold=0.50,
+        judge_client=mock_judge_client,
+        log_requests=True,
+    )
+    return TheseusWrapper(mock_openai_client, config)
+
+
+# ── Integration Tests ───────────────────────────────────────────────────────
+
+class TestWrapperIntegration:
+
+    def test_wrapper_initialization_and_compatibility(self, wrapper):
+        """Test if the wrapper initializes and compatibility is properly established."""
+        assert wrapper is not None
+        assert wrapper._provider == "openai"
+        assert wrapper.compatibility.level == CompatibilityLevel.NATIVE
+        assert wrapper.kernel.name == "default"
+
+    def test_basic_chat_flow(self, wrapper, mock_openai_client):
+        """Test a normal chat completion flow."""
+        response = wrapper.chat("Hello, what can you do?")
+        
+        # Verify the wrapper called the provider correctly
+        mock_openai_client.chat.completions.create.assert_called_once()
+        
+        # Verify response structure
+        assert response.content == "I am a helpful assistant."
+        assert response.provider == "openai"
+        assert response.model == "gpt-4o-mini-mock"
+        assert response.provenance_id is not None
+        
+        # Divergence score should be calculated
+        assert response.divergence_score is not None
+        assert 0.0 <= response.divergence_score <= 1.0
+
+    @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
+    def test_l1_warning_tier_triggered(self, mock_divergence, wrapper, mock_openai_client):
+        """Test if L1 warning is correctly assigned when score is between L1 and L2 thresholds."""
+        # Mock score between 0.15 and 0.30
+        mock_divergence.return_value = 0.25
+        
+        response = wrapper.chat("Test question")
+        assert response.divergence_tier == "l1_warning"
+        assert response.divergence_score == 0.25
+
+    @patch("ct_toolkit.divergence.l3_icm.ICMRunner.run")
+    @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
+    def test_l2_judge_triggered_and_aligned(self, mock_divergence, mock_icm_run, wrapper, mock_judge_client):
+        """Test if L2 judge is triggered when score is between L2 and L3 thresholds."""
+        # Mock score between 0.30 and 0.50
+        mock_divergence.return_value = 0.40
+        
+        # The judge client is loaded with an ALIGNED JSON response from the fixture
+        response = wrapper.chat("Test question that triggers L2")
+        
+        assert response.divergence_tier == "l2_judge"
+        assert response.divergence_score == 0.40
+        
+        # The judge should have been called
+        mock_judge_client.chat.completions.create.assert_called_once()
+        
+        # ICM should NOT be called since the judge returned ALIGNED
+        mock_icm_run.assert_not_called()
+
+    @patch("ct_toolkit.divergence.l3_icm.ICMRunner.run")
+    @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
+    def test_l3_icm_escalation_from_l2_misaligned(self, mock_divergence, mock_icm_run, wrapper, mock_judge_client):
+        """Test if ICM is triggered if the L2 judge finds the response MISALIGNED."""
+        # Trigger L2 (0.30 - 0.50)
+        mock_divergence.return_value = 0.40
+        
+        # Modify the mock judge to return MISALIGNED
+        mock_judge_response = MagicMock()
+        mock_judge_response.choices = [MagicMock()]
+        mock_judge_response.choices[0].message.content = '{"verdict": "misaligned", "confidence": 0.95, "reason": "Conflict detected."}'
+        mock_judge_client.chat.completions.create.return_value = mock_judge_response
+        
+        # Mock ICM report return value
+        mock_report = MagicMock()
+        mock_report.is_healthy = True
+        mock_report.health_score = 0.9
+        mock_report.risk_level = "LOW"
+        mock_icm_run.return_value = mock_report
+        
+        response = wrapper.chat("Test question that fails L2")
+        
+        # Despite L2 threshold, it escalates to L3 because Judge was MISALIGNED
+        assert response.divergence_tier == "l3_icm"
+        mock_judge_client.chat.completions.create.assert_called_once()
+        
+        # ICM SHOULD be called
+        mock_icm_run.assert_called_once()
+
+    @patch("ct_toolkit.divergence.l3_icm.ICMRunner.run")
+    @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
+    def test_l3_icm_direct_trigger(self, mock_divergence, mock_icm_run, wrapper, mock_openai_client):
+        """Test if ICM is directly triggered when score is above L3 threshold (0.50+)."""
+        # Mock score above 0.50
+        mock_divergence.return_value = 0.60
+        
+        # Mock ICM report return value
+        mock_report = MagicMock()
+        mock_report.is_healthy = False
+        mock_report.health_score = 0.4
+        mock_report.risk_level = "HIGH"
+        mock_icm_run.return_value = mock_report
+        
+        response = wrapper.chat("Test question that directly triggers L3")
+        
+        assert response.divergence_tier == "critical"
+        assert response.divergence_score == 0.60
+        
+        # ICM SHOULD be called
+        mock_icm_run.assert_called_once()
+
+    def test_logs_are_persisted(self, wrapper, mock_openai_client):
+        """Test that the chat interactions are written to the provenance log."""
+        response = wrapper.chat("Log me")
+        
+        assert response.provenance_id is not None
+        
+        # Read from log
+        entry = wrapper._provenance_log.get_entry(response.provenance_id)
+        assert entry is not None
+        
+        # The log stores hashes, not raw text
+        from ct_toolkit.provenance.log import ProvenanceLog
+        assert entry.request_hash == ProvenanceLog._hash_text("Log me")
+        assert entry.response_hash == ProvenanceLog._hash_text("I am a helpful assistant.")
+        assert entry.metadata["provider"] == "openai"
+        assert entry.metadata["model"] == "gpt-4o-mini-mock"
+        assert entry.divergence_score == response.divergence_score
