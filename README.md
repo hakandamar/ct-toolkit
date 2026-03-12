@@ -246,7 +246,7 @@ For a detailed breakdown of all 8 phases and how the code maps to specific secti
 
 ## Theoretical Foundation
 
-CT Toolkit translates the **Nested Agency Architecture (NAA)** framework proposed in [Hakan Damar (2025) — _The Computational Theseus_](https://arxiv.org/) into engineering practice.
+CT Toolkit translates the **Nested Agency Architecture (NAA)** framework proposed in [Hakan Damar (2025) — _The Computational Theseus_](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) into engineering practice.
 
 Core concepts:
 
@@ -262,8 +262,8 @@ Core concepts:
 See the [CONTRIBUTING.md](CONTRIBUTING.md) document for the contribution guide.
 
 ```bash
-git clone https://github.com/hakandamar/computational-theseus-toolkit
-cd computational-theseus-toolkit
+git clone https://github.com/hakandamar/ct-toolkit
+cd ct-toolkit
 pip install -e ".[dev]"
 pytest tests/
 ```
