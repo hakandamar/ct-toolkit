@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 authors = [{ name = "Hakan Damar" }]
 keywords = ["llm", "ai-safety", "identity-continuity", "guardrails", "alignment"]
 
