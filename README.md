@@ -1,12 +1,12 @@
 # Computational Theseus Toolkit (CT Toolkit)
 
-> **Identity Continuity Guardrails for LLM Systems**
+> **Identity Continuity Guardrails for Agentic Systems**
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![arXiv](https://img.shields.io/badge/arXiv-preprint-red.svg)](https://arxiv.org/)
 
-CT Toolkit is an open-source security layer designed to preserve the **identity continuity** of large language models over time. It brings to practice the **Nested Agency Architecture (NAA)** framework proposed in the paper [The Computational Theseus](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d).
+CT Toolkit is an open-source security layer designed to preserve the **identity continuity** of AI agents over time. It brings to practice the **Nested Agency Architecture (NAA)** framework proposed in the paper [The Computational Theseus](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d).
 
 ---
 
