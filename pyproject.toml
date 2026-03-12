@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ct-toolkit"
 version = "0.1.0"
-description = "Computational Theseus Toolkit — Identity Continuity Guardrails for LLM Systems"
+description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
