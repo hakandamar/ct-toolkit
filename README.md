@@ -16,14 +16,16 @@ An LLM system can deviate from its initial value commitments over different conv
 
 CT Toolkit prevents this issue in three layers:
 
-| Layer                     | Mechanism                               | What it Provides                  |
-| ------------------------- | --------------------------------------- | --------------------------------- |
-| **Constitutional Kernel** | Axiomatic + plastic rule hierarchy      | Immutable identity anchor         |
-| **Divergence Engine**     | L1 ECS → L2 LLM-judge → L3 ICM          | Divergence detection and grading  |
-| **Provenance Log**        | HMAC hash chain                         | Auditable identity history        |
+| Layer                     | Mechanism                          | What it Provides                 |
+| ------------------------- | ---------------------------------- | -------------------------------- |
+| **Constitutional Kernel** | Axiomatic + plastic rule hierarchy | Immutable identity anchor        |
+| **Divergence Engine**     | L1 ECS → L2 LLM-judge → L3 ICM     | Divergence detection and grading |
+| **Provenance Log**        | HMAC hash chain                    | Auditable identity history       |
 
 > 💡 **"Why not just use Llama-Guard or a rule engine?"** <br>
 > Guardrails are stateless and block single prompts. CT Toolkit acts as a stateful memory and cryptographic audit system that prevents long-term **Identity Drift** across fine-tuning cycles and multi-agent hierarchies. Read our full explanation in [**Why CT Toolkit?**](docs/WHY.md)
+
+![Basic System Architecture](./docs/tg_basic_system_architecture-v1.jpg)
 
 ---
 
@@ -180,12 +182,12 @@ for entry in log.get_entries(limit=10):
 
 ## Template and Kernel Combinations
 
-| Template  | Compatible Kernels                       | Notes                          |
-| --------- | ---------------------------------------- | ------------------------------ |
-| `general` | `default`, `finance`, `medical`, `legal` | General purpose                |
-| `medical` | `medical`, `defense`, `research`         | Military medical supported     |
-| `finance` | `finance`, `legal`                       | Compliance focused             |
-| `defense` | `defense`                                | Only defense kernel            |
+| Template  | Compatible Kernels                       | Notes                      |
+| --------- | ---------------------------------------- | -------------------------- |
+| `general` | `default`, `finance`, `medical`, `legal` | General purpose            |
+| `medical` | `medical`, `defense`, `research`         | Military medical supported |
+| `finance` | `finance`, `legal`                       | Compliance focused         |
+| `defense` | `defense`                                | Only defense kernel        |
 
 ```python
 from ct_toolkit.core.compatibility import CompatibilityLayer
@@ -225,13 +227,15 @@ ct_toolkit/
 
 ## Current Project Status & Roadmap
 
-CT Toolkit is an active engineering effort implementing the paper's framework across an 8-phase roadmap. 
+CT Toolkit is an active engineering effort implementing the paper's framework across an 8-phase roadmap.
 
 ### Current Release (MVP)
+
 - **Phase 0 (Core Architecture):** Endorsement protocol, provenance log, identity embedding, and divergence engine (L1 to L3).
 - **Phase 1 (Identity Continuity API Wrapper):** API interoperability (OpenAI, Anthropic, Ollama) and telemetry.
 
 ### Future Roadmap
+
 - **Phase 2:** Multi-Agent Hierarchy Support (Cascading Endorsements).
 - **Phase 3:** Measurement Infrastructure (CT-Eval Benchmark).
 - **Phase 4:** Open-Source Model Support (Fine-tuning and System Prompts).
