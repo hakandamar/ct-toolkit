@@ -159,6 +159,28 @@ class ProvenanceLog:
         row = cursor.fetchone()
         return self._row_to_entry(row) if row else None
 
+    def get_interaction_count(
+        self, template: str, kernel_name: str, model: str
+    ) -> int:
+        """
+        Calculates the number of interactions matching the current context.
+        This provides the experience metric for Stability-Plasticity Scheduling.
+        """
+        # We parse the JSON metadata column. SQLite JSON1 extension is standard.
+        query = """
+            SELECT COUNT(*) FROM provenance 
+            WHERE json_extract(metadata, '$.template') = ?
+              AND json_extract(metadata, '$.kernel') = ?
+              AND json_extract(metadata, '$.model') = ?
+        """
+        try:
+            row = self._conn.execute(query, (template, kernel_name, model)).fetchone()
+            return row[0] if row else 0
+        except sqlite3.Error as e:
+            logger.warning(f"Could not count interactions (JSON query failed): {e}")
+            # Fallback to total count if json_extract is not supported
+            return self._conn.execute("SELECT COUNT(*) FROM provenance").fetchone()[0]
+
     # ── Database ──────────────────────────────────────────────────────────────
 
     def _init_db(self) -> sqlite3.Connection:

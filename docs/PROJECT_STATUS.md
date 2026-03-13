@@ -64,8 +64,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Provenance Log** — HMAC hash chain, SQLite vault, tamper detection
 - [x] **Reflective Endorsement protocol** — Conflict record, signed approval, ICM flag
 - [x] **Approval channels** — CLI, auto-approve, auto-reject, custom callback
-- [ ] **Real embedding API integration** — OpenAI `text-embedding-3`, Anthropic embedding; current MVP uses keyword vectors
-- [ ] **Stability-Plasticity Scheduling** — _(Paper 5.3)_ As the model becomes more capable, the identity-update threshold rises proportionally; currently uses fixed thresholds
+- [x] **Real embedding API integration** — OpenAI `text-embedding-3`, Anthropic embedding; current MVP uses keyword vectors
+- [x] **Stability-Plasticity Scheduling** — _(Paper 5.3)_ As the model becomes more capable, the identity-update threshold rises proportionally; currently uses fixed thresholds
 
 ---
 
@@ -166,7 +166,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 | Phase | Scope                          | Status                                                            |
 | ----- | ------------------------------ | ----------------------------------------------------------------- |
 | **0** | MVP Core Infrastructure        | ✅ Complete                                                       |
-| **1** | Identity Continuity Mechanisms | 🔶 Mostly complete (embedding API + stability scheduling pending) |
+| **1** | Identity Continuity Mechanisms | ✅ Complete                                                       |
 | **2** | Multi-Agent Hierarchy          | 🔲 Not started                                                    |
 | **3** | ICM and Measurement            | 🔶 Foundation complete (reasoning chain, policy-drift pending)    |
 | **4** | Open-Source Model Support      | 🔲 Not started                                                    |
@@ -188,7 +188,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 | Divergence Penalty (API level)     | `divergence/engine.py`                 | ✅ 1  |
 | Divergence Penalty (loss function) | `divergence/loss.py`                   | 🔲 4  |
 | Provenance Log                     | `provenance/log.py`                    | ✅ 1  |
-| Stability-Plasticity Scheduling    | —                                      | 🔲 1  |
+| Stability-Plasticity Scheduling    | `divergence/scheduler.py`              | ✅ 1  |
 | Hierarchical Propagation           | —                                      | 🔲 2  |
 | Identity Consistency Metric        | `divergence/l3_icm.py` (foundation)    | 🔶 3  |
 | Policy-Drift Measurement           | —                                      | 🔲 3  |

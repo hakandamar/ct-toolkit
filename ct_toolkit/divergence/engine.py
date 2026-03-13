@@ -106,16 +106,26 @@ class DivergenceEngine:
         l2_threshold: float = 0.30,
         l3_threshold: float = 0.50,
         enterprise_mode: bool = False,   # Run all tiers all the time
+        scheduler: Any | None = None,    # ElasticityScheduler instance
     ) -> None:
         self._identity = identity_layer
         self._kernel = kernel
         self._template = template
         self._provider = provider
         self._judge_client = judge_client
+        
+        # Base thresholds
+        self._base_l1_threshold = l1_threshold
+        self._base_l2_threshold = l2_threshold
+        self._base_l3_threshold = l3_threshold
+        
+        # Current active thresholds
         self._l1_threshold = l1_threshold
         self._l2_threshold = l2_threshold
         self._l3_threshold = l3_threshold
+        
         self._enterprise = enterprise_mode
+        self._scheduler = scheduler
 
         # Client required for L2/L3
         self._l2_available = judge_client is not None and provider is not None
@@ -127,12 +137,18 @@ class DivergenceEngine:
         self,
         request_text: str,
         response_text: str,
+        interaction_count: int = 0,
     ) -> DivergenceResult:
         """
         Performs full divergence analysis.
         In Enterprise mode, all tiers run.
         In normal mode, it proceeds progressively based on the threshold.
         """
+        if self._scheduler:
+            self._l1_threshold, self._l2_threshold, self._l3_threshold = (
+                self._scheduler.calculate_thresholds(interaction_count)
+            )
+
         if self._enterprise:
             return self._enterprise_analyze(request_text, response_text)
         return self._standard_analyze(request_text, response_text)

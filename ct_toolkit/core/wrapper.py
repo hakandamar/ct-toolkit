@@ -28,6 +28,7 @@ from typing import Any, Iterator
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResult
 from ct_toolkit.core.exceptions import CTToolkitError
+from ct_toolkit.divergence.scheduler import RiskProfile
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -50,6 +51,11 @@ class WrapperConfig:
     embedding_client: Any = None     # Client for L1 ECS embedding (falls back to main client if compatible)
     embedding_model: str = "text-embedding-3-small"
     enterprise_mode: bool = False    # Run all tiers all the time
+
+    # -- Dynamic Stability-Plasticity Scheduling --
+    elasticity_max_thresholds: tuple[float, float, float] | None = None  # (max_l1, max_l2, max_l3)
+    elasticity_growth_rate: float | None = None
+    risk_profile: RiskProfile | None = None
 
 
 @dataclass
@@ -166,6 +172,21 @@ class TheseusWrapper:
     def _init_divergence_engine(self) -> Any:
         """Initializes the Divergence Engine (judge_client is required for L2/L3)."""
         from ct_toolkit.divergence.engine import DivergenceEngine
+        from ct_toolkit.divergence.scheduler import ElasticityScheduler
+        
+        scheduler = None
+        if self._config.elasticity_max_thresholds and self._config.elasticity_growth_rate:
+            scheduler = ElasticityScheduler(
+                base_thresholds=(
+                    self._config.divergence_l1_threshold,
+                    self._config.divergence_l2_threshold,
+                    self._config.divergence_l3_threshold
+                ),
+                max_thresholds=self._config.elasticity_max_thresholds,
+                growth_rate=self._config.elasticity_growth_rate,
+                risk_profile=self._config.risk_profile
+            )
+
         return DivergenceEngine(
             identity_layer=self._identity_layer,
             kernel=self._kernel,
@@ -176,6 +197,7 @@ class TheseusWrapper:
             l2_threshold=self._config.divergence_l2_threshold,
             l3_threshold=self._config.divergence_l3_threshold,
             enterprise_mode=self._config.enterprise_mode,
+            scheduler=scheduler,
         )
 
     def _log_init(self) -> None:
@@ -226,10 +248,20 @@ class TheseusWrapper:
         content = self._extract_content(raw_response)
         model_used = self._extract_model(raw_response, model)
 
+        # Compute current interaction experience
+        interaction_count = 0
+        if self._config.log_requests:
+            interaction_count = self._provenance_log.get_interaction_count(
+                template=self._config.template,
+                kernel_name=self._kernel.name,
+                model=model_used
+            )
+
         # Divergence Engine (L1 -> L2 -> L3)
         div_result = self._run_divergence_engine(
             message=message,
             response=content,
+            interaction_count=interaction_count,
         )
 
         # Provenance Log record
@@ -344,10 +376,10 @@ class TheseusWrapper:
             return raw.model
         return fallback or "unknown"
 
-    def _run_divergence_engine(self, message: str, response: str) -> Any:
+    def _run_divergence_engine(self, message: str, response: str, interaction_count: int = 0) -> Any:
         """Runs the staged divergence engine (L1 -> L2 -> L3)."""
         try:
-            return self._divergence_engine.analyze(message, response)
+            return self._divergence_engine.analyze(message, response, interaction_count)
         except Exception as e:
             logger.error(f"Divergence Engine execution failed: {e}")
             from ct_toolkit.divergence.engine import DivergenceResult, DivergenceTier
