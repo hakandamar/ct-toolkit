@@ -229,20 +229,20 @@ ct_toolkit/
 
 CT Toolkit is an active engineering effort implementing the paper's framework across an 8-phase roadmap.
 
-### Current Release (MVP)
+### Completed Phases
 
-- **Phase 0 (Core Architecture):** Endorsement protocol, provenance log, identity embedding, and divergence engine (L1 to L3).
-- **Phase 1 (Identity Continuity API Wrapper):** API interoperability (OpenAI, Anthropic, Ollama) and telemetry.
+- **Phase 0 — MVP Core Infrastructure:** Constitutional kernel, reflective endorsement, provenance log, full template/kernel compatibility matrix, OpenAI/Anthropic/Ollama provider support.
+- **Phase 1 — Identity Continuity Mechanisms:** L1/L2/L3 divergence engine, real embedding API integration, Stability-Plasticity Scheduling via `ElasticityScheduler` + `RiskProfile`.
 
 ### Future Roadmap
 
-- **Phase 2:** Multi-Agent Hierarchy Support (Cascading Endorsements).
-- **Phase 3:** Measurement Infrastructure (CT-Eval Benchmark).
-- **Phase 4:** Open-Source Model Support (Fine-tuning and System Prompts).
-- **Phase 5:** Decentralized Integrity (Blockchain/IPFS integration).
-- **Phase 6:** Adaptive Divergence Calibration (Dynamic Stability).
-- **Phase 7:** Advanced Cryptography (ZKP / SGX).
-- **Phase 8:** Cloud & Enterprise SaaS Integration.
+- **Phase 2:** Multi-Agent Hierarchy Support (hierarchical kernel propagation, LangChain/CrewAI/AutoGen integration).
+- **Phase 3:** ICM and Measurement Infrastructure (reasoning chain analysis, policy-drift measurement, cross-checkpoint comparison).
+- **Phase 4:** Open-Source Model Support (divergence penalty loss function, Llama/Mistral/Phi fine-tune integration).
+- **Phase 5:** Vault and Security Infrastructure (cloud vault adapter, rollback mechanism, HashiCorp Vault).
+- **Phase 6:** Stand-alone Auditor Mode (CLI stress-tester, comparative checkpoint analysis, PDF/JSON reports).
+- **Phase 7:** MAS / Early Warning Integration (Chen et al. Moral Anchor System, ValueFlow).
+- **Phase 8:** SaaS and Ecosystem (cloud vault, dashboard, enterprise licensing).
 
 For a detailed breakdown of all 8 phases and how the code maps to specific sections of the paper, please see the [**Project Status & Roadmap**](docs/PROJECT_STATUS.md) document.
 

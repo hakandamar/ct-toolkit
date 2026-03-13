@@ -80,7 +80,7 @@ divergence = 1.0 - cosine_similarity(response_vector, reference_vector)
 
 Reference vector: Generated statically from `reference_text` and `identity_keywords` in Template YAML. Rolling baseline is intentionally avoided — it can hide slow drifts.
 
-**Current MVP:** Keyword frequency vector (Step 6+ migration to real embedding API)
+**Embedding strategy (Phase 1):** If an `embedding_client` is provided to `WrapperConfig`, the real OpenAI (`text-embedding-3-small`) or Anthropic embedding API is used. Otherwise, the system automatically falls back to a keyword frequency vector (zero-dependency, no API cost) or a character n-gram hash vector when no keywords are available.
 
 ### L2 — LLM-as-Judge
 
@@ -133,6 +133,40 @@ Total risk score:
        + ((1 - l3_health) × 0.4 if l3_ran)
 
 action_required = risk >= l3_threshold OR l3 not healthy
+```
+
+---
+
+## Stability-Plasticity Scheduler
+
+> _Paper: Section 5.3 — Dynamic Elasticity_
+
+As an agent accumulates more interactions (experience), its safe divergence thresholds grow asymptotically from a conservative baseline toward configurable maximums. This prevents an over-cautious system from blocking legitimate evolution while still maintaining tight guardrails for new/untrusted agents.
+
+```python
+Threshold(t) = Base + (Max - Base) × CapFactor × (1 - e^(-growth_rate × t))
+```
+
+### RiskProfile
+
+Agents with higher structural risk (tool calling, vision/audio, MCP servers) receive slower elasticity growth and lower maximum threshold ceilings:
+
+| Capability | Growth Rate Penalty | Cap Reduction |
+|---|---|---|
+| Tool calling | ×0.7 (30% slower) | −10% |
+| Vision / Audio | ×0.9 (10% slower) | — |
+| MCP server (each) | ×0.5ⁿ (capped at 0.2) | −20% |
+
+```python
+from ct_toolkit.divergence.scheduler import ElasticityScheduler, RiskProfile
+
+scheduler = ElasticityScheduler(
+    base_thresholds=(0.15, 0.30, 0.50),
+    max_thresholds=(0.25, 0.45, 0.70),
+    growth_rate=0.001,
+    risk_profile=RiskProfile(has_tool_calling=True, mcp_server_count=2),
+)
+l1, l2, l3 = scheduler.calculate_thresholds(interaction_count=1000)
 ```
 
 ---
