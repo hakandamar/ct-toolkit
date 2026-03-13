@@ -20,6 +20,7 @@ wheels/
 venv/
 ENV/
 env/
+*.code-workspace
 
 # Vault & secrets
 *.db
