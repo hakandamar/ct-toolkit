@@ -47,6 +47,8 @@ class WrapperConfig:
     auto_inject_kernel: bool = True
     log_requests: bool = True
     judge_client: Any = None         # Separate provider client for L2/L3
+    embedding_client: Any = None     # Client for L1 ECS embedding (falls back to main client if compatible)
+    embedding_model: str = "text-embedding-3-small"
     enterprise_mode: bool = False    # Run all tiers all the time
 
 
@@ -149,8 +151,16 @@ class TheseusWrapper:
     def _init_identity_layer(self) -> Any:
         """Initializes the Identity Embedding Layer."""
         from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
+        
+        # If no specific embedding client is provided, try to use the main client if it's OpenAI-compatible
+        emb_client = self._config.embedding_client
+        if emb_client is None and self._provider == "openai":
+            emb_client = self._client
+
         return IdentityEmbeddingLayer(
             template=self._config.template,
+            embedding_client=emb_client,
+            embedding_model=self._config.embedding_model,
         )
 
     def _init_divergence_engine(self) -> Any:

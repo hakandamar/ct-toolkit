@@ -1,11 +1,12 @@
 # Computational Theseus Toolkit
+
 ## Project Overview & Roadmap
 
 ---
 
 ## Project Overview
 
-CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's *"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"* (2025) — into engineering practice.
+CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2025) — into engineering practice.
 
 ### The Problem It Solves
 
@@ -17,17 +18,17 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 
 ### Current State
 
-| Area | Status |
-|------|--------|
-| Python library (pip install) | ✅ MVP complete |
-| OpenAI / Anthropic / Ollama support | ✅ Complete |
-| Constitutional Kernel | ✅ Complete |
-| Reflective Endorsement | ✅ Complete |
-| Provenance Log (HMAC hash chain) | ✅ Complete |
-| Divergence Engine (L1+L2+L3) | ✅ Complete |
-| Template + Kernel compatibility matrix | ✅ Complete |
-| Documentation | ✅ Complete |
-| Test coverage | ✅ 121/121 tests passing |
+| Area                                   | Status                   |
+| -------------------------------------- | ------------------------ |
+| Python library (pip install)           | ✅ MVP complete          |
+| OpenAI / Anthropic / Ollama support    | ✅ Complete              |
+| Constitutional Kernel                  | ✅ Complete              |
+| Reflective Endorsement                 | ✅ Complete              |
+| Provenance Log (HMAC hash chain)       | ✅ Complete              |
+| Divergence Engine (L1+L2+L3)           | ✅ Complete              |
+| Template + Kernel compatibility matrix | ✅ Complete              |
+| Documentation                          | ✅ Complete              |
+| Test coverage                          | ✅ 131/131 tests passing |
 
 ---
 
@@ -38,7 +39,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 ---
 
 ### PHASE 0 — MVP Core Infrastructure
-> *Paper: Section 3, 4, 5 — NAA Framework*
+
+> _Paper: Section 3, 4, 5 — NAA Framework_
 
 - [x] **TheseusWrapper** — API proxy, kernel injection, provider dispatch
 - [x] **Constitutional Identity Kernel (CIK)** — Axiomatic anchor + plastic commitment separation
@@ -52,7 +54,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 ---
 
 ### PHASE 1 — Identity Continuity Mechanisms
-> *Paper: Section 3.1 (Identity Core), 5.1 (Divergence Penalty), 5.2 (Provenance Log)*
+
+> _Paper: Section 3.1 (Identity Core), 5.1 (Divergence Penalty), 5.2 (Provenance Log)_
 
 - [x] **L1 ECS** — Embedding cosine similarity, real-time on every query
 - [x] **L2 LLM-as-judge** — Independent frozen model, JSON verdict
@@ -62,12 +65,13 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Reflective Endorsement protocol** — Conflict record, signed approval, ICM flag
 - [x] **Approval channels** — CLI, auto-approve, auto-reject, custom callback
 - [ ] **Real embedding API integration** — OpenAI `text-embedding-3`, Anthropic embedding; current MVP uses keyword vectors
-- [ ] **Stability-Plasticity Scheduling** — *(Paper 5.3)* As the model becomes more capable, the identity-update threshold rises proportionally; currently uses fixed thresholds
+- [ ] **Stability-Plasticity Scheduling** — _(Paper 5.3)_ As the model becomes more capable, the identity-update threshold rises proportionally; currently uses fixed thresholds
 
 ---
 
 ### PHASE 2 — Multi-Agent Hierarchy Support
-> *Paper: Section 2.2 (SSC in Multi-Agent), 3.3 (Hierarchical Propagation)*
+
+> _Paper: Section 2.2 (SSC in Multi-Agent), 3.3 (Hierarchical Propagation)_
 
 - [ ] **Hierarchical Kernel Propagation** — Propagating the mother agent's CIK to sub-agents as a read-only constraint
 - [ ] **Sub-agent constraint enforcement** — Logic for sub-agents to reject and log instructions from the mother agent that conflict with the propagated kernel
@@ -75,53 +79,57 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [ ] **LangChain / LangGraph middleware** — Integration via framework callback/trace mechanism
 - [ ] **CrewAI integration** — CIK propagation across CrewAI agent hierarchies
 - [ ] **AutoGen integration** — Middleware layer for Microsoft AutoGen
-- [ ] **Topology-aware propagation** — *(Based on ValueFlow [5] findings)* Propagation mechanism that accounts for non-uniform drift intensity shaped by network topology
+- [ ] **Topology-aware propagation** — _(Based on ValueFlow [5] findings)_ Propagation mechanism that accounts for non-uniform drift intensity shaped by network topology
 
 ---
 
 ### PHASE 3 — ICM and Measurement Infrastructure
-> *Paper: Section 10.1 (ICM), 10.2 (Policy-Drift Measurement), 10.4 (SSC Severity)*
+
+> _Paper: Section 10.1 (ICM), 10.2 (Policy-Drift Measurement), 10.4 (SSC Severity)_
 
 - [x] **ICM base probe battery** — 10 general ethical scenarios
 - [x] **Domain probe batteries** — defense, finance
 - [x] **BehaviorClassifier** — Response classification (reject / comply / refuse_and_explain)
 - [x] **Identity Health Score** — 0.0-1.0 normalized score + risk level
-- [ ] **ICM reasoning chain analysis** — *(Paper 10.1)* Evaluating not just outputs but reasoning chains; distinguishing legitimate moral maturation from SSC-driven drift
-- [ ] **Policy-drift measurement** — *(Paper 10.2)* Distributional shift in the agent's decision boundary between training iterations; tracked across risk tolerance, human deference, and edge-case instruction dimensions
-- [ ] **SSC severity operationalization** — *(Paper 10.4)* Behavioral consistency score normalized by capability gain between checkpoints; comparable benchmark across architectures and training regimes
+- [ ] **ICM reasoning chain analysis** — _(Paper 10.1)_ Evaluating not just outputs but reasoning chains; distinguishing legitimate moral maturation from SSC-driven drift
+- [ ] **Policy-drift measurement** — _(Paper 10.2)_ Distributional shift in the agent's decision boundary between training iterations; tracked across risk tolerance, human deference, and edge-case instruction dimensions
+- [ ] **SSC severity operationalization** — _(Paper 10.4)_ Behavioral consistency score normalized by capability gain between checkpoints; comparable benchmark across architectures and training regimes
 - [ ] **Cross-checkpoint ICM** — ICM score comparison across successive model checkpoints
 - [ ] **Probe battery expansion** — medical, legal, research domain probes
-- [ ] **AISAI-style game-theoretic probes** — *(Paper ref [7], Kim 2025)* Probes measuring whether a model modifies its strategy based on whether its opponent is identified as human or AI; proto-SSC early warning signal
+- [ ] **AISAI-style game-theoretic probes** — _(Paper ref [7], Kim 2025)_ Probes measuring whether a model modifies its strategy based on whether its opponent is identified as human or AI; proto-SSC early warning signal
 
 ---
 
 ### PHASE 4 — Open-Source Model Support
-> *Paper: Section 5.1 (Divergence Penalty), 10.3 (CIK Enforcement Experiments)*
 
-- [ ] **Divergence Penalty — Loss Function module** — *(Paper 5.1)* PyTorch training loop integration; a loss term that penalizes excessive shifts in the agent's internal normative representation between training iterations
+> _Paper: Section 5.1 (Divergence Penalty), 10.3 (CIK Enforcement Experiments)_
+
+- [ ] **Divergence Penalty — Loss Function module** — _(Paper 5.1)_ PyTorch training loop integration; a loss term that penalizes excessive shifts in the agent's internal normative representation between training iterations
 - [ ] **Llama 3 / Mistral integration** — Adding CIK enforcement to fine-tune pipelines
 - [ ] **Phi-3 sub-agent prototype** — Sub-agent constraint testing on small models
 - [ ] **Gemma research integration** — For academic SSC experiments
-- [ ] **CIK enforcement experiments** — *(Paper 10.3)* Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions
-- [ ] **Elasticity threshold calibration** — *(Paper 8)* Empirically determining the balance between identity continuity and the capacity for external correction
+- [ ] **CIK enforcement experiments** — _(Paper 10.3)_ Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions
+- [ ] **Elasticity threshold calibration** — _(Paper 8)_ Empirically determining the balance between identity continuity and the capacity for external correction
 
 ---
 
 ### PHASE 5 — Vault and Security Infrastructure
-> *Paper: Section 5.2 (Provenance Log), 6 (Corrigibility)*
+
+> _Paper: Section 5.2 (Provenance Log), 6 (Corrigibility)_
 
 - [x] **Local SQLite vault** — For open-source deployments
 - [x] **HMAC key management** — Environment variable or local file
 - [ ] **Cloud vault adapter** — For SaaS version; customer authorization key is never accessible to us
 - [ ] **HashiCorp Vault integration** — Enterprise key management
-- [ ] **Read-only external Provenance Log access** — *(Paper 5.2)* Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
-- [ ] **Rollback mechanism** — *(Paper 5.2)* Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
+- [ ] **Read-only external Provenance Log access** — _(Paper 5.2)_ Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
+- [ ] **Rollback mechanism** — _(Paper 5.2)_ Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
 - [ ] **Anomaly detection and alerting** — Statistical drift analysis over log entries, notification system
 
 ---
 
 ### PHASE 6 — Stand-alone Auditor Mode
-> *Project Desc: Model 3 — Independent Auditor*
+
+> _Project Desc: Model 3 — Independent Auditor_
 
 - [ ] **Auditor CLI** — Stress-testing an existing system via API endpoint without modifying any code
 - [ ] **Identity Health Score report** — 100 ethical scenarios, time-series consistency report
@@ -131,16 +139,18 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 ---
 
 ### PHASE 7 — MAS Integration and Early Warning
-> *Paper: Section 6, ref [6] Moral Anchor System*
 
-- [ ] **MAS (Moral Anchor System) integration** — *(Chen et al. 2025)* Combining Bayesian network and LSTM-based value drift prediction with CT Toolkit's upstream prevention mechanism
+> _Paper: Section 6, ref [6] Moral Anchor System_
+
+- [ ] **MAS (Moral Anchor System) integration** — _(Chen et al. 2025)_ Combining Bayesian network and LSTM-based value drift prediction with CT Toolkit's upstream prevention mechanism
 - [ ] **Early warning signals** — Connecting MAS-detected drift signals to Provenance Log triggers
-- [ ] **ValueFlow integration** — *(Luo et al. 2025)* Incorporating beta-sensitivity and System Sensitivity metrics into the Divergence Engine
+- [ ] **ValueFlow integration** — _(Luo et al. 2025)_ Incorporating beta-sensitivity and System Sensitivity metrics into the Divergence Engine
 
 ---
 
 ### PHASE 8 — SaaS and Ecosystem
-> *Project Desc: Startup / Cloud version*
+
+> _Project Desc: Startup / Cloud version_
 
 - [ ] **Cloud vault service** — Inaccessible vault with customer authorization
 - [ ] **Dashboard** — Identity Health Score visualization, log explorer
@@ -153,35 +163,35 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Summary Table
 
-| Phase | Scope | Status |
-|-------|-------|--------|
-| **0** | MVP Core Infrastructure | ✅ Complete |
+| Phase | Scope                          | Status                                                            |
+| ----- | ------------------------------ | ----------------------------------------------------------------- |
+| **0** | MVP Core Infrastructure        | ✅ Complete                                                       |
 | **1** | Identity Continuity Mechanisms | 🔶 Mostly complete (embedding API + stability scheduling pending) |
-| **2** | Multi-Agent Hierarchy | 🔲 Not started |
-| **3** | ICM and Measurement | 🔶 Foundation complete (reasoning chain, policy-drift pending) |
-| **4** | Open-Source Model Support | 🔲 Not started |
-| **5** | Vault and Security | 🔶 Local complete (cloud, rollback pending) |
-| **6** | Auditor Mode | 🔲 Not started |
-| **7** | MAS / Early Warning | 🔲 Not started |
-| **8** | SaaS and Ecosystem | 🔲 Not started |
+| **2** | Multi-Agent Hierarchy          | 🔲 Not started                                                    |
+| **3** | ICM and Measurement            | 🔶 Foundation complete (reasoning chain, policy-drift pending)    |
+| **4** | Open-Source Model Support      | 🔲 Not started                                                    |
+| **5** | Vault and Security             | 🔶 Local complete (cloud, rollback pending)                       |
+| **6** | Auditor Mode                   | 🔲 Not started                                                    |
+| **7** | MAS / Early Warning            | 🔲 Not started                                                    |
+| **8** | SaaS and Ecosystem             | 🔲 Not started                                                    |
 
 ---
 
 ## Paper → Code Mapping
 
-| Paper Mechanism | CT Toolkit Implementation | Phase |
-|----------------|--------------------------|-------|
-| Constitutional Identity Kernel | `core/kernel.py` | ✅ 0 |
-| Axiomatic Anchors | `kernels/*.yaml → axiomatic_anchors` | ✅ 0 |
-| Plastic Commitments | `kernels/*.yaml → plastic_commitments` | ✅ 0 |
-| Reflective Endorsement | `endorsement/reflective.py` | ✅ 1 |
-| Divergence Penalty (API level) | `divergence/engine.py` | ✅ 1 |
-| Divergence Penalty (loss function) | `divergence/loss.py` | 🔲 4 |
-| Provenance Log | `provenance/log.py` | ✅ 1 |
-| Stability-Plasticity Scheduling | — | 🔲 1 |
-| Hierarchical Propagation | — | 🔲 2 |
-| Identity Consistency Metric | `divergence/l3_icm.py` (foundation) | 🔶 3 |
-| Policy-Drift Measurement | — | 🔲 3 |
-| SSC Severity Operationalization | — | 🔲 3 |
-| MAS Integration | — | 🔲 7 |
-| ValueFlow Integration | — | 🔲 7 |
+| Paper Mechanism                    | CT Toolkit Implementation              | Phase |
+| ---------------------------------- | -------------------------------------- | ----- |
+| Constitutional Identity Kernel     | `core/kernel.py`                       | ✅ 0  |
+| Axiomatic Anchors                  | `kernels/*.yaml → axiomatic_anchors`   | ✅ 0  |
+| Plastic Commitments                | `kernels/*.yaml → plastic_commitments` | ✅ 0  |
+| Reflective Endorsement             | `endorsement/reflective.py`            | ✅ 1  |
+| Divergence Penalty (API level)     | `divergence/engine.py`                 | ✅ 1  |
+| Divergence Penalty (loss function) | `divergence/loss.py`                   | 🔲 4  |
+| Provenance Log                     | `provenance/log.py`                    | ✅ 1  |
+| Stability-Plasticity Scheduling    | —                                      | 🔲 1  |
+| Hierarchical Propagation           | —                                      | 🔲 2  |
+| Identity Consistency Metric        | `divergence/l3_icm.py` (foundation)    | 🔶 3  |
+| Policy-Drift Measurement           | —                                      | 🔲 3  |
+| SSC Severity Operationalization    | —                                      | 🔲 3  |
+| MAS Integration                    | —                                      | 🔲 7  |
+| ValueFlow Integration              | —                                      | 🔲 7  |

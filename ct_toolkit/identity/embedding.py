@@ -41,10 +41,12 @@ class IdentityEmbeddingLayer:
     def __init__(
         self,
         template: str = "general",
-        embedding_client: Any = None,  # Provider client will be added in Step 6
+        embedding_client: Any = None,  # Provider client for real embeddings
+        embedding_model: str = "text-embedding-3-small",
     ) -> None:
         self._template = template
         self._embedding_client = embedding_client
+        self._embedding_model = embedding_model
         self._reference_vector: np.ndarray | None = None
         self._template_keywords: list[str] = []
         self._load_template()
@@ -107,9 +109,20 @@ class IdentityEmbeddingLayer:
 
     def _compute_vector(self, text: str) -> np.ndarray:
         """
-        MVP simple implementation: keyword frequency vector.
-        In Step 6, this method will be replaced with provider embedding API.
+        Uses the embedding API if a client is available.
+        Otherwise falls back to simple MVP keyword/ngram implementation.
         """
+        if self._embedding_client is not None:
+            try:
+                response = self._embedding_client.embeddings.create(
+                    input=[text],
+                    model=self._embedding_model
+                )
+                embedding = response.data[0].embedding
+                return np.array(embedding, dtype=np.float32)
+            except Exception as e:
+                logger.error(f"Embedding API failed, falling back to local method: {e}")
+                # Fall through to local method
         if not self._template_keywords:
             # Fallback: character n-gram hash vector
             return self._ngram_hash_vector(text)
