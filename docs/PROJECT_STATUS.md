@@ -28,7 +28,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3)           | ✅ Complete              |
 | Template + Kernel compatibility matrix | ✅ Complete              |
 | Documentation                          | ✅ Complete              |
-| Test coverage                          | ✅ 131/131 tests passing |
+| Test coverage                          | ✅ 136/136 tests passing |
 
 ---
 
@@ -163,17 +163,17 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Summary Table
 
-| Phase | Scope                          | Status                                                            |
-| ----- | ------------------------------ | ----------------------------------------------------------------- |
-| **0** | MVP Core Infrastructure        | ✅ Complete                                                       |
-| **1** | Identity Continuity Mechanisms | ✅ Complete                                                       |
-| **2** | Multi-Agent Hierarchy          | 🔲 Not started                                                    |
-| **3** | ICM and Measurement            | 🔶 Foundation complete (reasoning chain, policy-drift pending)    |
-| **4** | Open-Source Model Support      | 🔲 Not started                                                    |
-| **5** | Vault and Security             | 🔶 Local complete (cloud, rollback pending)                       |
-| **6** | Auditor Mode                   | 🔲 Not started                                                    |
-| **7** | MAS / Early Warning            | 🔲 Not started                                                    |
-| **8** | SaaS and Ecosystem             | 🔲 Not started                                                    |
+| Phase | Scope                          | Status                                                         |
+| ----- | ------------------------------ | -------------------------------------------------------------- |
+| **0** | MVP Core Infrastructure        | ✅ Complete                                                    |
+| **1** | Identity Continuity Mechanisms | ✅ Complete                                                    |
+| **2** | Multi-Agent Hierarchy          | 🔲 Not started                                                 |
+| **3** | ICM and Measurement            | 🔶 Foundation complete (reasoning chain, policy-drift pending) |
+| **4** | Open-Source Model Support      | 🔲 Not started                                                 |
+| **5** | Vault and Security             | 🔶 Local complete (cloud, rollback pending)                    |
+| **6** | Auditor Mode                   | 🔲 Not started                                                 |
+| **7** | MAS / Early Warning            | 🔲 Not started                                                 |
+| **8** | SaaS and Ecosystem             | 🔲 Not started                                                 |
 
 ---
 
