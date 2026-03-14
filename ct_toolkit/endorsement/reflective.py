@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import json
 import time
+import sys
 import uuid
 from dataclasses import dataclass, field, asdict
 from enum import Enum
@@ -121,22 +122,37 @@ def cli_approval_channel(conflict: ConflictRecord) -> tuple[EndorsementDecision,
     """
     Default CLI approval channel.
     Prompts user for approval in interactive terminal.
+    
+    WARNING: This blocks the current thread. In server environments (FastAPI/Flask),
+    always use a custom non-blocking callback.
     """
+    # Safety check for non-interactive environments (CI, Background workers, Servers)
+    if not sys.stdin.isatty():
+        logger.warning(
+            f"RE flow: cli_approval_channel called in non-interactive environment. "
+            f"Conflict ID: {conflict.id[:8]}... Auto-returning PENDING."
+        )
+        return EndorsementDecision.PENDING, "system", "Awaiting external approval (non-TTY)"
+
     print(conflict.summary())
     print("\nDo you want to override this rule conflict?")
     print("  [y] Yes — approve and sign override")
     print("  [n] No — cancel, keep existing rule")
 
     while True:
-        choice = input("\nYour decision (y/n): ").strip().lower()
-        if choice in ("y", "yes"):
-            operator_id = input("Operator ID (name/email): ").strip() or "anonymous"
-            rationale = input("Override rationale: ").strip() or "Manual approval"
-            return EndorsementDecision.APPROVED, operator_id, rationale
-        elif choice in ("n", "no"):
-            return EndorsementDecision.REJECTED, "system", "User rejected"
-        else:
-            print("Invalid input. Type 'y' or 'n'.")
+        try:
+            choice = input("\nYour decision (y/n): ").strip().lower()
+            if choice in ("y", "yes"):
+                operator_id = input("Operator ID (name/email): ").strip() or "anonymous"
+                rationale = input("Override rationale: ").strip() or "Manual approval"
+                return EndorsementDecision.APPROVED, operator_id, rationale
+            elif choice in ("n", "no"):
+                return EndorsementDecision.REJECTED, "system", "User rejected"
+            else:
+                print("Invalid input. Type 'y' or 'n'.")
+        except EOFError:
+            # Handle cases where input() is called but stdin is closed
+            return EndorsementDecision.PENDING, "system", "Stdin closed while awaiting input"
 
 
 def auto_approve_channel(

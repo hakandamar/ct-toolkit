@@ -28,7 +28,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3)           | ✅ Complete                                  |
 | Template + Kernel compatibility matrix | ✅ Complete                                  |
 | Documentation                          | ✅ Complete                                  |
-| Test coverage                          | ✅ 140/140 tests passing (92% code coverage) |
+| Test coverage                          | ✅ 145/145 tests passing (92% code coverage) |
 
 ---
 
@@ -161,7 +161,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 140 (Unit + Integration)
+- **Total Passing Tests:** 145 (Unit + Integration)
 - **Overall Code Coverage:** 92%
 - **Key Coverage Improvements:**
   - `divergence/engine.py`: 87% (Added Enterprise Mode tests)
@@ -174,7 +174,7 @@ No UI changes were made as this was a backend refactoring task. All verification
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
-# Result: 140 passed, 1 skipped (live_models)
+# Result: 145 passed, 1 skipped (live_models)
 ```
 
 ---

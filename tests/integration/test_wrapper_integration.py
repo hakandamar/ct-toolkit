@@ -50,6 +50,7 @@ def wrapper(mock_any_llm, tmp_path):
         judge_client=MagicMock(), # Simply needs to be not None for L2 path
         log_requests=True,
     )
+    # Patch any_llm.completion here to ensure it's captured when wrapper.chat() calls it
     return TheseusWrapper(client, config)
 
 

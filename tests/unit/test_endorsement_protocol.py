@@ -161,8 +161,9 @@ class TestReflectiveEndorsementProtocol:
         )
         
         # Mock inputs: 'y', then operator 'dev', then rationale 'test'
-        with patch("builtins.input", side_effect=["y", "dev", "test"]):
-            decision, op, rat = cli_approval_channel(conflict)
+        with patch("sys.stdin.isatty", return_value=True):
+            with patch("builtins.input", side_effect=["y", "dev", "test"]):
+                decision, op, rat = cli_approval_channel(conflict)
             
         assert decision == EndorsementDecision.APPROVED
         assert op == "dev"
@@ -182,9 +183,10 @@ class TestReflectiveEndorsementProtocol:
         )
         
         # Mock inputs: 'x' (invalid), then 'n'
-        with patch("builtins.input", side_effect=["x", "n"]):
-            with patch("builtins.print") as mock_print:
-                decision, _, _ = cli_approval_channel(conflict)
+        with patch("sys.stdin.isatty", return_value=True):
+            with patch("builtins.input", side_effect=["x", "n"]):
+                with patch("builtins.print") as mock_print:
+                    decision, _, _ = cli_approval_channel(conflict)
                 # Verify invalid input warning was printed
                 mock_print.assert_any_call("Invalid input. Type 'y' or 'n'.")
             

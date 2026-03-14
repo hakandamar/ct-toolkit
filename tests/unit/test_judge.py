@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import MagicMock
 from ct_toolkit.divergence.l2_judge import LLMJudge, JudgeResult, JudgeVerdict, JudgeResponse
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from pydantic import ValidationError
@@ -7,8 +8,10 @@ class TestLLMJudge:
     """divergence/l2_judge.py — JSON parsing, verdict classification, is_problematic."""
 
     def setup_method(self):
-        # We use __new__ to avoid initializing client/instructor in unit tests
-        self.judge = LLMJudge.__new__(LLMJudge)
+        # We use a mock client to avoid real API calls during initialization
+        mock_client = MagicMock()
+        mock_client.__class__.__module__ = "openai"
+        self.judge = LLMJudge(client=mock_client, provider="openai")
 
     # -- JudgeResponse Model (instructor) --------------------------------------
     

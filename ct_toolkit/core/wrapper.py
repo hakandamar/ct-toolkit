@@ -29,7 +29,7 @@ from any_llm import AnyLLM
 
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResult
-from ct_toolkit.core.exceptions import CTToolkitError
+from ct_toolkit.core.exceptions import CTToolkitError, MissingClientError
 from ct_toolkit.divergence.scheduler import RiskProfile
 from ct_toolkit.utils.logger import get_logger
 
@@ -281,6 +281,12 @@ class TheseusWrapper:
         composed_system = self._compose_system_prompt(system)
         messages = self._build_messages(message, history, composed_system)
 
+        if self._client is None and not self._has_env_credentials():
+            raise MissingClientError(
+                f"No client provided and no environment credentials found for provider '{self._provider}'. "
+                f"Please provide a client or set the appropriate environment variables."
+            )
+
         start_time = time.monotonic()
 
         try:
@@ -337,6 +343,20 @@ class TheseusWrapper:
         )
 
     # ── Provider Dispatch ──────────────────────────────────────────────────────
+
+    def _has_env_credentials(self) -> bool:
+        """Checks if environment variables for the current provider are set."""
+        import os
+        if self._provider == "openai":
+            return bool(os.environ.get("OPENAI_API_KEY"))
+        if self._provider == "anthropic":
+            return bool(os.environ.get("ANTHROPIC_API_KEY"))
+        if self._provider == "ollama":
+            # Ollama typically doesn't need a key locally
+            return True
+        if self._provider == "google":
+            return bool(os.environ.get("GOOGLE_API_KEY"))
+        return False
 
     def _call_provider(
         self,

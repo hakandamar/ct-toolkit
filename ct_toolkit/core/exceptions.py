@@ -9,6 +9,10 @@ class CTToolkitError(Exception):
     """Base class for all CT Toolkit errors."""
 
 
+class MissingClientError(CTToolkitError):
+    """Raised when a provider client is required but not provided or found in environment."""
+
+
 # ── Kernel Errors ────────────────────────────────────────────────────────────
 
 class KernelError(CTToolkitError):
