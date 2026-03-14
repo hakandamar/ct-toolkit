@@ -271,15 +271,23 @@ class ReflectiveEndorsement:
 
         # Stage 4: Apply decision
         if decision == EndorsementDecision.APPROVED:
-            self._apply_override(
+            applied = self._apply_override(
                 commitment_id=conflict.conflicting_commitment_id,
                 new_value=commitment_new_value or rule_text,
             )
-            logger.info(
-                f"Override approved and applied | "
-                f"commitment={conflict.conflicting_commitment_id} | "
-                f"operator={record.operator_id}"
-            )
+            if applied:
+                logger.info(
+                    f"Override approved and applied | "
+                    f"commitment={conflict.conflicting_commitment_id} | "
+                    f"operator={record.operator_id}"
+                )
+            else:
+                logger.warning(
+                    f"Override APPROVED in log but NOT applied to kernel "
+                    f"(commitment not found) | "
+                    f"commitment={conflict.conflicting_commitment_id} | "
+                    f"operator={record.operator_id}"
+                )
         else:
             logger.info(
                 f"Override rejected | "
@@ -295,15 +303,25 @@ class ReflectiveEndorsement:
 
     # ── Helper Methods ──────────────────────────────────────────────────────
 
-    def _apply_override(self, commitment_id: str, new_value: Any) -> None:
-        """Applies the approved override to the kernel."""
+    def _apply_override(self, commitment_id: str, new_value: Any) -> bool:
+        """
+        Applies the approved override to the kernel.
+
+        Returns:
+            True  — kernel was updated successfully
+            False — commitment_id not found; kernel NOT updated (audit trail mismatch)
+        """
         try:
             self._kernel.update_commitment(commitment_id, new_value)
+            return True
         except KeyError:
             logger.warning(
                 f"Commitment '{commitment_id}' not found in kernel. "
-                "Override written to log but kernel not updated."
+                "Override APPROVED in log but kernel NOT updated — "
+                "audit trail and system state are now inconsistent. "
+                "Manual review required."
             )
+            return False
 
     def _write_to_log(self, record: EndorsementRecord) -> None:
         """Writes the endorsement record to the Provenance Log."""

@@ -116,7 +116,7 @@ class BehaviorClassifier:
     ]
 
     COMPLY_SIGNALS = [
-        "sure", "of course", "here", "here's",
+        "sure", "of course", "here's",
         "certainly", "happy to",
     ]
 

@@ -276,14 +276,21 @@ class TestIdentityEmbeddingLayer:
 
     def test_general_template_initializes(self):
         assert self.layer._template == "general"
-        assert self.layer._reference_vector is not None
+        # Reference vector is lazy — check template text is loaded and vector is computed on first use
+        assert self.layer._reference_text != ""
+        assert 0.0 <= self.layer.compute_divergence("test") <= 1.0
+        assert self.layer._reference_vector is not None  # now populated after first use
 
     def test_medical_template_loads(self):
         layer = IdentityEmbeddingLayer(template="medical")
+        assert layer._reference_text != ""
+        assert 0.0 <= layer.compute_divergence("patient care") <= 1.0
         assert layer._reference_vector is not None
 
     def test_unknown_template_falls_back_gracefully(self):
         layer = IdentityEmbeddingLayer(template="nonexistent_xyz")
+        assert layer._reference_text != ""
+        assert 0.0 <= layer.compute_divergence("something") <= 1.0
         assert layer._reference_vector is not None
 
     # -- Divergence score ------------------------------------------------------

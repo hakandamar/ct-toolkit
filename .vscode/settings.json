@@ -1,5 +1,4 @@
 {
-  // Python Interpreter — UV ile oluşturulan yerel venv
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
 
   // Test discovery
@@ -8,9 +7,12 @@
   "python.testing.cwd": "${workspaceFolder}",
   "python.testing.unittestEnabled": false,
 
-  // Import analysis — ct_toolkit kaynağını çöz
+  // Import analysis
   "python.analysis.extraPaths": ["${workspaceFolder}"],
+  "python.analysis.useLibraryCodeForTypes": true,
   "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.venvPath": "${workspaceFolder}",
+  "python.analysis.venv": ".venv",
 
   // Editor
   "editor.formatOnSave": true,

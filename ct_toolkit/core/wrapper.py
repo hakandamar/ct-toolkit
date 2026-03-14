@@ -325,7 +325,7 @@ class TheseusWrapper:
             else:
                 filtered.append(m)
         return self._client.messages.create(
-            model=model or "claude-sonnet-4-20250514",
+            model=model or "claude-sonnet-4-5",
             max_tokens=kwargs.pop("max_tokens", 4096),
             system=system_content,
             messages=filtered,

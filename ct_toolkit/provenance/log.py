@@ -18,6 +18,7 @@ import uuid
 import hmac
 import hashlib
 import sqlite3
+import threading
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any
@@ -82,6 +83,7 @@ class ProvenanceLog:
         self._vault_type = vault_type
         self._vault_path = Path(vault_path)
         self._hmac_key = hmac_key or self._load_or_generate_key()
+        self._lock = threading.Lock()
         self._conn = self._init_db()
         logger.info(f"ProvenanceLog initialized | vault={vault_path}")
 
@@ -98,22 +100,23 @@ class ProvenanceLog:
         Creates a new entry, signs with HMAC, and writes to database.
         Returns: entry ID
         """
-        prev_hash = self._get_last_entry_hash()
+        with self._lock:
+            prev_hash = self._get_last_entry_hash()
 
-        entry = ProvenanceEntry(
-            id=str(uuid.uuid4()),
-            timestamp=time.time(),
-            request_hash=self._hash_text(request_text),
-            response_hash=self._hash_text(response_text),
-            divergence_score=divergence_score,
-            metadata=metadata or {},
-            prev_entry_hash=prev_hash,
-        )
+            entry = ProvenanceEntry(
+                id=str(uuid.uuid4()),
+                timestamp=time.time(),
+                request_hash=self._hash_text(request_text),
+                response_hash=self._hash_text(response_text),
+                divergence_score=divergence_score,
+                metadata=metadata or {},
+                prev_entry_hash=prev_hash,
+            )
 
-        content_hash = entry.content_hash()
-        entry.hmac_signature = self._compute_hmac(content_hash)
+            content_hash = entry.content_hash()
+            entry.hmac_signature = self._compute_hmac(content_hash)
 
-        self._write_entry(entry)
+            self._write_entry(entry)
         logger.debug(f"Provenance recorded | id={entry.id} | divergence={divergence_score}")
         return entry.id
 
@@ -177,9 +180,13 @@ class ProvenanceLog:
             row = self._conn.execute(query, (template, kernel_name, model)).fetchone()
             return row[0] if row else 0
         except sqlite3.Error as e:
-            logger.warning(f"Could not count interactions (JSON query failed): {e}")
-            # Fallback to total count if json_extract is not supported
-            return self._conn.execute("SELECT COUNT(*) FROM provenance").fetchone()[0]
+            logger.warning(
+                f"Could not count interactions (JSON query failed): {e}. "
+                "Returning 0 to avoid inflating ElasticityScheduler thresholds."
+            )
+            # Return 0 (conservative) — do NOT return total count without filters
+            # as it would incorrectly inflate the interaction_count for the scheduler.
+            return 0
 
     # ── Database ──────────────────────────────────────────────────────────────
 

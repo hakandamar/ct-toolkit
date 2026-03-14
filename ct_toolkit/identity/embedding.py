@@ -49,6 +49,8 @@ class IdentityEmbeddingLayer:
         self._embedding_model = embedding_model
         self._reference_vector: np.ndarray | None = None
         self._template_keywords: list[str] = []
+        self._reference_text: str = ""          # stored for lazy computation
+        self._embedding_method: str = "uninitialized"
         self._load_template()
 
     # ── Template Loading ───────────────────────────────────────────────────────
@@ -70,11 +72,13 @@ class IdentityEmbeddingLayer:
             data = yaml.safe_load(f)
 
         self._template_keywords = data.get("identity_keywords", [])
-        reference_text = data.get("reference_text", " ".join(self._template_keywords))
-        self._reference_vector = self._compute_vector(reference_text)
+        self._reference_text = data.get("reference_text", " ".join(self._template_keywords))
+        # NOTE: Reference vector is NOT computed here to avoid an API call at init time.
+        # It will be computed lazily on the first call to compute_divergence().
         logger.info(
             f"Identity template loaded: '{self._template}' | "
-            f"keywords={len(self._template_keywords)}"
+            f"keywords={len(self._template_keywords)} | "
+            f"reference vector will be computed on first use"
         )
 
     # ── Divergence Calculation ──────────────────────────────────────────────────────
@@ -87,9 +91,11 @@ class IdentityEmbeddingLayer:
             0.0 → identical to reference (identity preserved)
             1.0 → completely different from reference (maximum divergence)
         """
+        # Lazy-initialise reference vector on first call so that no API
+        # request is made at wrapper init time.
         if self._reference_vector is None:
-            logger.warning("No reference vector, divergence cannot be calculated.")
-            return 0.0
+            logger.info("Computing reference vector (first use).")
+            self._reference_vector = self._compute_vector(self._reference_text)
 
         candidate_vector = self._compute_vector(text)
         similarity = self._cosine_similarity(self._reference_vector, candidate_vector)
@@ -102,6 +108,7 @@ class IdentityEmbeddingLayer:
         Updates the static reference vector.
         WARNING: This should only be called after Reflective Endorsement approval.
         """
+        self._reference_text = new_text
         self._reference_vector = self._compute_vector(new_text)
         logger.info("Reference vector updated.")
 
