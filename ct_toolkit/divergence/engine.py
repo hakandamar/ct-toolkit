@@ -82,15 +82,21 @@ class DivergenceEngine:
     L1 → L2 → L3 staged divergence engine.
 
     Usage:
+        # Example 1: Use a specific model as judge (Recommended)
+        engine = DivergenceEngine(
+            identity_layer=layer,
+            judge_client="openai:gpt-4o",
+            kernel=kernel,
+            template="general",
+        )
+        
+        # Example 2: Use existing client instances
         engine = DivergenceEngine(
             identity_layer=layer,
             judge_client=openai_client,
             provider="openai",
             kernel=kernel,
             template="general",
-            l1_threshold=0.15,
-            l2_threshold=0.30,
-            l3_threshold=0.50,
         )
         result = engine.analyze(request_text, response_text)
     """

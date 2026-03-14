@@ -79,34 +79,56 @@ class TheseusWrapper:
     """
     Identity-continuity proxy wrapping the LLM API client.
 
-    Supported providers: openai, anthropic, ollama
+    Supported providers: openai (default), anthropic, ollama, google, etc.
+    (Any provider supported by any-llm-sdk)
 
     Usage:
-        import openai
         from ct_toolkit import TheseusWrapper
-
+        
+        # 1. Using a specific provider (Simplest)
+        client = TheseusWrapper(provider="openai")
+        
+        # 2. Wrapping an existing client (Backward compatible)
+        import openai
         client = TheseusWrapper(openai.OpenAI())
-        response = client.chat("Hello, how can I help you?")
+
+        response = client.chat("Hello, how can I help you?", model="gpt-4o-mini")
         print(response.content)
-        print(response.divergence_score)
+        print(f"Divergence: {response.divergence_score}")
     """
 
     def __init__(
         self,
-        client: Any,
+        client: Any = None,
         config: WrapperConfig | None = None,
         *,
+        provider: str | None = None,
         kernel_path: str | Path | None = None,
         template: str = "general",
         kernel_name: str = "default",
     ) -> None:
-        self._client = client
+        """
+        Initializes TheseusWrapper.
+        
+        Args:
+            client:  An existing API client instance (OpenAI, Anthropic, etc.).
+                    Optional if 'provider' is specified.
+            config:  Optional WrapperConfig instance.
+            provider: Provider name (e.g. "openai", "anthropic", "ollama", "google", "cohere").
+                      If provided, 'any-llm' will be used to initialize the client internally.
+        """
         self._config = config or WrapperConfig(
             kernel_path=kernel_path,
             template=template,
             kernel_name=kernel_name,
         )
-        self._provider = self._detect_provider(client)
+        
+        if client is None and provider is None:
+            # Default to openai if nothing specified
+            provider = "openai"
+            
+        self._client = client
+        self._provider = provider or self._detect_provider(client)
         self._kernel = self._load_kernel()
         self._compatibility: CompatibilityResult = CompatibilityLayer.check(
             template=self._config.template,
@@ -121,13 +143,30 @@ class TheseusWrapper:
     # ── Factory / Init ─────────────────────────────────────────────────────────
 
     def _detect_provider(self, client: Any) -> str:
-        # Use any_llm for provider detection if possible
+        """
+        Detects the provider from the client instance or string.
+        Returns 'unknown' if detection fails.
+        """
+        if client is None:
+            return "unknown"
+            
+        if isinstance(client, str):
+            # client passed as a string (e.g. "openai")
+            return client.lower()
+
         try:
-            # any_llm.AnyLLM subclasses often have provider-specific logic
-            module = type(client).__module__
+            # Check for any_llm wrapper
+            if hasattr(client, "provider") and isinstance(client.provider, str):
+                return client.provider
+
+            # Check module name
+            module = type(client).__module__.lower()
             if "openai" in module: return "openai"
             if "anthropic" in module: return "anthropic"
             if "ollama" in module: return "ollama"
+            if "google" in module: return "google"
+            if "cohere" in module: return "cohere"
+            if "mistral" in module: return "mistral"
         except:
             pass
         return "unknown"

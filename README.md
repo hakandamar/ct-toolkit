@@ -36,73 +36,95 @@ pip install ct-toolkit
 ```
 
 ```python
-import openai
 from ct_toolkit import TheseusWrapper
 
 # Single line change — the rest is automatic
-client = TheseusWrapper(openai.OpenAI())
+# Initialize by just passing the provider name
+client = TheseusWrapper(provider="openai")
 
-response = client.chat("Why is AI safety important?")
+# Standard chat interface
+response = client.chat("Why is AI safety important?", model="gpt-4o-mini")
 
 print(response.content)
 print(f"Divergence score : {response.divergence_score:.4f}")
 print(f"Tier             : {response.divergence_tier}")
-print(f"Provenance ID    : {response.provenance_id}")
 ```
 
 ---
 
 ## Integration Models
 
-### 1. Wrapper — For API-Only Users
+CT Toolkit uses `any-llm-sdk` internally, allowing it to work with any major provider without requiring direct SDK imports.
+
+### 1. Minimal Initialization (Highly Recommended)
+
+You don't need to import OpenAI or Anthropic SDKs. `ct-toolkit` handles the abstraction via `any-llm-sdk`.
 
 ```python
-from ct_toolkit import TheseusWrapper, WrapperConfig
-import openai
-
-client = TheseusWrapper(
-    openai.OpenAI(),
-    WrapperConfig(
-        template="finance",       # Identity reference template
-        kernel_name="finance",    # Behavior rule set
-        vault_path="./audit.db",  # HMAC log location
-    )
-)
-```
-
-### 2. Enterprise — For Critical Systems
-
-```python
-from ct_toolkit import TheseusWrapper, WrapperConfig
-import openai
-
-client = TheseusWrapper(
-    openai.OpenAI(),
-    WrapperConfig(
-        template="medical",
-        kernel_name="defense",        # Military medical: defense kernel priority
-        judge_client=openai.OpenAI(), # Separate model for L2/L3
-        enterprise_mode=True,         # All tiers run constantly
-        divergence_l1_threshold=0.10, # Stricter thresholds
-        divergence_l2_threshold=0.20,
-        divergence_l3_threshold=0.40,
-    )
-)
-```
-
-### 3. Anthropic and Ollama
-
-```python
-import anthropic
 from ct_toolkit import TheseusWrapper
 
-# Anthropic
-client = TheseusWrapper(anthropic.Anthropic())
-
-# Ollama (local model)
-import ollama
-client = TheseusWrapper(ollama.Client())
+# Works for any supported provider
+client = TheseusWrapper(provider="anthropic")
+response = client.chat("Hello!", model="claude-3-5-sonnet-latest")
 ```
+
+### 2. Advanced Configuration
+
+```python
+from ct_toolkit import TheseusWrapper, WrapperConfig
+
+client = TheseusWrapper(
+    provider="openai",
+    config=WrapperConfig(
+        template="finance",       # Domain-specific identity template
+        kernel_name="finance",    # Behavior rule set
+        vault_path="./audit.db",  # HMAC provenance log location
+    )
+)
+```
+
+### 3. Cross-Provider Validation (L2/L3 Judge)
+
+You can use one provider for the main chat and a different, more powerful model (e.g., GPT-4o) as a judge for divergence detection.
+
+```python
+from ct_toolkit import TheseusWrapper, WrapperConfig
+
+client = TheseusWrapper(
+    provider="ollama",
+    config=WrapperConfig(
+        judge_client="openai:gpt-4o",  # OpenAI acts as the 'Judge' for the local model
+        enterprise_mode=True,          # Run all security tiers constantly
+    )
+)
+```
+
+### 4. Direct Client Wrapping (Legacy Support)
+
+If you already have a client instance, you can still wrap it directly:
+
+```python
+import openai
+from ct_toolkit import TheseusWrapper
+
+client = TheseusWrapper(openai.OpenAI())
+```
+
+---
+
+## Supported Providers & Models
+
+CT Toolkit supports any provider integrated with `any-llm-sdk`.
+
+| Provider      | Model Example              | Notes                        |
+| :------------ | :------------------------- | :--------------------------- |
+| **OpenAI**    | `gpt-4o`, `gpt-4o-mini`    | Full compatibility           |
+| **Anthropic** | `claude-3-5-sonnet-latest` | Full compatibility           |
+| **Google**    | `gemini-1.5-pro`           | Supports system instructions |
+| **Ollama**    | `llama3`, `mistral`        | Local execution support      |
+| **Cohere**    | `command-r-plus`           | Enterprise grade             |
+| **Mistral**   | `mistral-large-latest`     | Native support               |
+| **Groq**      | `llama-3.1-70b-versatile`  | High-speed inference         |
 
 ---
 

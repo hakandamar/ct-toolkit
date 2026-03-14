@@ -40,6 +40,17 @@ class TestTheseusWrapper:
         client.__class__.__module__ = "some_unknown_sdk"
         assert TheseusWrapper(client)._provider == "unknown"
 
+    def test_initialization_with_provider_string(self):
+        """Should support initializing with just a provider string."""
+        wrapper = TheseusWrapper(provider="anthropic")
+        assert wrapper._provider == "anthropic"
+        assert wrapper._client is None
+
+    def test_default_initialization_to_openai(self):
+        """Should default to openai if no client or provider is given."""
+        wrapper = TheseusWrapper()
+        assert wrapper._provider == "openai"
+
     def test_wrapper_has_kernel(self):
         assert self.wrapper.kernel is not None
         assert self.wrapper.kernel.name == "default"
