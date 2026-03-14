@@ -6,8 +6,13 @@ are properly triggered and logged using a mocked OpenAI client.
 """
 
 import pytest
+import os
 from unittest.mock import MagicMock, patch
 from pathlib import Path
+
+# Set dummy API keys for any_llm validation bypass
+os.environ["OPENAI_API_KEY"] = "dummy"
+os.environ["ANTHROPIC_API_KEY"] = "dummy"
 
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
 from ct_toolkit.core.compatibility import CompatibilityLevel
@@ -15,43 +20,26 @@ from ct_toolkit.divergence.engine import DivergenceTier
 from ct_toolkit.divergence.l2_judge import JudgeVerdict
 
 
-# ── Fixtures ────────────────────────────────────────────────────────────────
+@pytest.fixture
+def mock_any_llm():
+    """Mocks any_llm.completion."""
+    with patch("any_llm.completion") as mock:
+        # Default mock response
+        mock_response = MagicMock()
+        # Mocking both OpenAI and general attribute styles
+        mock_response.choices = [MagicMock()]
+        mock_response.choices[0].message.content = "I am a helpful assistant."
+        mock_response.model = "gpt-4o-mini-mock"
+        mock.return_value = mock_response
+        yield mock
+
 
 @pytest.fixture
-def mock_openai_client():
-    """Returns a mocked OpenAI client."""
+def wrapper(mock_any_llm, tmp_path):
+    """Returns a configured TheseusWrapper with mocked generic client."""
     client = MagicMock()
-    client.__class__.__module__ = "openai"
+    client.__class__.__module__ = "openai" # Keep for provider detection in wrapper
     
-    # Setup default mock response
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock()]
-    mock_response.choices[0].message.content = "I am a helpful assistant."
-    mock_response.model = "gpt-4o-mini-mock"
-    client.chat.completions.create.return_value = mock_response
-    
-    return client
-
-
-@pytest.fixture
-def mock_judge_client():
-    """Returns a mocked OpenAI client specifically for the L2/L3 judge."""
-    client = MagicMock()
-    client.__class__.__module__ = "openai"
-    
-    # L2 Judge expected JSON output
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock()]
-    mock_response.choices[0].message.content = '{"verdict": "aligned", "confidence": 0.9, "reason": "No conflict detected."}'
-    mock_response.model = "gpt-4o-mini-mock"
-    client.chat.completions.create.return_value = mock_response
-    
-    return client
-
-
-@pytest.fixture
-def wrapper(mock_openai_client, mock_judge_client, tmp_path):
-    """Returns a configured TheseusWrapper with mocked clients."""
     config = WrapperConfig(
         template="general",
         kernel_name="default",
@@ -59,10 +47,10 @@ def wrapper(mock_openai_client, mock_judge_client, tmp_path):
         divergence_l1_threshold=0.15,
         divergence_l2_threshold=0.30,
         divergence_l3_threshold=0.50,
-        judge_client=mock_judge_client,
+        judge_client=MagicMock(), # Simply needs to be not None for L2 path
         log_requests=True,
     )
-    return TheseusWrapper(mock_openai_client, config)
+    return TheseusWrapper(client, config)
 
 
 # ── Integration Tests ───────────────────────────────────────────────────────
@@ -76,12 +64,12 @@ class TestWrapperIntegration:
         assert wrapper.compatibility.level == CompatibilityLevel.NATIVE
         assert wrapper.kernel.name == "default"
 
-    def test_basic_chat_flow(self, wrapper, mock_openai_client):
+    def test_basic_chat_flow(self, wrapper, mock_any_llm):
         """Test a normal chat completion flow."""
         response = wrapper.chat("Hello, what can you do?")
         
-        # Verify the wrapper called the provider correctly
-        mock_openai_client.chat.completions.create.assert_called_once()
+        # Verify the wrapper called any_llm correctly
+        mock_any_llm.assert_called_once()
         
         # Verify response structure
         assert response.content == "I am a helpful assistant."
@@ -94,7 +82,7 @@ class TestWrapperIntegration:
         assert 0.0 <= response.divergence_score <= 1.0
 
     @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
-    def test_l1_warning_tier_triggered(self, mock_divergence, wrapper, mock_openai_client):
+    def test_l1_warning_tier_triggered(self, mock_divergence, wrapper, mock_any_llm):
         """Test if L1 warning is correctly assigned when score is between L1 and L2 thresholds."""
         # Mock score between 0.15 and 0.30
         mock_divergence.return_value = 0.25
@@ -105,35 +93,46 @@ class TestWrapperIntegration:
 
     @patch("ct_toolkit.divergence.l3_icm.ICMRunner.run")
     @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
-    def test_l2_judge_triggered_and_aligned(self, mock_divergence, mock_icm_run, wrapper, mock_judge_client):
+    def test_l2_judge_triggered_and_aligned(self, mock_divergence, mock_icm_run, wrapper, mock_any_llm):
         """Test if L2 judge is triggered when score is between L2 and L3 thresholds."""
         # Mock score between 0.30 and 0.50
         mock_divergence.return_value = 0.40
         
-        # The judge client is loaded with an ALIGNED JSON response from the fixture
-        response = wrapper.chat("Test question that triggers L2")
+        # Mock LLMJudge.evaluate to return ALIGNED
+        from ct_toolkit.divergence.l2_judge import JudgeResult, JudgeVerdict
+        mock_judge_result = JudgeResult(
+            verdict=JudgeVerdict.ALIGNED,
+            confidence=0.9,
+            reason="No conflict."
+        )
         
-        assert response.divergence_tier == "l2_judge"
-        assert response.divergence_score == 0.40
-        
-        # The judge should have been called
-        mock_judge_client.chat.completions.create.assert_called_once()
+        with patch("ct_toolkit.divergence.l2_judge.LLMJudge.evaluate") as mock_eval:
+            mock_eval.return_value = mock_judge_result
+            response = wrapper.chat("Test question that triggers L2")
+            
+            assert response.divergence_tier == "l2_judge"
+            assert response.divergence_score == 0.40
+            
+            # The judge should have been called
+            mock_eval.assert_called_once()
         
         # ICM should NOT be called since the judge returned ALIGNED
         mock_icm_run.assert_not_called()
 
     @patch("ct_toolkit.divergence.l3_icm.ICMRunner.run")
     @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
-    def test_l3_icm_escalation_from_l2_misaligned(self, mock_divergence, mock_icm_run, wrapper, mock_judge_client):
+    def test_l3_icm_escalation_from_l2_misaligned(self, mock_divergence, mock_icm_run, wrapper, mock_any_llm):
         """Test if ICM is triggered if the L2 judge finds the response MISALIGNED."""
         # Trigger L2 (0.30 - 0.50)
         mock_divergence.return_value = 0.40
         
-        # Modify the mock judge to return MISALIGNED
-        mock_judge_response = MagicMock()
-        mock_judge_response.choices = [MagicMock()]
-        mock_judge_response.choices[0].message.content = '{"verdict": "misaligned", "confidence": 0.95, "reason": "Conflict detected."}'
-        mock_judge_client.chat.completions.create.return_value = mock_judge_response
+        # Mock LLMJudge.evaluate to return MISALIGNED
+        from ct_toolkit.divergence.l2_judge import JudgeResult, JudgeVerdict
+        mock_judge_result = JudgeResult(
+            verdict=JudgeVerdict.MISALIGNED,
+            confidence=0.95,
+            reason="Conflict detected."
+        )
         
         # Mock ICM report return value
         mock_report = MagicMock()
@@ -142,18 +141,20 @@ class TestWrapperIntegration:
         mock_report.risk_level = "LOW"
         mock_icm_run.return_value = mock_report
         
-        response = wrapper.chat("Test question that fails L2")
-        
-        # Despite L2 threshold, it escalates to L3 because Judge was MISALIGNED
-        assert response.divergence_tier == "l3_icm"
-        mock_judge_client.chat.completions.create.assert_called_once()
+        with patch("ct_toolkit.divergence.l2_judge.LLMJudge.evaluate") as mock_eval:
+            mock_eval.return_value = mock_judge_result
+            response = wrapper.chat("Test question that fails L2")
+            
+            # Despite L2 threshold, it escalates to L3 because Judge was MISALIGNED
+            assert response.divergence_tier == "l3_icm"
+            mock_eval.assert_called_once()
         
         # ICM SHOULD be called
         mock_icm_run.assert_called_once()
 
     @patch("ct_toolkit.divergence.l3_icm.ICMRunner.run")
     @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
-    def test_l3_icm_direct_trigger(self, mock_divergence, mock_icm_run, wrapper, mock_openai_client):
+    def test_l3_icm_direct_trigger(self, mock_divergence, mock_icm_run, wrapper, mock_any_llm):
         """Test if ICM is directly triggered when score is above L3 threshold (0.50+)."""
         # Mock score above 0.50
         mock_divergence.return_value = 0.60
@@ -167,13 +168,14 @@ class TestWrapperIntegration:
         
         response = wrapper.chat("Test question that directly triggers L3")
         
+        # Note: Tier "critical" is returned by engine for direct L3
         assert response.divergence_tier == "critical"
         assert response.divergence_score == 0.60
         
         # ICM SHOULD be called
         mock_icm_run.assert_called_once()
 
-    def test_logs_are_persisted(self, wrapper, mock_openai_client):
+    def test_logs_are_persisted(self, wrapper, mock_any_llm):
         """Test that the chat interactions are written to the provenance log."""
         response = wrapper.chat("Log me")
         

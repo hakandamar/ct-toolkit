@@ -121,15 +121,19 @@ class IdentityEmbeddingLayer:
         """
         if self._embedding_client is not None:
             try:
-                response = self._embedding_client.embeddings.create(
-                    input=[text],
-                    model=self._embedding_model
-                )
-                embedding = response.data[0].embedding
-                return np.array(embedding, dtype=np.float32)
+                # Robust attribute check for OpenAI-compatible clients
+                embeddings_api = getattr(self._embedding_client, "embeddings", None)
+                if embeddings_api:
+                    response = embeddings_api.create(
+                        input=[text],
+                        model=self._embedding_model
+                    )
+                    embedding = response.data[0].embedding
+                    return np.array(embedding, dtype=np.float32)
+                else:
+                    logger.debug("Embedding client does not support .embeddings API. Falling back.")
             except Exception as e:
-                logger.error(f"Embedding API failed, falling back to local method: {e}")
-                # Fall through to local method
+                logger.error(f"Embedding API failed: {e}. Falling back to local method.")
         if not self._template_keywords:
             # Fallback: character n-gram hash vector
             return self._ngram_hash_vector(text)

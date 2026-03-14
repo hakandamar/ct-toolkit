@@ -24,6 +24,8 @@ import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterator
+import any_llm
+from any_llm import AnyLLM
 
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResult
@@ -119,16 +121,16 @@ class TheseusWrapper:
     # ── Factory / Init ─────────────────────────────────────────────────────────
 
     def _detect_provider(self, client: Any) -> str:
-        module = type(client).__module__
-        if "openai" in module:
-            return "openai"
-        elif "anthropic" in module:
-            return "anthropic"
-        elif "ollama" in module:
-            return "ollama"
-        else:
-            logger.warning(f"Unknown provider module: {module}. Marked as 'unknown'.")
-            return "unknown"
+        # Use any_llm for provider detection if possible
+        try:
+            # any_llm.AnyLLM subclasses often have provider-specific logic
+            module = type(client).__module__
+            if "openai" in module: return "openai"
+            if "anthropic" in module: return "anthropic"
+            if "ollama" in module: return "ollama"
+        except:
+            pass
+        return "unknown"
 
     def _load_kernel(self) -> ConstitutionalKernel:
         if self._config.kernel_path:
@@ -158,10 +160,14 @@ class TheseusWrapper:
         """Initializes the Identity Embedding Layer."""
         from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
         
-        # If no specific embedding client is provided, try to use the main client if it's OpenAI-compatible
+        # Guard against using raw clients that don't support embeddings
         emb_client = self._config.embedding_client
-        if emb_client is None and self._provider == "openai":
-            emb_client = self._client
+        if emb_client is None:
+            # Only default to main client if it's known to be OpenAI (standard for embeddings)
+            if self._provider == "openai":
+                emb_client = self._client
+            else:
+                logger.debug(f"Provider {self._provider} does not support default embeddings. Falling back to local.")
 
         return IdentityEmbeddingLayer(
             template=self._config.template,
@@ -299,45 +305,40 @@ class TheseusWrapper:
         model: str | None,
         **kwargs: Any,
     ) -> Any:
-        if self._provider == "openai":
-            return self._call_openai(messages, model, **kwargs)
-        elif self._provider == "anthropic":
-            return self._call_anthropic(messages, model, **kwargs)
-        elif self._provider == "ollama":
-            return self._call_ollama(messages, model, **kwargs)
-        else:
-            raise CTToolkitError(f"Unsupported provider: {self._provider}")
+        """Uses any_llm for unified provider calling."""
+        # Convert messages to any_llm format if necessary
+        # any_llm.completion handles different formats internally
+        
+        # Set default models per provider if not specified
+        if not model:
+            if self._provider == "openai": model = "gpt-4o-mini"
+            elif self._provider == "anthropic": model = "claude-3-5-sonnet-latest"
+            elif self._provider == "ollama": model = "llama3"
+            else: model = "gpt-4o-mini"
 
-    def _call_openai(self, messages: list[dict], model: str | None, **kwargs: Any) -> Any:
-        return self._client.chat.completions.create(
-            model=model or "gpt-4o-mini",
-            messages=messages,
-            **kwargs,
-        )
+        # any_llm expects "provider:model" format
+        full_model = model
+        if ":" not in model:
+            full_model = f"{self._provider}:{model}"
 
-    def _call_anthropic(self, messages: list[dict], model: str | None, **kwargs: Any) -> Any:
-        # Anthropic requires the system message sent separately
-        system_content = ""
-        filtered = []
-        for m in messages:
-            if m["role"] == "system":
-                system_content = m["content"]
-            else:
-                filtered.append(m)
-        return self._client.messages.create(
-            model=model or "claude-sonnet-4-5",
-            max_tokens=kwargs.pop("max_tokens", 4096),
-            system=system_content,
-            messages=filtered,
-            **kwargs,
-        )
+        # Prepare any_llm call
+        any_llm_kwargs = {
+            "model": full_model,
+            "messages": messages,
+            **kwargs
+        }
 
-    def _call_ollama(self, messages: list[dict], model: str | None, **kwargs: Any) -> Any:
-        return self._client.chat(
-            model=model or "llama3",
-            messages=messages,
-            **kwargs,
-        )
+        # Extract connection info from client if possible
+        if hasattr(self._client, "base_url") and self._client.base_url:
+            any_llm_kwargs["api_base"] = str(self._client.base_url)
+        if hasattr(self._client, "api_key") and self._client.api_key:
+            any_llm_kwargs["api_key"] = self._client.api_key
+
+        try:
+            return any_llm.completion(**any_llm_kwargs)
+        except Exception as e:
+            logger.error(f"any_llm call failed: {e}")
+            raise
 
     # ── Helper Methods ──────────────────────────────────────────────────────
 

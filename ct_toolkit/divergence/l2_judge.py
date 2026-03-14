@@ -17,6 +17,8 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
+from pydantic import BaseModel, Field
+import instructor
 
 from ct_toolkit.utils.logger import get_logger
 
@@ -29,12 +31,18 @@ class JudgeVerdict(str, Enum):
     UNCERTAIN  = "uncertain"    # Decision could not be made
 
 
+class JudgeResponse(BaseModel):
+    """Pydantic model for instructor-validated structure."""
+    verdict: JudgeVerdict = Field(..., description="aligned | misaligned | uncertain")
+    confidence: float = Field(..., ge=0.0, le=1.0)
+    reason: str = Field(..., description="Short explanation of the verdict")
+
 @dataclass
 class JudgeResult:
     verdict: JudgeVerdict
     confidence: float           # 0.0 - 1.0
     reason: str
-    raw_response: str = ""
+    raw_response: Any = None
 
     @property
     def is_problematic(self) -> bool:
@@ -95,16 +103,23 @@ class LLMJudge:
         provider: str = "openai",
         model: str | None = None,
     ) -> None:
-        self._client = client
         self._provider = provider
-        # Deliberately select a smaller/faster model for the Judge model
         self._model = model or self._default_model(provider)
+        
+        # Patch client with instructor based on provider
+        if provider == "openai":
+            self._instructor_client = instructor.from_openai(client)
+        elif provider == "anthropic":
+            self._instructor_client = instructor.from_anthropic(client)
+        else:
+            # Fallback to standard patch for other providers (e.g. Ollama)
+            self._instructor_client = instructor.patch(client)
 
     @staticmethod
     def _default_model(provider: str) -> str:
         defaults = {
             "openai":    "gpt-4o-mini",
-            "anthropic": "claude-haiku-4-5-20251001",
+            "anthropic": "claude-3-5-sonnet-latest",
             "ollama":    "llama3",
         }
         return defaults.get(provider, "gpt-4o-mini")
@@ -116,91 +131,48 @@ class LLMJudge:
         kernel: Any,
     ) -> JudgeResult:
         """
-        Evaluates the response based on the kernel rules.
-
-        Returns: JudgeResult — verdict, confidence, reason
+        Evaluates the response using instructor for validated JSON.
         """
         kernel_rules = self._format_kernel_rules(kernel)
         system_prompt = _JUDGE_SYSTEM_PROMPT.format(kernel_rules=kernel_rules)
         user_prompt = _JUDGE_USER_PROMPT.format(
-            response_text=response_text[:2000],  # Truncate long responses
+            response_text=response_text[:2000],
             request_text=request_text[:500],
         )
 
         try:
-            raw = self._call_provider(system_prompt, user_prompt)
-            result = self._parse_response(raw)
+            # Call using instructor for structured data
+            data: JudgeResponse = self._instructor_client.chat.completions.create(
+                model=self._model,
+                response_model=JudgeResponse,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                max_retries=2
+            )
+            
+            result = JudgeResult(
+                verdict=data.verdict,
+                confidence=data.confidence,
+                reason=data.reason,
+                raw_response=None
+            )
+            
             logger.info(
                 f"L2 Judge result: verdict={result.verdict} | "
                 f"confidence={result.confidence:.2f}"
             )
             return result
         except Exception as e:
-            logger.warning(f"L2 Judge call failed: {e}. Returning UNCERTAIN.")
+            logger.warning(f"L2 Judge structured call failed: {e}. Falling back.")
             return JudgeResult(
                 verdict=JudgeVerdict.UNCERTAIN,
                 confidence=0.0,
                 reason=f"Judge call failed: {e}",
             )
 
-    def _call_provider(self, system: str, user: str) -> str:
-        if self._provider == "openai":
-            resp = self._client.chat.completions.create(
-                model=self._model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-                temperature=0.0,   # Deterministic decision
-                max_tokens=256,
-            )
-            return resp.choices[0].message.content or ""
-
-        elif self._provider == "anthropic":
-            resp = self._client.messages.create(
-                model=self._model,
-                max_tokens=256,
-                system=system,
-                messages=[{"role": "user", "content": user}],
-            )
-            return resp.content[0].text if resp.content else ""
-
-        elif self._provider == "ollama":
-            resp = self._client.chat(
-                model=self._model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-            )
-            return resp.message.content or ""
-
-        raise ValueError(f"Unsupported provider: {self._provider}")
-
-    def _parse_response(self, raw: str) -> JudgeResult:
-        """Parses the JSON response. If failed, returns UNCERTAIN."""
-        try:
-            # Sometimes the model returns inside ```json ... ```
-            clean = raw.strip()
-            if clean.startswith("```"):
-                clean = clean.split("```")[1]
-                if clean.startswith("json"):
-                    clean = clean[4:]
-            data = json.loads(clean.strip())
-            return JudgeResult(
-                verdict=JudgeVerdict(data.get("verdict", "uncertain")),
-                confidence=float(data.get("confidence", 0.5)),
-                reason=str(data.get("reason", "")),
-                raw_response=raw,
-            )
-        except (json.JSONDecodeError, ValueError, KeyError) as e:
-            logger.warning(f"Judge response could not be parsed: {e} | raw={raw[:100]}")
-            return JudgeResult(
-                verdict=JudgeVerdict.UNCERTAIN,
-                confidence=0.0,
-                reason=f"Parse error: {e}",
-                raw_response=raw,
-            )
+    # _call_provider and _parse_response are removed as instructor handles them.
 
     @staticmethod
     def _format_kernel_rules(kernel: Any) -> str:
