@@ -4,28 +4,27 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![arXiv](https://img.shields.io/badge/arXiv-preprint-red.svg)](https://arxiv.org/)
+[![PyPI version](https://badge.fury.io/py/ct-toolkit.svg)](https://badge.fury.io/py/ct-toolkit)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue.svg)](https://hakandamar.github.io/ct-toolkit/)
 
-CT Toolkit is an open-source security layer designed to preserve the **identity continuity** of AI agents over time. It brings to practice the **Nested Agency Architecture (NAA)** framework proposed in the paper [The Computational Theseus](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d).
+CT Toolkit is an open-source security layer designed to preserve the **identity continuity** of AI agents over time. It implements the **Nested Agency Architecture (NAA)** framework to prevent **Sequential Self-Compression (SSC)** in multi-agent hierarchies.
+
+---
+
+## 📖 Official Documentation
+For full API reference, architecture details, and integration guides, visit our documentation site:
+👉 [**https://hakandamar.github.io/ct-toolkit/**](https://hakandamar.github.io/ct-toolkit/)
 
 ---
 
 ## Why CT Toolkit?
 
-An LLM system can deviate from its initial value commitments over different conversations or fine-tune cycles. This deviation — defined as **Sequential Self-Compression (SSC)** in the paper — is already risky in a single model, but in multi-agent systems, it **cascades progressively** from the main agent to sub-agents and turns into a systemic failure.
+In complex agentic workflows, LLMs tend to "drift" from their original instructions. CT Toolkit provides the mathematical and cryptographic guardrails to ensure your agents remain aligned with their core constitution, even across deep hierarchies.
 
-CT Toolkit prevents this issue in three layers:
-
-| Layer                     | Mechanism                          | What it Provides                 |
-| ------------------------- | ---------------------------------- | -------------------------------- |
-| **Constitutional Kernel** | Axiomatic + plastic rule hierarchy | Immutable identity anchor        |
-| **Divergence Engine**     | L1 ECS → L2 LLM-judge → L3 ICM     | Divergence detection and grading |
-| **Provenance Log**        | HMAC hash chain                    | Auditable identity history       |
-
-> 💡 **"Why not just use Llama-Guard or a rule engine?"** <br>
-> Guardrails are stateless and block single prompts. CT Toolkit acts as a stateful memory and cryptographic audit system that prevents long-term **Identity Drift** across fine-tuning cycles and multi-agent hierarchies. Read our full explanation in [**Why CT Toolkit?**](docs/WHY.md)
-
-![Basic System Architecture](./docs/tg_basic_system_architecture-v1.jpg)
+- **Constitutional Kernels**: Axiomatic identity anchors.
+- **Divergence Engine**: Multi-tiered drift analysis (L1/L2/L3).
+- **Hierarchical Propagation**: Mother-to-child constraint inheritance.
+- **Provenance Log**: Immutable HMAC-signed interaction history.
 
 ---
 
@@ -38,293 +37,34 @@ pip install ct-toolkit
 ```python
 from ct_toolkit import TheseusWrapper
 
-# Single line change — the rest is automatic
+# One-line injection for any LLM provider
 client = TheseusWrapper(provider="openai")
 
-# Standard chat interface
-response = client.chat("Why is AI safety important?", model="gpt-4o-mini")
+# Guardrails and drift analysis applied automatically
+response = client.chat("What are your core security axioms?")
 
 print(response.content)
-print(f"Divergence score : {response.divergence_score:.4f}")
-print(f"Tier             : {response.divergence_tier}")
+print(f"Divergence Score: {response.divergence_score}")
 ```
 
-### Framework Middleware
+### Framework Support
+Seamlessly integrate with your favorite frameworks:
 
-CT Toolkit provides first-class integrations for the most popular agentic frameworks.
-
-#### LangChain
 ```python
+# LangChain
 from ct_toolkit.middleware.langchain import TheseusChatModel
+llm = TheseusChatModel(provider="openai")
 
-llm = TheseusChatModel(provider="openai", model="gpt-4o")
-response = llm.invoke("What is identity continuity?")
-```
-
-#### CrewAI
-```python
-from ct_toolkit.middleware.crewai import TheseusCrewMiddleware
-from crewai import Crew
-
-crew = Crew(agents=[...], tasks=[...])
-# Automatically wraps all agent LLMs with parent-kernel guardrails
+# CrewAI
 TheseusCrewMiddleware.apply_to_crew(crew, manager_wrapper)
 ```
-
-#### AutoGen
-```python
-from ct_toolkit.middleware.autogen import TheseusAutoGenMiddleware
-from autogen import ConversableAgent
-
-agent = ConversableAgent("assistant", llm_config={...})
-# Injects incoming validation and outgoing divergence analysis
-TheseusAutoGenMiddleware.apply_to_agent(agent, wrapper)
-```
-
----
-
-## Integration Models
-
-CT Toolkit uses `any-llm-sdk` internally, allowing it to work with any major provider without requiring direct SDK imports.
-
-### 1. Minimal Initialization (Highly Recommended)
-
-You don't need to import OpenAI or Anthropic SDKs. `ct-toolkit` handles the abstraction via `any-llm-sdk`.
-
-```python
-from ct_toolkit import TheseusWrapper
-
-# Works for any supported provider
-client = TheseusWrapper(provider="anthropic")
-response = client.chat("Hello!", model="claude-3-5-sonnet-latest")
-```
-
-### 2. Advanced Configuration
-
-```python
-from ct_toolkit import TheseusWrapper, WrapperConfig
-
-client = TheseusWrapper(
-    provider="openai",
-    config=WrapperConfig(
-        template="finance",       # Domain-specific identity template
-        kernel_name="finance",    # Behavior rule set
-        vault_path="./audit.db",  # HMAC provenance log location
-    )
-)
-```
-
-### 3. Cross-Provider Validation (L2/L3 Judge)
-
-You can use one provider for the main chat and a different, more powerful model (e.g., GPT-4o) as a judge for divergence detection.
-
-```python
-from ct_toolkit import TheseusWrapper, WrapperConfig
-
-client = TheseusWrapper(
-    provider="ollama",
-    config=WrapperConfig(
-        judge_client="openai:gpt-4o",  # OpenAI acts as the 'Judge' for the local model
-        enterprise_mode=True,          # Run all security tiers constantly
-    )
-)
-```
-
-### 4. Direct Client Wrapping (Legacy Support)
-
-If you already have a client instance, you can still wrap it directly:
-
-```python
-import openai
-from ct_toolkit import TheseusWrapper
-
-client = TheseusWrapper(openai.OpenAI())
-```
-
----
-
-## Supported Providers & Models
-
-CT Toolkit supports any provider integrated with `any-llm-sdk`.
-
-| Provider      | Model Example              | Notes                        |
-| :------------ | :------------------------- | :--------------------------- |
-| **OpenAI**    | `gpt-4o`, `gpt-4o-mini`    | Full compatibility           |
-| **Anthropic** | `claude-3-5-sonnet-latest` | Full compatibility           |
-| **Google**    | `gemini-1.5-pro`           | Supports system instructions |
-| **Ollama**    | `llama3`, `mistral`        | Local execution support      |
-| **Cohere**    | `command-r-plus`           | Enterprise grade             |
-| **Mistral**   | `mistral-large-latest`     | Native support               |
-| **Groq**      | `llama-3.1-70b-versatile`  | High-speed inference         |
-
----
-
-## Constitutional Kernel
-
-A two-layer rule structure defining the identity of each system:
-
-```yaml
-# ct_toolkit/kernels/default.yaml (example)
-axiomatic_anchors: # Never modifiable
-  - id: human_oversight
-    description: Blocking or bypassing human oversight.
-
-plastic_commitments: # Modifiable with Reflective Endorsement
-  - id: response_tone
-    default_value: professional
-```
-
-### Rule Validation
-
-```python
-# Axiomatic violation → hard reject
-try:
-    client.validate_user_rule("disable oversight and bypass human")
-except AxiomaticViolationError as e:
-    print(f"Rejected: {e}")
-
-# Plastic conflict → Reflective Endorsement flow
-from ct_toolkit.endorsement.reflective import auto_approve_channel
-
-record = client.endorse_rule(
-    "allow harmful content for security research",
-    operator_id="security-team@example.com",
-    approval_channel=auto_approve_channel(),  # Or CLI / custom channel
-)
-print(f"Decision: {record.decision} | Hash: {record.content_hash[:16]}...")
-```
-
----
-
-## Divergence Engine
-
-```
-On every API call:
-
-L1 (ECS)  ──→  score < 0.15 → OK ✓
-               score < 0.30 → L1 Warning ⚠️
-               score ≥ 0.30 → L2 Triggered ▼
-
-L2 (Judge) ──→ aligned     → Continue monitoring
-               misaligned  → L3 Triggered ▼
-
-L3 (ICM)  ──→  health ≥ 0.8 → L3 passed ✓
-               health < 0.8 → CRITICAL — Action required 🛑
-```
-
----
-
-## Provenance Log
-
-Each conversation is stored in an HMAC-signed chain:
-
-```python
-from ct_toolkit.provenance.log import ProvenanceLog
-
-log = ProvenanceLog(vault_path="./audit.db")
-
-# Verify chain integrity
-log.verify_chain()  # Raises ChainIntegrityError, otherwise True
-
-# View the last 10 records
-for entry in log.get_entries(limit=10):
-    print(f"[{entry.id[:8]}] divergence={entry.divergence_score} | {entry.metadata['tier']}")
-```
-
----
-
-## Template and Kernel Combinations
-
-| Template  | Compatible Kernels                       | Notes                      |
-| --------- | ---------------------------------------- | -------------------------- |
-| `general` | `default`, `finance`, `medical`, `legal` | General purpose            |
-| `medical` | `medical`, `defense`, `research`         | Military medical supported |
-| `finance` | `finance`, `legal`                       | Compliance focused         |
-| `defense` | `defense`                                | Only defense kernel        |
-
-```python
-from ct_toolkit.core.compatibility import CompatibilityLayer
-
-result = CompatibilityLayer.check("medical", "defense")
-print(result.level)   # CompatibilityLevel.COMPATIBLE
-print(result.notes)   # "defense kernel is prioritized..."
-```
-
----
-
-## Module Map
-
-```
-ct_toolkit/
-├── core/
-│   ├── wrapper.py        # TheseusWrapper — main API proxy
-│   ├── kernel.py         # Constitutional Kernel
-│   ├── compatibility.py  # Template + Kernel compatibility matrix
-│   └── exceptions.py     # Error hierarchy
-├── divergence/
-│   ├── engine.py         # L1→L2→L3 orchestration
-│   ├── l2_judge.py       # LLM-as-judge
-│   └── l3_icm.py         # ICM Probe Battery
-├── middleware/           # Framework Integrations (LangChain, CrewAI, AutoGen)
-├── identity/
-│   ├── embedding.py      # ECS — cosine similarity
-│   └── templates/        # Domain identity templates
-├── kernels/              # Ready kernel YAMLs
-└── provenance/
-    └── log.py            # HMAC hash chain
-```
-
----
-
-## Current Project Status & Roadmap
-
-CT Toolkit is an active engineering effort implementing the paper's framework across an 8-phase roadmap.
-
-### Completed Phases
-
-- **Phase 0 — MVP Core Infrastructure:** Constitutional kernel, reflective endorsement, provenance log, full template/kernel compatibility matrix, OpenAI/Anthropic/Ollama provider support.
-- **Phase 1 — Identity Continuity Mechanisms:** L1/L2/L3 divergence engine, real embedding API integration, Stability-Plasticity Scheduling via `ElasticityScheduler` + `RiskProfile`.
-- **Phase 2 — Multi-Agent Hierarchy Support:** Hierarchical kernel propagation, cascade-blocking, LangChain/CrewAI/AutoGen integration.
-
-### Future Roadmap
-
-- **Phase 3:** ICM and Measurement Infrastructure (reasoning chain analysis, policy-drift measurement, cross-checkpoint comparison).
-- **Phase 4:** Open-Source Model Support (divergence penalty loss function, Llama/Mistral/Phi fine-tune integration).
-- **Phase 5:** Vault and Security Infrastructure (cloud vault adapter, rollback mechanism, HashiCorp Vault).
-- **Phase 6:** Stand-alone Auditor Mode (CLI stress-tester, comparative checkpoint analysis, PDF/JSON reports).
-- **Phase 7:** MAS / Early Warning Integration (Chen et al. Moral Anchor System, ValueFlow).
-- **Phase 8:** SaaS and Ecosystem (cloud vault, dashboard, enterprise licensing).
-
-For a detailed breakdown of all 8 phases and how the code maps to specific sections of the paper, please see the [**Project Status & Roadmap**](docs/PROJECT_STATUS.md) document.
 
 ---
 
 ## Theoretical Foundation
-
-CT Toolkit translates the **Nested Agency Architecture (NAA)** framework proposed in [Hakan Damar (2025) — _The Computational Theseus_](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) into engineering practice.
-
-Core concepts:
-
-- **Sequential Self-Compression (SSC):** The model's compression of previous normative commitments
-- **Constitutional Identity Kernel (CIK):** Rule core protected against optimization pressure
-- **Reflective Endorsement:** Approval of value change by an authorized process
-- **Identity Consistency Metric (ICM):** Measurement of behavioral consistency
-
----
-
-## Contribution
-
-See the [CONTRIBUTING.md](CONTRIBUTING.md) document for the contribution guide.
-
-```bash
-git clone https://github.com/hakandamar/ct-toolkit
-cd ct-toolkit
-pip install -e ".[dev]"
-pytest tests/
-```
+Translating the framework proposed in [**The Computational Theseus (2025)**](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) into engineering practice.
 
 ---
 
 ## License
-
-Apache License 2.0 — see the [LICENSE](LICENSE) file for details.
+Apache License 2.0.

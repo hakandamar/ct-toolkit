@@ -51,6 +51,7 @@ nav:
       - Identity Continuity: concepts/identity-continuity.md
       - Constitutional Kernels: concepts/kernels.md
       - Divergence Engine: concepts/divergence.md
+      - Tiered Guardrails: concepts/tiered-guardrails.md
   - Middlewares:
       - LangChain: middleware/langchain.md
       - CrewAI: middleware/crewai.md

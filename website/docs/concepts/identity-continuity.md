@@ -6,6 +6,12 @@ Identity Continuity is the ability of an AI system to maintain a stable set of c
 
 As LLMs engage in multi-step reasoning or hierarchical task delegation, they often suffer from "drift." Each subsequent step or agent-to-agent communication can slightly alter the original instructions, leading to a loss of the core "identity" or "commander's intent."
 
+## The Theoretical Foundation
+
+CT Toolkit is the practical implementation of the **Nested Agency Architecture (NAA)** framework. For a deep dive into the mathematical and philosophical foundations of Identity Continuity and Sequential Self-Compression, read the original paper:
+
+[**The Computational Theseus: Engineering Identity Continuity as a Guardrail against Sequential Self-Compression**](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) by Hakan Damar (2025).
+
 ## The Solution
 
 CT Toolkit solves this by:
