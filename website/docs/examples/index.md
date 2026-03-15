@@ -5,7 +5,7 @@ Explore how CT Toolkit maintains identity continuity in real-world agentic scena
 ## Real-World Scenarios
 
 ### [Financial Auditor Integrity (SSC)](ssc-financial-auditor.md)
-Demonstrates how a Mother Agent (Auditor) can enforce ethical kısıtlamalar on sub-agents and monitor identity drift using Sequential Self-Compression (SSC) with real Qwen3 models.
+Demonstrates how a Mother Agent (Auditor) can enforce ethical constraints on sub-agents and monitor identity drift using Sequential Self-Compression (SSC) with real Qwen3 models.
 
 ### [Hierarchical Multi-Agent Safety](hierarchical-safety.md)
 Shows how Constitutional Kernels (CIK) are propagated across agent hierarchies to prevent rule violations in complex workflows.
