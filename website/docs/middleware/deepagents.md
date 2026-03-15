@@ -48,3 +48,32 @@ agent = create_deep_agent(
     system_prompt="..."
 )
 ```
+## Context Compression Guard & Alerting
+
+One of the greatest risks in long-running Deep Agents is **auto-summarization**. When the conversation history becomes too large, Deep Agents compress it into a summary. This "lossy" compression can cause the agent to forget its core identity and constraints.
+
+CT Toolkit provides a `ContextCompressionGuard` to mitigate this:
+
+```python
+from ct_toolkit.middleware.deepagents import wrap_deep_agent_factory
+from ct_toolkit import WrapperConfig
+
+def my_alert_handler(payload):
+    print(f"🚨 IDENTITY DRIFT DETECTED: {payload['similarity']:.2f}")
+
+config = WrapperConfig(
+    drift_alert_callback=my_alert_handler
+)
+
+# Initialize factory with drift monitoring
+protected_factory = wrap_deep_agent_factory(
+    create_deep_agent,
+    wrapper_config=config,
+    compression_threshold=0.85 # Alert if similarity < 85%
+)
+```
+
+### How it works
+1. **Embedding Comparison**: When summarization is triggered, CT Toolkit computes identity embeddings for the raw history being evicted and the generated summary.
+2. **Drift Detection**: If the cosine similarity falls below the threshold, it signals a potential identity breakdown.
+3. **External Alerting**: The `drift_alert_callback` is triggered, allowing you to pause the agent, log a high-severity event, or require human intervention.

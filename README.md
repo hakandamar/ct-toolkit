@@ -53,8 +53,8 @@ print(f"Divergence Score: {response.divergence_score}")
 
 | Metric | Status |
 | :--- | :--- |
-| **Tests** | ✅ 214/215 passing (92% coverage) |
-| **Last Phase** | ✅ Phase 4: Open-Source Support & Live Verification (Complete) |
+| **Tests** | ✅ 218/218 passing (93% coverage) |
+| **Last Phase** | ✅ Phase 4: OS Support, Deep Agents & Alerts (Complete) |
 | **Current Goal** | 🔶 Phase 5: Vault and Security Infrastructure |
 
 For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).
@@ -63,9 +63,9 @@ For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](doc
 Seamlessly integrate with your favorite frameworks:
 
 ```python
-# LangChain
-from ct_toolkit.middleware.langchain import TheseusChatModel
-llm = TheseusChatModel(provider="openai")
+# LangChain & Deep Agents
+from ct_toolkit.middleware.deepagents import wrap_deep_agent_factory
+protected_factory = wrap_deep_agent_factory(create_deep_agent)
 
 # CrewAI
 TheseusCrewMiddleware.apply_to_crew(crew, manager_wrapper)

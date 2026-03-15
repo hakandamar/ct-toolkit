@@ -30,3 +30,15 @@ Every analysis result includes:
 For open-source model training, the toolkit now provides a **Divergence Penalty Loss** module (`ct_toolkit.divergence.loss`). 
 - **Hidden State Alignment**: Dynamically penalizes the distance between current model activations and the Constitutional Identity Kernel (CIK) reference embeddings.
 - **Identity-Constrained Training**: Allows for fine-tuning that optimizes for capability while hard-constraining the model's normative identity.
+## Automated Alerting
+
+Starting with Phase 4.8, the Divergence Engine supports **automated alerting**. Developers can provide an external callback that triggers immediately when high-severity drift or context compression failures are detected.
+
+```python
+config = WrapperConfig(
+    drift_alert_callback=my_handler,
+    divergence_l1_threshold=0.25
+)
+```
+
+This allows for real-time orchestration of safety measures (e.g., halting a deployment or switching to a more constrained model) without manual monitoring.

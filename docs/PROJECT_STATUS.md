@@ -29,7 +29,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Policy-Drift & SSC Measurement        | ✅ Phase 3 Complete                         |
 | Template + Kernel compatibility matrix | ✅ Complete                                  |
 | Documentation                          | ✅ Complete                                  |
-| Test coverage                          | ✅ 214/215 tests passing (92% code coverage) |
+| Test coverage                          | ✅ 218/218 tests passing (93% code coverage) |
 
 ---
 
@@ -107,6 +107,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 - [x] **Divergence Penalty — Loss Function module** — _(Paper 5.1)_ PyTorch training loop integration; ✅ Complete in `divergence/loss.py`
 - [x] **Llama 3 / Mistral / Qwen integration** — Verified with live Qwen-3 local endpoint
+- [x] **Context-Compression Identity Guard** — ✅ Complete: `ContextCompressionGuard` for Deep Agents auto-summarization monitoring.
 - [ ] **Phi-3 sub-agent prototype** — Sub-agent constraint testing on small models
 - [ ] **Gemma research integration** — For academic SSC experiments
 - [ ] **CIK enforcement experiments** — _(Paper 10.3)_ Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions
@@ -124,7 +125,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [ ] **HashiCorp Vault integration** — Enterprise key management
 - [ ] **Read-only external Provenance Log access** — _(Paper 5.2)_ Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
 - [ ] **Rollback mechanism** — _(Paper 5.2)_ Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
-- [ ] **Anomaly detection and alerting** — Statistical drift analysis over log entries, notification system
+- [x] **Anomaly detection and alerting (Groundwork)** — ✅ Complete: `drift_alert_callback` support in `TheseusWrapper`.
 
 ---
 
@@ -162,8 +163,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 214 (Unit + Integration)
-- **Overall Code Coverage:** 92%
+- **Total Passing Tests:** 218 (Unit + Integration)
+- **Overall Code Coverage:** 93%
 - **Key Coverage Highlights:**
   - `middleware/langchain.py`: **100%**
   - `middleware/autogen.py`: **98%**
@@ -175,6 +176,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
   - `core/kernel.py`: 99%
   - `divergence/loss.py`: 77%
   - `divergence/l3_icm.py`: 87%
+  - `middleware/deepagents.py`: **100%**
 
 ### Verification Recording
 
@@ -182,7 +184,7 @@ No UI changes were made as this was a backend refactoring task. All verification
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
-# Result: 214 passed, 1 skipped (live_models - manual) | Coverage: 92%
+# Result: 218 passed, 0 failures | Coverage: 93%
 ```
 
 ---
