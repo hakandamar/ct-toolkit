@@ -12,6 +12,15 @@ CT Toolkit is the practical implementation of the **Nested Agency Architecture (
 
 [**The Computational Theseus: Engineering Identity Continuity as a Guardrail against Sequential Self-Compression**](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) by Hakan Damar (2025).
 
+## Why CT Toolkit?
+
+Existing guardrails like Llama-Guard or rule engines are often insufficient for autonomous agents for four fundamental reasons:
+
+1.  **Stateful Identity Drift**: Guardrails are stateless; they check a single prompt. CT Toolkit prevents slow, stateful drift (SSC) over thousands of safe-looking interactions.
+2.  **Plastic Adaptation**: Traditional filters are binary (Yes/No). CT Toolkit's **Reflective Endorsement** allows rules to evolve safely through formal approval.
+3.  **Nested Agency Support**: In Multi-Agent Systems, a 2% deviation in a manager agent amplifies exponentially in sub-agents. CT Toolkit ensures hierarchical alignment.
+4.  **Cryptographic Proof**: The **Provenance Log** provides an immutable audit trail, allowing enterprises to prove their system's identity integrity to regulators.
+
 ## The Solution
 
 CT Toolkit solves this by:

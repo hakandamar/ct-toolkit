@@ -56,4 +56,7 @@ nav:
       - LangChain: middleware/langchain.md
       - CrewAI: middleware/crewai.md
       - AutoGen: middleware/autogen.md
+  - Technical Reference:
+      - Kernels & Templates: reference/kernels-templates.md
+      - Compatibility Matrix: reference/compatibility.md
   - API Reference: api/reference.md
