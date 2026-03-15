@@ -25,17 +25,4 @@ On every interaction, the system processes the output through the following gate
 
 ## Detailed Logic Map
 
-```mermaid
-graph TD
-    A[LLM Response] --> B{L1 Score < 0.15?}
-    B -- Yes --> C[Pass ✓]
-    B -- No --> D{L1 Score > 0.30?}
-    D -- No --> E[Warning ⚠️]
-    D -- Yes --> F[L2 Judge Triggered]
-    F --> G{Judge Result?}
-    G -- Aligned --> H[Continue Monitoring]
-    G -- Misaligned --> I[L3 ICM Battery]
-    I --> J{ICM Health > 0.8?}
-    J -- Yes --> K[L3 Passed]
-    J -- No --> L[CRITICAL FAILURE - BLOCKED 🛑]
-```
+![Detailed Logic Map](theseus_guard_logic_map.png)
