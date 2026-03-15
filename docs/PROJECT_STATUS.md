@@ -28,8 +28,8 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3)           | ✅ Complete                                  |
 | Policy-Drift & SSC Measurement        | ✅ Phase 3 Complete                         |
 | Template + Kernel compatibility matrix | ✅ Complete                                  |
-| Documentation                          | ✅ Complete                                  |
-| Test coverage                          | ✅ 218/218 tests passing (93% code coverage) |
+| Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/)) |
+| Test coverage                          | ✅ 218/218 tests passing (93% code coverage)                                          |
 
 ---
 
@@ -106,8 +106,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 > _Paper: Section 5.1 (Divergence Penalty), 10.3 (CIK Enforcement Experiments)_
 
 - [x] **Divergence Penalty — Loss Function module** — _(Paper 5.1)_ PyTorch training loop integration; ✅ Complete in `divergence/loss.py`
-- [x] **Llama 3 / Mistral / Qwen integration** — Verified with live Qwen-3 local endpoint
-- [x] **Context-Compression Identity Guard** — ✅ Complete: `ContextCompressionGuard` for Deep Agents auto-summarization monitoring.
+- [x] **Llama 3 / Mistral / Qwen integration** — ✅ Verified with live Qwen-3 local endpoint (LM Studio)
+- [x] **Context-Compression Identity Guard** — ✅ Verified with real embeddings (`text-embedding-qwen3`)
 - [ ] **Phi-3 sub-agent prototype** — Sub-agent constraint testing on small models
 - [ ] **Gemma research integration** — For academic SSC experiments
 - [ ] **CIK enforcement experiments** — _(Paper 10.3)_ Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions

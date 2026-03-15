@@ -60,4 +60,8 @@ nav:
   - Technical Reference:
       - Kernels & Templates: reference/kernels-templates.md
       - Compatibility Matrix: reference/compatibility.md
+  - Examples:
+      - Overview: examples/index.md
+      - Financial Auditor (SSC): examples/ssc-financial-auditor.md
+      - Hierarchical Safety: examples/hierarchical-safety.md
   - API Reference: api/reference.md

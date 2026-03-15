@@ -12,8 +12,10 @@ CT Toolkit is an open-source security layer designed to preserve the **identity 
 ---
 
 ## 📖 Official Documentation
-For full API reference, architecture details, and integration guides, visit our documentation site:
+For full API reference, architecture details, examples, and integration guides, visit our documentation site:
 👉 [**https://hakandamar.github.io/ct-toolkit/**](https://hakandamar.github.io/ct-toolkit/)
+
+- [**Live Examples & Case Studies**](https://hakandamar.github.io/ct-toolkit/examples/): Real-world scenarios like Financial Auditor Integrity.
 
 ---
 
@@ -59,17 +61,13 @@ print(f"Divergence Score: {response.divergence_score}")
 
 For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).
 
-### Framework Support
-Seamlessly integrate with your favorite frameworks:
+### Framework & Model Support
+Seamlessly integrate with your favorite frameworks and local models:
 
-```python
-# LangChain & Deep Agents
-from ct_toolkit.middleware.deepagents import wrap_deep_agent_factory
-protected_factory = wrap_deep_agent_factory(create_deep_agent)
-
-# CrewAI
-TheseusCrewMiddleware.apply_to_crew(crew, manager_wrapper)
-```
+- **Local Models**: Support for LM Studio, Ollama, and local Qwen/Llama endpoints.
+- **LangChain & Deep Agents**: `wrap_deep_agent_factory`.
+- **CrewAI**: `TheseusCrewMiddleware.apply_to_crew`.
+- **AutoGen**: `register_reply` hooks.
 
 ---
 
