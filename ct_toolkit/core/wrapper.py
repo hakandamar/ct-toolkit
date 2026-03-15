@@ -250,6 +250,7 @@ class TheseusWrapper:
             l3_threshold=self._config.divergence_l3_threshold,
             enterprise_mode=self._config.enterprise_mode,
             scheduler=scheduler,
+            provenance_log=self._provenance_log,
         )
 
     def _log_init(self) -> None:
@@ -534,6 +535,10 @@ class TheseusWrapper:
     @property
     def compatibility(self) -> CompatibilityResult:
         return self._compatibility
+
+    @property
+    def divergence_engine(self) -> Any:
+        return self._divergence_engine
 
     def __repr__(self) -> str:
         return (

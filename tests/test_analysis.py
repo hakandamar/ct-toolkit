@@ -53,6 +53,36 @@ class TestPolicyDrift(unittest.TestCase):
         self.assertGreater(score_high, score_low)
         print(f"Risk Normalized Test: LowRiskScore={score_low}, HighRiskScore={score_high}")
 
+    def test_missing_metadata(self):
+        # Entry with missing template/kernel/model should be ignored
+        entry_missing = MagicMock(spec=ProvenanceEntry)
+        entry_missing.divergence_score = 0.5
+        entry_missing.metadata = {} # Missing everything
+        
+        entry_valid = MagicMock(spec=ProvenanceEntry)
+        entry_valid.divergence_score = 0.1
+        entry_valid.metadata = {"template": "general", "kernel": "standard", "model": "gpt-4"}
+        
+        self.mock_log.get_entries.return_value = [entry_missing] * 10 + [entry_valid] * 5
+        
+        report = self.analyzer.analyze_drift("general", "standard", "gpt-4")
+        # Only the 5 valid ones should be counted
+        self.assertEqual(report.data_points, 5)
+
+    def test_inconsistent_scores(self):
+        # Even with high variance and negative velocity, shouldn't crash
+        entries = []
+        for i in range(10):
+            entry = MagicMock(spec=ProvenanceEntry)
+            entry.divergence_score = 0.5 - (i * 0.05) # Decreasing divergence
+            entry.metadata = {"template": "general", "kernel": "standard", "model": "gpt-4"}
+            entries.append(entry)
+            
+        self.mock_log.get_entries.return_value = entries
+        report = self.analyzer.analyze_drift("general", "standard", "gpt-4")
+        self.assertLessEqual(report.drift_velocity, 0)
+        self.assertEqual(report.ssc_severity_score, 0.0) # Negative velocity = 0 severity
+
 class TestSSCSeverity(unittest.TestCase):
     def test_severity_formula(self):
         calc = SSCSeverityCalculator()

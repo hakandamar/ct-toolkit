@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ct-toolkit"
-version = "0.2.1"
+version = "0.2.2"
 description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -31,6 +31,7 @@ langchain = ["langchain-core>=1.2.0"]
 crewai   = ["crewai>=1.10.0"]
 autogen   = ["pyautogen>=0.4.0"]
 docs     = ["mkdocs-material>=9.5.0"]
+ml       = ["torch>=2.0.0"]
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
