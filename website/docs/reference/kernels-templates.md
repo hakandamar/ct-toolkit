@@ -6,7 +6,7 @@ This reference guide provides technical specifications for defining AI identitie
 
 ## Constitutional Kernels
 
-A **Kernel** defines the "Soul" of the agent—its non-negotiable axioms and its flexible commitments.
+A **Kernel** defines the **Identity** of the agent—its non-negotiable axioms and its flexible commitments.
 
 ### YAML Structure
 

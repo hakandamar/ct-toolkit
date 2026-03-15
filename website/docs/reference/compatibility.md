@@ -32,7 +32,7 @@ CT Toolkit provides first-class middleware for the following ecosystems:
 
 ---
 
-The **Compatibility Layer** ensures that the "Domain" (Template) doesn't conflict with the "Soul" (Kernel). Combinations are categorized into three levels:
+The **Compatibility Layer** ensures that the "Domain" (Template) doesn't conflict with the "Identity" (Kernel). Combinations are categorized into three levels:
 
 ### 1. NATIVE
 Pairs that share the same domain and work without extra logging or constraints.
