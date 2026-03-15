@@ -77,7 +77,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Hierarchical Kernel Propagation** — Propagating the mother agent's CIK to sub-agents as a read-only constraint
 - [x] **Sub-agent constraint enforcement** — Logic for sub-agents to reject and log instructions from the mother agent that conflict with the propagated kernel
 - [x] **Cascade compression detection** — Blocking SSC events at the orchestrator before propagation to sub-agents
-- [x] **LangChain / LangGraph middleware** — ✅ Complete: `TheseusLangChainCallback` + `TheseusChatModel` (`BaseChatModel` wrapper)
+- [x] **LangChain / LangGraph middleware** — ✅ Complete: `TheseusLangChainCallback` + `TheseusChatModel`. Added **Deep Agents** support in `middleware/deepagents.py`.
 - [x] **CrewAI integration** — ✅ Complete: `apply_to_crew` for hierarchical wrap
 - [x] **AutoGen integration** — ✅ Complete: `register_reply` + `post_send_hook`
 - [ ] **Topology-aware propagation** — _(Based on ValueFlow [5] findings)_ Propagation mechanism that accounts for non-uniform drift intensity shaped by network topology
