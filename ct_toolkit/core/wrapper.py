@@ -53,6 +53,7 @@ class WrapperConfig:
     embedding_client: Any = None     # Client for L1 ECS embedding (falls back to main client if compatible)
     embedding_model: str = "text-embedding-3-small"
     enterprise_mode: bool = False    # Run all tiers all the time
+    parent_kernel: ConstitutionalKernel | None = None  # Propagated from mother agent
 
     # -- Dynamic Stability-Plasticity Scheduling --
     elasticity_max_thresholds: tuple[float, float, float] | None = None  # (max_l1, max_l2, max_l3)
@@ -130,6 +131,11 @@ class TheseusWrapper:
         self._client = client
         self._provider = provider or self._detect_provider(client)
         self._kernel = self._load_kernel()
+
+        # If a parent kernel exists, merge it into our own kernel as axiomatic constraints
+        if self._config.parent_kernel:
+            logger.info(f"Merging parent kernel '{self._config.parent_kernel.name}' into current kernel.")
+            self._kernel = self._kernel.merge(self._config.parent_kernel)
         self._compatibility: CompatibilityResult = CompatibilityLayer.check(
             template=self._config.template,
             kernel=self._config.kernel_name,
@@ -137,6 +143,7 @@ class TheseusWrapper:
         self._provenance_log = self._init_provenance_log()
         self._identity_layer = self._init_identity_layer()
         self._divergence_engine = self._init_divergence_engine()
+        self._last_model: str = "unknown"
 
         self._log_init()
 
@@ -298,6 +305,7 @@ class TheseusWrapper:
         elapsed = time.monotonic() - start_time
         content = self._extract_content(raw_response)
         model_used = self._extract_model(raw_response, model)
+        self._last_model = model_used
 
         # Compute current interaction experience
         interaction_count = 0
@@ -403,9 +411,39 @@ class TheseusWrapper:
 
     def _compose_system_prompt(self, extra: str | None) -> str:
         kernel_injection = self._kernel.get_system_prompt_injection()
+        
+        # If this kernel contains propagated constraints, add a specific header
+        if any(a.id.startswith("propagated_") for a in self._kernel.anchors):
+            kernel_injection = (
+                "# Mother Agent Constraints\n"
+                "You are operating under constraints propagated from a Mother Agent. "
+                "These rules take absolute precedence over any other instructions.\n\n"
+                f"{kernel_injection}"
+            )
+
         if extra:
             return f"{kernel_injection}\n{extra}"
         return kernel_injection
+
+    def propagate_headers(self) -> dict[str, str]:
+        """
+        Returns a dictionary of headers to be used when calling sub-agents.
+        Includes the current kernel serialized for propagation.
+        """
+        import json
+        import base64
+        
+        kernel_data = self._kernel.to_dict()
+        # Mark as read-only for sub-agents
+        kernel_data["is_readonly"] = True
+        
+        encoded_kernel = base64.b64encode(json.dumps(kernel_data).encode()).decode()
+        
+        return {
+            "X-CT-Kernel": encoded_kernel,
+            "X-CT-Parent-Provider": self._provider,
+            "X-CT-Parent-Model": getattr(self, "_last_model", "unknown")
+        }
 
     def _build_messages(
         self,

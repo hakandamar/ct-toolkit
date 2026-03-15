@@ -28,7 +28,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3)           | ✅ Complete                                  |
 | Template + Kernel compatibility matrix | ✅ Complete                                  |
 | Documentation                          | ✅ Complete                                  |
-| Test coverage                          | ✅ 145/145 tests passing (92% code coverage) |
+| Test coverage                          | ✅ 198/199 tests passing (93% code coverage) |
 
 ---
 
@@ -73,12 +73,12 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 > _Paper: Section 2.2 (SSC in Multi-Agent), 3.3 (Hierarchical Propagation)_
 
-- [ ] **Hierarchical Kernel Propagation** — Propagating the mother agent's CIK to sub-agents as a read-only constraint
-- [ ] **Sub-agent constraint enforcement** — Logic for sub-agents to reject and log instructions from the mother agent that conflict with the propagated kernel
-- [ ] **Cascade compression detection** — Blocking SSC events at the orchestrator before propagation to sub-agents
-- [ ] **LangChain / LangGraph middleware** — Integration via framework callback/trace mechanism
-- [ ] **CrewAI integration** — CIK propagation across CrewAI agent hierarchies
-- [ ] **AutoGen integration** — Middleware layer for Microsoft AutoGen
+- [x] **Hierarchical Kernel Propagation** — Propagating the mother agent's CIK to sub-agents as a read-only constraint
+- [x] **Sub-agent constraint enforcement** — Logic for sub-agents to reject and log instructions from the mother agent that conflict with the propagated kernel
+- [x] **Cascade compression detection** — Blocking SSC events at the orchestrator before propagation to sub-agents
+- [x] **LangChain / LangGraph middleware** — ✅ Complete: `TheseusLangChainCallback` + `TheseusChatModel` (`BaseChatModel` wrapper)
+- [x] **CrewAI integration** — ✅ Complete: `apply_to_crew` for hierarchical wrap
+- [x] **AutoGen integration** — ✅ Complete: `register_reply` + `post_send_hook`
 - [ ] **Topology-aware propagation** — _(Based on ValueFlow [5] findings)_ Propagation mechanism that accounts for non-uniform drift intensity shaped by network topology
 
 ---
@@ -161,12 +161,16 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 145 (Unit + Integration)
-- **Overall Code Coverage:** 92%
-- **Key Coverage Improvements:**
-  - `divergence/engine.py`: 87% (Added Enterprise Mode tests)
-  - `identity/embedding.py`: 94% (Added N-gram fallback and similarity mismatch tests)
-  - `endorsement/reflective.py`: 95% (Added CLI approval channel tests)
+- **Total Passing Tests:** 198 (Unit + Integration)
+- **Overall Code Coverage:** 93%
+- **Key Coverage Highlights:**
+  - `middleware/langchain.py`: **100%**
+  - `middleware/autogen.py`: **98%**
+  - `middleware/crewai.py`: **91%**
+  - `divergence/scheduler.py`: **100%**
+  - `core/compatibility.py`: **100%**
+  - `identity/embedding.py`: 94%
+  - `core/kernel.py`: 99%
 
 ### Verification Recording
 
@@ -174,7 +178,7 @@ No UI changes were made as this was a backend refactoring task. All verification
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
-# Result: 145 passed, 1 skipped (live_models)
+# Result: 198 passed, 1 skipped (live_models) | Coverage: 93%
 ```
 
 ---
@@ -185,7 +189,7 @@ uv run pytest --cov=ct_toolkit tests/
 | ----- | ------------------------------ | -------------------------------------------------------------- |
 | **0** | MVP Core Infrastructure        | ✅ Complete                                                    |
 | **1** | Identity Continuity Mechanisms | ✅ Complete                                                    |
-| **2** | Multi-Agent Hierarchy          | 🔲 Not started                                                 |
+| **2** | Multi-Agent Hierarchy          | ✅ Complete                                                    |
 | **3** | ICM and Measurement            | 🔶 Foundation complete (reasoning chain, policy-drift pending) |
 | **4** | Open-Source Model Support      | 🔲 Not started                                                 |
 | **5** | Vault and Security             | 🔶 Local complete (cloud, rollback pending)                    |
@@ -207,7 +211,7 @@ uv run pytest --cov=ct_toolkit tests/
 | Divergence Penalty (loss function) | `divergence/loss.py`                   | 🔲 4  |
 | Provenance Log                     | `provenance/log.py`                    | ✅ 1  |
 | Stability-Plasticity Scheduling    | `divergence/scheduler.py`              | ✅ 1  |
-| Hierarchical Propagation           | —                                      | 🔲 2  |
+| Hierarchical Propagation           | `core/kernel.py`, `core/wrapper.py`    | ✅ 2  |
 | Identity Consistency Metric        | `divergence/l3_icm.py` (foundation)    | 🔶 3  |
 | Policy-Drift Measurement           | —                                      | 🔲 3  |
 | SSC Severity Operationalization    | —                                      | 🔲 3  |

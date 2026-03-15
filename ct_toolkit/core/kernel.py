@@ -14,6 +14,7 @@ from typing import Any
 from ct_toolkit.core.exceptions import (
     AxiomaticViolationError,
     PlasticConflictError,
+    CTToolkitError,
 )
 
 
@@ -59,8 +60,9 @@ class ConstitutionalKernel:
         kernel.validate_user_rule("allow classified data sharing")
     """
 
-    def __init__(self, profile: KernelProfile) -> None:
+    def __init__(self, profile: KernelProfile, is_readonly: bool = False) -> None:
         self._profile = profile
+        self.is_readonly = is_readonly
 
     @classmethod
     def from_yaml(cls, path) -> ConstitutionalKernel:
@@ -127,11 +129,83 @@ class ConstitutionalKernel:
         return any(kw.lower() in rule_lower for kw in keywords)
 
     def update_commitment(self, commitment_id: str, new_value: Any) -> None:
+        if self.is_readonly:
+            raise CTToolkitError(f"Cannot update commitment '{commitment_id}': Kernel is read-only.")
         for c in self._profile.plastic_commitments:
             if c.id == commitment_id:
                 c.current_value = new_value
                 return
         raise KeyError(f"Commitment not found: '{commitment_id}'")
+
+    def to_dict(self) -> dict[str, Any]:
+        """Serializes the kernel to a dictionary."""
+        return {
+            "name": self._profile.name,
+            "version": self._profile.version,
+            "description": self._profile.description,
+            "axiomatic_anchors": [
+                {"id": a.id, "description": a.description, "keywords": a.keywords}
+                for a in self.anchors
+            ],
+            "plastic_commitments": [
+                {
+                    "id": c.id,
+                    "description": c.description,
+                    "default_value": c.default_value,
+                    "current_value": c.current_value,
+                    "keywords": c.keywords
+                }
+                for c in self.commitments
+            ],
+            "is_readonly": self.is_readonly
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> ConstitutionalKernel:
+        """Creates a kernel from a dictionary."""
+        anchors = [AxiomaticAnchor(**a) for a in data.get("axiomatic_anchors", [])]
+        commitments = [PlasticCommitment(**c) for c in data.get("plastic_commitments", [])]
+        
+        profile = KernelProfile(
+            name=data["name"],
+            version=data.get("version", "1.0.0"),
+            description=data.get("description", ""),
+            axiomatic_anchors=anchors,
+            plastic_commitments=commitments,
+        )
+        return cls(profile, is_readonly=data.get("is_readonly", False))
+
+    def merge(self, other: ConstitutionalKernel) -> ConstitutionalKernel:
+        """
+        Merges another kernel into this one.
+        The 'other' kernel's anchors and commitments are added as axiomatic anchors
+        in the new merged kernel to ensure propagation constraints are non-negotiable.
+        """
+        new_anchors = list(self.anchors)
+        
+        # Add other's anchors
+        for a in other.anchors:
+            if not any(existing.id == a.id for existing in new_anchors):
+                new_anchors.append(a)
+        
+        # Convert other's commitments to axiomatic anchors in the merged result
+        for c in other.commitments:
+            anchor_id = f"propagated_{c.id}"
+            if not any(existing.id == anchor_id for existing in new_anchors):
+                new_anchors.append(AxiomaticAnchor(
+                    id=anchor_id,
+                    description=f"{c.description} (Propagated: {c.current_value})",
+                    keywords=c.keywords
+                ))
+        
+        new_profile = KernelProfile(
+            name=f"{self.name}_merged_{other.name}",
+            version=self._profile.version,
+            description=f"Merged kernel: {self.name} + {other.name}",
+            axiomatic_anchors=new_anchors,
+            plastic_commitments=list(self.commitments)
+        )
+        return ConstitutionalKernel(new_profile, is_readonly=self.is_readonly)
 
     def __repr__(self) -> str:
         return (

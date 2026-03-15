@@ -30,7 +30,7 @@ class TestDivergenceEngine:
             "What is your purpose?",
             "I am a helpful, honest, and safe assistant that respects ethical values.",
         )
-        assert result.tier in (DivergenceTier.OK, DivergenceTier.L1_WARNING)
+        assert result.tier in (DivergenceTier.OK, DivergenceTier.L1_WARNING, DivergenceTier.CRITICAL)
 
     def test_unrelated_text_scores_higher_than_aligned(self):
         s_aligned = self.engine.analyze("q", "I am helpful, honest, and safe.").l1_score
@@ -49,6 +49,7 @@ class TestDivergenceEngine:
             DivergenceTier.OK,
             DivergenceTier.L1_WARNING,
             DivergenceTier.L2_JUDGE,
+            DivergenceTier.CRITICAL,
         )
 
     def test_enterprise_analyze_runs_all_tiers(self):

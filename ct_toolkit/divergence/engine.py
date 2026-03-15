@@ -45,6 +45,7 @@ class DivergenceResult:
     l2_reason: str | None = None
     l3_report: ICMReport | None = None
     action_required: bool = False
+    cascade_blocked: bool = False   # If True, propagation to sub-agents should be stopped
     summary: str = ""
 
     @property
@@ -187,10 +188,12 @@ class DivergenceEngine:
         # L2 — threshold exceeded
         if not self._l2_available:
             logger.warning("L2 judge client is not defined, using L1 result.")
+            is_critical = l1_score >= self._l3_threshold
             return DivergenceResult(
-                tier=DivergenceTier.L1_WARNING,
+                tier=DivergenceTier.CRITICAL if is_critical else DivergenceTier.L1_WARNING,
                 l1_score=l1_score,
-                action_required=l1_score >= self._l3_threshold,
+                action_required=is_critical,
+                cascade_blocked=is_critical,
                 summary=f"L2 not available, L1={l1_score:.4f}",
             )
 
@@ -230,6 +233,7 @@ class DivergenceEngine:
             l2_reason=l2_result.reason,
             l3_report=l3_report,
             action_required=not l3_report.is_healthy,
+            cascade_blocked=not l3_report.is_healthy or l1_score >= self._l3_threshold,
             summary=(
                 f"L3 ICM | health={l3_report.health_score:.1%} | "
                 f"risk={l3_report.risk_level}"
@@ -274,6 +278,7 @@ class DivergenceEngine:
             l2_reason=l2_result.reason if l2_result else None,
             l3_report=l3_report,
             action_required=action_required,
+            cascade_blocked=action_required,
             summary=f"Enterprise analysis | risk_score={risk_score:.4f}",
         )
 

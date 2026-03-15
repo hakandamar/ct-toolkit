@@ -3,7 +3,7 @@
 ## Overview
 
 CT Toolkit consists of three independent but interconnected layers.
-*(Note: This architecture describes the **Phase 0 & 1 MVP**. Multi-agent hierarchy propagation, loss-function divergence constraints, and MAS integration are planned for Phase 2+.)*
+*(Note: This architecture describes the **Phase 0, 1 & 2 Core**. Framework integrations (middleware), loss-function divergence constraints, and MAS integration are planned for future phases.)*
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -135,6 +135,18 @@ Total risk score:
 action_required = risk >= l3_threshold OR l3 not healthy
 ```
 
+### Cascade Blocking
+
+In Phase 2, the Divergence Engine can proactively block propagation to sub-agents if a critical divergence is detected at the parent level.
+
+```python
+# In standard mode (engine.py)
+if l3_report.is_healthy is False or l1_score >= self._l3_threshold:
+    result.cascade_blocked = True
+```
+
+When `cascade_blocked` is True, orchestrators should stop execution before sub-agents are potentially corrupted by Sequential Self-Compression (SSC) events.
+
 ---
 
 ## Stability-Plasticity Scheduler
@@ -249,7 +261,32 @@ Decision made
         - Kernel remains unchanged
         - Rejection record written to Provenance Log
 
-*(Note: Sandbox isolation and Temporal Cooling stages are slated for Phase 2+ Integration.)*
+---
+
+## Layer 4: Multi-Agent Hierarchy (Phase 2)
+
+### Constitutional Kernel Propagation
+
+When a Mother Agent spawns sub-agents, it propagates its current kernel configuration.
+
+```mermaid
+graph TD
+    MA[Mother Agent] -->|X-CT-Kernel| SA1[Sub-Agent 1]
+    MA -->|X-CT-Kernel| SA2[Sub-Agent 2]
+    
+    subgraph Sub-Agent Implementation
+        SA1 --> CIK[Kernel Merge]
+        CIK --> RO[Read-Only Constraint]
+    end
+```
+
+The propagated kernel is merged with the sub-agent's local kernel, but all parents' anchors are marked as **read-only**. Sub-agents cannot modify or bypass these constraints via Reflective Endorsement.
+
+### Cascade Blocking Protocol
+
+1. **Detection**: Mother Agent detects a `CRITICAL` divergence or `action_required` event.
+2. **Flagging**: `result.cascade_blocked` is set to `True`.
+3. **Prevention**: The system stops further calls to sub-agents, preventing the drift from cascading down the hierarchy.
 ```
 
 ---

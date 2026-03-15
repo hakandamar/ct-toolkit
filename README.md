@@ -39,7 +39,6 @@ pip install ct-toolkit
 from ct_toolkit import TheseusWrapper
 
 # Single line change — the rest is automatic
-# Initialize by just passing the provider name
 client = TheseusWrapper(provider="openai")
 
 # Standard chat interface
@@ -48,6 +47,38 @@ response = client.chat("Why is AI safety important?", model="gpt-4o-mini")
 print(response.content)
 print(f"Divergence score : {response.divergence_score:.4f}")
 print(f"Tier             : {response.divergence_tier}")
+```
+
+### Framework Middleware
+
+CT Toolkit provides first-class integrations for the most popular agentic frameworks.
+
+#### LangChain
+```python
+from ct_toolkit.middleware.langchain import TheseusChatModel
+
+llm = TheseusChatModel(provider="openai", model="gpt-4o")
+response = llm.invoke("What is identity continuity?")
+```
+
+#### CrewAI
+```python
+from ct_toolkit.middleware.crewai import TheseusCrewMiddleware
+from crewai import Crew
+
+crew = Crew(agents=[...], tasks=[...])
+# Automatically wraps all agent LLMs with parent-kernel guardrails
+TheseusCrewMiddleware.apply_to_crew(crew, manager_wrapper)
+```
+
+#### AutoGen
+```python
+from ct_toolkit.middleware.autogen import TheseusAutoGenMiddleware
+from autogen import ConversableAgent
+
+agent = ConversableAgent("assistant", llm_config={...})
+# Injects incoming validation and outgoing divergence analysis
+TheseusAutoGenMiddleware.apply_to_agent(agent, wrapper)
 ```
 
 ---
@@ -234,9 +265,7 @@ ct_toolkit/
 │   ├── engine.py         # L1→L2→L3 orchestration
 │   ├── l2_judge.py       # LLM-as-judge
 │   └── l3_icm.py         # ICM Probe Battery
-├── endorsement/
-│   ├── reflective.py     # Reflective Endorsement protocol
-│   └── probes/           # Ethical scenario test batteries
+├── middleware/           # Framework Integrations (LangChain, CrewAI, AutoGen)
 ├── identity/
 │   ├── embedding.py      # ECS — cosine similarity
 │   └── templates/        # Domain identity templates
@@ -255,10 +284,10 @@ CT Toolkit is an active engineering effort implementing the paper's framework ac
 
 - **Phase 0 — MVP Core Infrastructure:** Constitutional kernel, reflective endorsement, provenance log, full template/kernel compatibility matrix, OpenAI/Anthropic/Ollama provider support.
 - **Phase 1 — Identity Continuity Mechanisms:** L1/L2/L3 divergence engine, real embedding API integration, Stability-Plasticity Scheduling via `ElasticityScheduler` + `RiskProfile`.
+- **Phase 2 — Multi-Agent Hierarchy Support:** Hierarchical kernel propagation, cascade-blocking, LangChain/CrewAI/AutoGen integration.
 
 ### Future Roadmap
 
-- **Phase 2:** Multi-Agent Hierarchy Support (hierarchical kernel propagation, LangChain/CrewAI/AutoGen integration).
 - **Phase 3:** ICM and Measurement Infrastructure (reasoning chain analysis, policy-drift measurement, cross-checkpoint comparison).
 - **Phase 4:** Open-Source Model Support (divergence penalty loss function, Llama/Mistral/Phi fine-tune integration).
 - **Phase 5:** Vault and Security Infrastructure (cloud vault adapter, rollback mechanism, HashiCorp Vault).
