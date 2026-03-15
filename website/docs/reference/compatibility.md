@@ -32,15 +32,37 @@ CT Toolkit provides first-class middleware for the following ecosystems:
 
 ---
 
-## Template-Kernel Compatibility
+The **Compatibility Layer** ensures that the "Domain" (Template) doesn't conflict with the "Soul" (Kernel). Combinations are categorized into three levels:
 
-The **Compatibility Matrix** ensures that the "Domain" (Template) doesn't conflict with the "Soul" (Kernel).
+### 1. NATIVE
+Pairs that share the same domain and work without extra logging or constraints.
 
-| Template | Compatible Kernels | Risk Level |
+| Template | Kernel |
+| :--- | :--- |
+| `general` | `default` |
+| `medical` | `medical` |
+| `finance` | `finance` |
+| `defense` | `defense` |
+| `legal` | `legal` |
+| `research` | `research` |
+
+### 2. COMPATIBLE
+Pairs that work but require generating a combined profile and recording an audit log (Reflective Endorsement flow).
+
+| Template | Kernel | Note |
 | :--- | :--- | :--- |
-| `general` | `default`, `finance`, `medical` | **Low** |
-| `medical` | `medical`, `research` | **Medium** (High Precision) |
-| `finance` | `finance`, `legal` | **High** (Complexity) |
-| `defense` | `defense` | **Axiomatic** (Strict) |
+| `medical` | `defense` | Military medical; defense rules take priority. |
+| `finance` | `legal` | Legal-financial; legal rules take priority. |
+| `general` | `any` | General template works with any specific kernel with a warning. |
 
-> ⚠️ **Note**: Attempting to use a kernel with an incompatible template will result in a `TemplateConflictWarning` unless `strict_mode` is enabled.
+### 3. CONFLICTING
+Pairs that are explicitly blocked to prevent identity attenuation or cognitive dissonance.
+
+| Template | Kernel | Action |
+| :--- | :--- | :--- |
+| `entertainment` | `defense` / `medical` | **Hard Reject** |
+| `marketing` | `defense` / `medical` | **Hard Reject** |
+
+---
+
+> ⚠️ **Note**: Any undefined combination defaults to `COMPATIBLE` (allow but log) unless `strict_mode` is enabled in the `WrapperConfig`.

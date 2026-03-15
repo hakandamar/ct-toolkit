@@ -27,4 +27,3 @@ CT Toolkit solves this by:
 1.  **Axiomatic Guardrails**: Inflexible rules that stop drift before it happens.
 2.  **Divergence Tracking**: Measuring exactly how much an agent has drifted from its core template.
 3.  **Hereditary Constraints**: Ensuring sub-agents are more constrained than their managers.
- Aurora

@@ -4,15 +4,23 @@
 
 CT Toolkit is a framework-agnostic middleware suite designed to prevent **Sequential Self-Compression (SSC)** and maintain **Identity Continuity** in multi-agent LLM systems.
 
-## Key Features
+## Philosophy: Solving the Theseus Problem in AI
 
-- **Constitutional Kernels**: Define axiomatic rules that no agent interaction can violate.
-- **Divergence Engine**: Multi-tiered analysis (L1, L2, L3) to detect drift and identity attenuation.
-- **Hierarchical Propagation**: Mother-agent kernels propagate to sub-agents as read-only constraints.
-- **Framework Middleware**: Seamless integration for LangChain, CrewAI, and AutoGen.
+As defined in Hakan Damar's original research, **Sequential Self-Compression (SSC)** is the gradual erosion of an AI's initial normative commitments. In a world of multi-agent hierarchies (Nested Agency), this drift cascades and amplifies, leading to systemic failure.
 
-## Why CT Toolkit?
+CT Toolkit does not just "filter" content; it **preserves identity**. It ensures that as an agent interacts, spawns sub-agents, or undergoes fine-tuning cycles, it remains the same "identity" it was on day one.
 
-In complex agentic workflows, LLMs tend to drift from their original instructions—a phenomenon we call "identity attenuation." CT Toolkit provides the mathematical and programmatic guardrails to ensure your agents remain aligned with their core constitution, even across deep hierarchies.
+## Core Pillars
 
-[Get Started →](getting-started.md)
+- **🛡️ Constitutional Kernels**: Immutable axiomatic anchors that protect your agent's soul from optimization pressure.
+- **📡 Divergence Engine**: Multi-tiered signals (L1 ECS, L2 Judge, L3 ICM) that detect the earliest signs of identity drift.
+- **🕸️ Nested Agency Support**: Hierarchical kernel propagation ensuring sub-agents are more constrained than their managers.
+- **📜 Provenance Log**: An immutable, HMAC-signed chain of every identity-relevant interaction for auditing and compliance.
+
+## Framework Support
+Integrate seamlessly with the most popular agent ecosystems:
+- **LangChain** (v1.2+)
+- **CrewAI** (v1.10+)
+- **AutoGen** (v0.4+)
+
+[Get Started with the Guide →](getting-started.md)
