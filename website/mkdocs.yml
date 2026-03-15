@@ -54,6 +54,7 @@ nav:
       - Tiered Guardrails: concepts/tiered-guardrails.md
   - Middlewares:
       - LangChain: middleware/langchain.md
+      - Deep Agents: middleware/deepagents.md
       - CrewAI: middleware/crewai.md
       - AutoGen: middleware/autogen.md
   - Technical Reference:
