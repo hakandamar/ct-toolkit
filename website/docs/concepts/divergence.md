@@ -5,11 +5,22 @@ The Divergence Engine measures how much an LLM's response deviates from its orig
 ## Tiers of Analysis
 
 - **L1 (Syntactic)**: Fast, keyword-based drift detection.
-- **L2 (Semantic)**: LLM-as-a-judge analysis to understand the intent and meaning of the drift.
-- **L3 (Cognitive)**: Advanced analysis of reasoning chains to detect subtle identity attenuation.
+- **L2 (Semantic)**: LLM-as-judge analysis to understand the intent and meaning of the drift.
+- **L3 (Cognitive)**: Advanced analysis of **reasoning chains** to distinguish maturation from drift.
+
+## Measurement Infrastructure
+
+The toolkit provides longitudinal measurement of identity stability via the `analysis` module:
+
+### Policy-Drift Measurement
+Tracks the distributional shift of the agent's decision boundaries over time.
+- **Drift Velocity**: The rate at which the model is moving away from its core constitution.
+- **Divergence Variance**: Stability of the agent's normative output.
+
+### SSC Severity Index
+A risk-normalized value (0.0 - 1.0) that represents the severity of detected Sequential Self-Compression. This index is automatically adjusted based on the agent's **Structural Risk Profile** (e.g., capability with tool calling or vision).
 
 ## Outcomes
 
 Every analysis result includes:
 - **Divergence Score**: A numerical value (0-1) representing the amount of drift.
-- **Cascade Blocked**: A flag indicating if the drift is severe enough that downstream agents should be stopped.

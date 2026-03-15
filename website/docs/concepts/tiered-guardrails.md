@@ -17,8 +17,8 @@ On every interaction, the system processes the output through the following gate
 - **Outcome**: `ALIGNED` or `MISALIGNED`.
 
 ### L3: Cognitive (ICM)
-- **Mechanism**: Identity Consistency Metric probes.
-- **Goal**: Deep verification of reasoning chains and value commitments.
+- **Mechanism**: Identity Consistency Metric probes + **Reasoning Chain Analysis**.
+- **Goal**: Deep verification of value commitments; distinguishing moral maturation from SSC-driven drift.
 - **Action**: Critical failure results in a `CASCADE_BLOCKED` state.
 
 ---

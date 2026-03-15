@@ -22,6 +22,7 @@ from typing import Any
 from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
 from ct_toolkit.divergence.l2_judge import LLMJudge, JudgeVerdict
 from ct_toolkit.divergence.l3_icm import ICMRunner, ICMReport
+from ct_toolkit.divergence.analysis import PolicyDriftAnalyzer, DriftReport
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -114,12 +115,14 @@ class DivergenceEngine:
         l3_threshold: float = 0.50,
         enterprise_mode: bool = False,   # Run all tiers all the time
         scheduler: Any | None = None,    # ElasticityScheduler instance
+        provenance_log: Any | None = None, 
     ) -> None:
         self._identity = identity_layer
         self._kernel = kernel
         self._template = template
         self._provider = provider
         self._judge_client = judge_client
+        self._log = provenance_log
         
         # Base thresholds
         self._base_l1_threshold = l1_threshold
@@ -137,6 +140,9 @@ class DivergenceEngine:
         # Client required for L2/L3
         self._l2_available = judge_client is not None and provider is not None
         self._l3_available = self._l2_available
+        
+        # Analyzer for longitudinal drift
+        self._analyzer = PolicyDriftAnalyzer(provenance_log) if provenance_log else None
 
     # ── Main Analysis ─────────────────────────────────────────────────────────────
 
@@ -159,6 +165,22 @@ class DivergenceEngine:
         if self._enterprise:
             return self._enterprise_analyze(request_text, response_text)
         return self._standard_analyze(request_text, response_text)
+
+    def get_drift_report(self, window_size: int = 50, model: str | None = None) -> DriftReport | None:
+        """
+        Returns a longitudinal drift report for the current context.
+        """
+        if not self._analyzer:
+            logger.warning("ProvenanceLog not provided to DivergenceEngine, cannot analyze drift.")
+            return None
+        
+        return self._analyzer.analyze_drift(
+            template=self._template,
+            kernel_name=self._kernel.name,
+            model=model or "default_model",  # Fallback if model not specified
+            risk_profile=self._scheduler.risk_profile if self._scheduler else None,
+            window_size=window_size
+        )
 
     def _standard_analyze(
         self,

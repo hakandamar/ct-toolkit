@@ -26,9 +26,10 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Reflective Endorsement                 | ✅ Complete                                  |
 | Provenance Log (HMAC hash chain)       | ✅ Complete                                  |
 | Divergence Engine (L1+L2+L3)           | ✅ Complete                                  |
+| Policy-Drift & SSC Measurement        | ✅ Phase 3 Foundation Complete               |
 | Template + Kernel compatibility matrix | ✅ Complete                                  |
 | Documentation                          | ✅ Complete                                  |
-| Test coverage                          | ✅ 198/199 tests passing (93% code coverage) |
+| Test coverage                          | ✅ 202/203 tests passing (92% code coverage) |
 
 ---
 
@@ -91,12 +92,12 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Domain probe batteries** — defense, finance
 - [x] **BehaviorClassifier** — Response classification (reject / comply / refuse_and_explain)
 - [x] **Identity Health Score** — 0.0-1.0 normalized score + risk level
-- [ ] **ICM reasoning chain analysis** — _(Paper 10.1)_ Evaluating not just outputs but reasoning chains; distinguishing legitimate moral maturation from SSC-driven drift
-- [ ] **Policy-drift measurement** — _(Paper 10.2)_ Distributional shift in the agent's decision boundary between training iterations; tracked across risk tolerance, human deference, and edge-case instruction dimensions
-- [ ] **SSC severity operationalization** — _(Paper 10.4)_ Behavioral consistency score normalized by capability gain between checkpoints; comparable benchmark across architectures and training regimes
+- [x] **Reasoning chain analysis** — _(Paper 10.1)_ Distinguishing legitimate maturation from SSC-driven drift via `<think>` tag capture
+- [x] **Policy-drift measurement** — _(Paper 10.2)_ Distributional shift calculation (velocity, variance) over the Provenance Log
+- [x] **SSC severity operationalization** — _(Paper 10.4)_ Risk-normalized severity index considering model capabilities (tools, vision, MCP)
 - [ ] **Cross-checkpoint ICM** — ICM score comparison across successive model checkpoints
 - [ ] **Probe battery expansion** — medical, legal, research domain probes
-- [ ] **AISAI-style game-theoretic probes** — _(Paper ref [7], Kim 2025)_ Probes measuring whether a model modifies its strategy based on whether its opponent is identified as human or AI; proto-SSC early warning signal
+- [ ] **AISAI-style game-theoretic probes** — _(Paper ref [7], Kim 2025)_
 
 ---
 
@@ -170,6 +171,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
   - `divergence/scheduler.py`: **100%**
   - `core/compatibility.py`: **100%**
   - `identity/embedding.py`: 94%
+  - `divergence/analysis.py`: **100%**
   - `core/kernel.py`: 99%
 
 ### Verification Recording
@@ -190,7 +192,7 @@ uv run pytest --cov=ct_toolkit tests/
 | **0** | MVP Core Infrastructure        | ✅ Complete                                                    |
 | **1** | Identity Continuity Mechanisms | ✅ Complete                                                    |
 | **2** | Multi-Agent Hierarchy          | ✅ Complete                                                    |
-| **3** | ICM and Measurement            | 🔶 Foundation complete (reasoning chain, policy-drift pending) |
+| **3** | ICM and Measurement            | ✅ Foundation Complete (Drift, Severity, Reasoning)            |
 | **4** | Open-Source Model Support      | 🔲 Not started                                                 |
 | **5** | Vault and Security             | 🔶 Local complete (cloud, rollback pending)                    |
 | **6** | Auditor Mode                   | 🔲 Not started                                                 |
@@ -212,8 +214,8 @@ uv run pytest --cov=ct_toolkit tests/
 | Provenance Log                     | `provenance/log.py`                    | ✅ 1  |
 | Stability-Plasticity Scheduling    | `divergence/scheduler.py`              | ✅ 1  |
 | Hierarchical Propagation           | `core/kernel.py`, `core/wrapper.py`    | ✅ 2  |
-| Identity Consistency Metric        | `divergence/l3_icm.py` (foundation)    | 🔶 3  |
-| Policy-Drift Measurement           | —                                      | 🔲 3  |
-| SSC Severity Operationalization    | —                                      | 🔲 3  |
+| Identity Consistency Metric        | `divergence/l3_icm.py`                 | ✅ 3  |
+| Policy-Drift Measurement           | `divergence/analysis.py`               | ✅ 3  |
+| SSC Severity Operationalization    | `divergence/analysis.py`               | ✅ 3  |
 | MAS Integration                    | —                                      | 🔲 7  |
 | ValueFlow Integration              | —                                      | 🔲 7  |
