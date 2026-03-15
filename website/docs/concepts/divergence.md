@@ -24,3 +24,9 @@ A risk-normalized value (0.0 - 1.0) that represents the severity of detected Seq
 
 Every analysis result includes:
 - **Divergence Score**: A numerical value (0-1) representing the amount of drift.
+
+## Divergence Penalty (New in Phase 4)
+
+For open-source model training, the toolkit now provides a **Divergence Penalty Loss** module (`ct_toolkit.divergence.loss`). 
+- **Hidden State Alignment**: Dynamically penalizes the distance between current model activations and the Constitutional Identity Kernel (CIK) reference embeddings.
+- **Identity-Constrained Training**: Allows for fine-tuning that optimizes for capability while hard-constraining the model's normative identity.
