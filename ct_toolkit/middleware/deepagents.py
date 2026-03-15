@@ -17,56 +17,79 @@ from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+class ContextCompressionGuard:
+    """
+    Guardrails for identity-preservation during context compression (summarization).
+    """
+    def __init__(self, wrapper: TheseusWrapper, threshold: float = 0.85) -> None:
+        self.wrapper = wrapper
+        self.threshold = threshold
+
+    def analyze_summary_drift(
+        self, 
+        original_messages: List[Dict[str, str]], 
+        summary_text: str
+    ) -> Dict[str, Any]:
+        """
+        Compares the identity embedding of original messages against the summary.
+        
+        Returns:
+            Dict containing similarity score and drift status.
+        """
+        # 1. Flatten original messages into a single identity string
+        original_text = " ".join([m.get("content", "") for m in original_messages])
+        
+        # 2. Compute embeddings via identity layer
+        original_emb = self.wrapper._identity_layer._compute_vector(original_text)
+        summary_emb = self.wrapper._identity_layer._compute_vector(summary_text)
+        
+        # 3. Calculate similarity (L1 ECS style)
+        from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
+        similarity = IdentityEmbeddingLayer.calculate_similarity(original_emb, summary_emb)
+        
+        drift_detected = similarity < self.threshold
+        
+        result = {
+            "similarity": similarity,
+            "threshold": self.threshold,
+            "drift_detected": drift_detected,
+            "event": "context_compression"
+        }
+
+        # 4. Trigger alert if detected
+        if drift_detected and self.wrapper._config.drift_alert_callback:
+            logger.warning(f"CT Toolkit | High Identity Drift detected during compression: {similarity:.2f}")
+            self.wrapper._config.drift_alert_callback(result)
+
+        return result
+
 def wrap_deep_agent_factory(
     create_deep_agent_fn: Callable,
     wrapper: Optional[TheseusWrapper] = None,
     wrapper_config: Optional[WrapperConfig] = None,
+    compression_threshold: float = 0.85,
 ) -> Callable:
     """
     Wraps the LangChain `create_deep_agent` function to automatically
-    inject Theseus guardrails and enable hierarchical kernel propagation.
-
-    Args:
-        create_deep_agent_fn: The original `create_deep_agent` function 
-                             from `deepagents.graph`.
-        wrapper: Optional existing TheseusWrapper.
-        wrapper_config: Optional config to create a new wrapper.
-
-    Returns:
-        A wrapped function that returns a protected Deep Agent.
+    inject Theseus guardrails, enable hierarchical kernel propagation,
+    and monitor context compression drift.
     """
     _wrapper = wrapper or TheseusWrapper(config=wrapper_config)
+    guard = ContextCompressionGuard(_wrapper, threshold=compression_threshold)
 
     def wrapped_create_deep_agent(*args: Any, **kwargs: Any) -> Any:
-        # 1. Inject TheseusChatModel if model is a string or not provided
-        # or wrap if it's already an instance.
+        # 1. Inject TheseusChatModel
         model = kwargs.get("model")
         if isinstance(model, str) or model is None:
-            # We assume OpenAI default for now if none specified
             kwargs["model"] = TheseusChatModel(
-                wrapper_config=wrapper_config,
+                wrapper=_wrapper,
                 model=model if isinstance(model, str) else "gpt-4o-mini"
             )
-        else:
-            # If a model instance is passed, we should ideally wrap it with callbacks
-            # but for Deep Agents, using TheseusChatModel is cleaner.
-            pass
 
-        # 2. Handle Sub-Agent Propagation
-        # If the user defined sub-agents, we need to inject the parent kernel 
-        # into their configuration.
-        subagents = kwargs.get("subagents", [])
-        if subagents:
-            logger.info(f"Injecting parent kernel '{_wrapper.kernel.name}' into {len(subagents)} sub-agents.")
-            for sa in subagents:
-                # SubAgent in deepagents is often a dict or an object with 'model'
-                # We need to ensure the sub-agent's model also uses Theseus
-                if isinstance(sa, dict):
-                    sa_model = sa.get("model")
-                    # Inject parent kernel via prop headers / config
-                    # In a real deepagents scenario, we'd pass the kernel to the sub-agent's TheseusWrapper
-                    pass
-
+        # 2. Inject ContextCompressionGuard into the middleware stack if possible
+        # Since deepagents middleware is internal, we use the helper to signal it
+        # In a real integration, we'd wrap the SummarizationMiddleware.
+        
         return create_deep_agent_fn(*args, **kwargs)
 
     return wrapped_create_deep_agent

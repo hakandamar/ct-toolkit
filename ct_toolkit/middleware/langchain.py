@@ -194,10 +194,11 @@ class TheseusChatModel(BaseChatModel):
         *,
         provider: str = "openai",
         model: str = "gpt-4o-mini",
+        wrapper: Optional[TheseusWrapper] = None,
         wrapper_config: Optional[WrapperConfig] = None,
         **kwargs: Any,
     ) -> None:
-        _wrapper = TheseusWrapper(
+        _wrapper = wrapper or TheseusWrapper(
             provider=provider,
             config=wrapper_config,
         )

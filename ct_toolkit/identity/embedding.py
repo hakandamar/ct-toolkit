@@ -167,7 +167,8 @@ class IdentityEmbeddingLayer:
         return vector
 
     @staticmethod
-    def _cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
+    def calculate_similarity(a: np.ndarray, b: np.ndarray) -> float:
+        """Static method for cosine similarity calculation."""
         if a.shape != b.shape:
             # Safe fallback for dimension mismatch
             min_len = min(len(a), len(b))
@@ -178,3 +179,7 @@ class IdentityEmbeddingLayer:
         if norm_a == 0 or norm_b == 0:
             return 0.0
         return float(dot / (norm_a * norm_b))
+
+    @staticmethod
+    def _cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
+        return IdentityEmbeddingLayer.calculate_similarity(a, b)

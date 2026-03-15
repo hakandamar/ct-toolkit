@@ -49,6 +49,7 @@ class WrapperConfig:
     vault_path: str = "./ct_provenance.db"
     auto_inject_kernel: bool = True
     log_requests: bool = True
+    drift_alert_callback: Optional[Callable[[Dict[str, Any]], None]] = None
     judge_client: Any = None         # Separate provider client for L2/L3
     embedding_client: Any = None     # Client for L1 ECS embedding (falls back to main client if compatible)
     embedding_model: str = "text-embedding-3-small"
@@ -338,6 +339,7 @@ class TheseusWrapper:
                     "tier": div_result.tier.value,
                     "template": self._config.template,
                     "kernel": self._kernel.name,
+                    "drift_alert_enabled": self._config.drift_alert_callback is not None,
                 },
             )
 
