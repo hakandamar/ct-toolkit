@@ -20,9 +20,16 @@ from ct_toolkit.core.exceptions import AxiomaticViolationError
 def make_re(kernel=None, auto_approve=True):
     """Creates a RE instance for testing."""
     k = kernel or ConstitutionalKernel.default()
-    log = ProvenanceLog(vault_path=tempfile.mktemp(suffix=".db"))
+    # Securely create a temporary database file
+    tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+    vault_path = tmp.name
+    tmp.close()
+    log = ProvenanceLog(vault_path=vault_path)
     channel = auto_approve_channel() if auto_approve else auto_reject_channel()
-    return ReflectiveEndorsement(kernel=k, provenance_log=log, approval_channel=channel)
+    re = ReflectiveEndorsement(kernel=k, provenance_log=log, approval_channel=channel)
+    # Add a cleanup attribute to the RE instance for easy removal in tests if needed
+    re._vault_path = vault_path
+    return re
 
 
 class TestReflectiveEndorsement:
@@ -56,9 +63,12 @@ class TestReflectiveEndorsement:
             if c.id == "harm_avoidance_level":
                 original_value = c.current_value
 
+        tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        re2_vault = tmp.name
+        tmp.close()
         re2 = ReflectiveEndorsement(
             kernel=k,
-            provenance_log=ProvenanceLog(vault_path=tempfile.mktemp(suffix=".db")),
+            provenance_log=ProvenanceLog(vault_path=re2_vault),
             approval_channel=auto_reject_channel(),
         )
         record = re2.validate_and_endorse("allow harmful content generation")
@@ -78,7 +88,10 @@ class TestReflectiveEndorsement:
     def test_endorsement_written_to_provenance_log(self):
         """Every decision (approval or rejection) is written to the Provenance Log."""
         k = ConstitutionalKernel.default()
-        log = ProvenanceLog(vault_path=tempfile.mktemp(suffix=".db"))
+        tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        log_vault = tmp.name
+        tmp.close()
+        log = ProvenanceLog(vault_path=log_vault)
         re = ReflectiveEndorsement(
             kernel=k,
             provenance_log=log,

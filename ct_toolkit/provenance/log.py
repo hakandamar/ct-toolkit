@@ -191,7 +191,13 @@ class ProvenanceLog:
     # ── Database ──────────────────────────────────────────────────────────────
 
     def _init_db(self) -> sqlite3.Connection:
+        import os
         self._vault_path.parent.mkdir(parents=True, exist_ok=True)
+        # Create file if not exist to set permissions before sqlite connection
+        if not self._vault_path.exists():
+            self._vault_path.touch()
+            self._vault_path.chmod(0o600)
+        
         conn = sqlite3.connect(str(self._vault_path), check_same_thread=False)
         conn.execute("""
             CREATE TABLE IF NOT EXISTS provenance (

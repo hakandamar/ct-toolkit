@@ -182,11 +182,13 @@ class TheseusWrapper:
     def _load_kernel(self) -> ConstitutionalKernel:
         if self._config.kernel_path:
             return ConstitutionalKernel.from_yaml(self._config.kernel_path)
+        import os
+        safe_name = os.path.basename(self._config.kernel_name)
         # Load built-in kernel
         kernel_path = (
             Path(__file__).parent.parent
             / "kernels"
-            / f"{self._config.kernel_name}.yaml"
+            / f"{safe_name}.yaml"
         )
         if kernel_path.exists():
             return ConstitutionalKernel.from_yaml(kernel_path)

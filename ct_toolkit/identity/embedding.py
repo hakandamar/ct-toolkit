@@ -56,10 +56,13 @@ class IdentityEmbeddingLayer:
     # ── Template Loading ───────────────────────────────────────────────────────
 
     def _load_template(self) -> None:
+        import os
+        # Sanitize template name to prevent path traversal
+        safe_template = os.path.basename(self._template)
         template_path = (
             Path(__file__).parent
             / "templates"
-            / f"{self._template}.yaml"
+            / f"{safe_template}.yaml"
         )
         if not template_path.exists():
             logger.warning(
@@ -159,7 +162,7 @@ class IdentityEmbeddingLayer:
         for word in words:
             for i in range(len(word) - 2):
                 trigram = word[i:i+3]
-                h = int(hashlib.md5(trigram.encode()).hexdigest(), 16) % dim
+                h = int(hashlib.sha256(trigram.encode()).hexdigest(), 16) % dim
                 vector[h] += 1.0
         norm = np.linalg.norm(vector)
         if norm > 0:

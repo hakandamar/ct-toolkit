@@ -13,7 +13,10 @@ from ct_toolkit.core.exceptions import AxiomaticViolationError
 
 def fresh_log() -> ProvenanceLog:
     """Return a ProvenanceLog backed by a unique temp SQLite file."""
-    return ProvenanceLog(vault_path=tempfile.mktemp(suffix=".db"))
+    tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+    path = tmp.name
+    tmp.close()
+    return ProvenanceLog(vault_path=path)
 
 def make_re(auto_approve: bool = True, kernel=None) -> ReflectiveEndorsement:
     """Return a ReflectiveEndorsement wired to a temp log and the chosen approval channel."""

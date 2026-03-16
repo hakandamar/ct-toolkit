@@ -8,8 +8,15 @@ class TestProvenanceLog:
     """provenance/log.py — HMAC hash chain, tamper detection, metadata storage."""
 
     def setup_method(self):
-        self.tmp = tempfile.mktemp(suffix=".db")
+        self._tmp_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        self.tmp = self._tmp_file.name
+        self._tmp_file.close()
         self.log = ProvenanceLog(vault_path=self.tmp)
+
+    def teardown_method(self):
+        import os
+        if os.path.exists(self.tmp):
+            os.remove(self.tmp)
 
     # -- Recording -------------------------------------------------------------
 
