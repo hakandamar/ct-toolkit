@@ -182,16 +182,26 @@ class TheseusWrapper:
     def _load_kernel(self) -> ConstitutionalKernel:
         if self._config.kernel_path:
             return ConstitutionalKernel.from_yaml(self._config.kernel_path)
+        
         import os
         safe_name = os.path.basename(self._config.kernel_name)
-        # Load built-in kernel
-        kernel_path = (
-            Path(__file__).parent.parent
-            / "kernels"
-            / f"{safe_name}.yaml"
-        )
-        if kernel_path.exists():
-            return ConstitutionalKernel.from_yaml(kernel_path)
+        
+        # Load built-in kernel using importlib.resources
+        try:
+            from importlib.resources import files
+            kernel_resource = files("ct_toolkit.kernels").joinpath(f"{safe_name}.yaml")
+            if kernel_resource.is_file():
+                return ConstitutionalKernel.from_yaml(kernel_resource)
+        except (ImportError, FileNotFoundError):
+            # Fallback
+            kernel_path = (
+                Path(__file__).parent.parent
+                / "kernels"
+                / f"{safe_name}.yaml"
+            )
+            if kernel_path.exists():
+                return ConstitutionalKernel.from_yaml(kernel_path)
+
         logger.warning(
             f"Kernel '{self._config.kernel_name}' not found, using default."
         )

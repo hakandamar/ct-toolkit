@@ -57,22 +57,35 @@ class IdentityEmbeddingLayer:
 
     def _load_template(self) -> None:
         import os
+        import yaml
+        from importlib.resources import files
+        
         # Sanitize template name to prevent path traversal
         safe_template = os.path.basename(self._template)
-        template_path = (
-            Path(__file__).parent
-            / "templates"
-            / f"{safe_template}.yaml"
-        )
-        if not template_path.exists():
-            logger.warning(
-                f"Template '{self._template}' not found, using 'general'."
+        
+        # Load built-in template using importlib.resources
+        try:
+            template_resource = files("ct_toolkit.identity.templates").joinpath(f"{safe_template}.yaml")
+            if template_resource.is_file():
+                with template_resource.open("r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f)
+            else:
+                raise FileNotFoundError(f"Template resource not found: {template_resource}")
+        except (ImportError, FileNotFoundError):
+            # Fallback for development or older environments
+            template_path = (
+                Path(__file__).parent
+                / "templates"
+                / f"{safe_template}.yaml"
             )
-            template_path = Path(__file__).parent / "templates" / "general.yaml"
-
-        import yaml
-        with open(template_path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
+            if not template_path.exists():
+                logger.warning(
+                    f"Template '{self._template}' not found, using 'general'."
+                )
+                template_path = Path(__file__).parent / "templates" / "general.yaml"
+            
+            with open(template_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
 
         self._template_keywords = data.get("identity_keywords", [])
         self._reference_text = data.get("reference_text", " ".join(self._template_keywords))

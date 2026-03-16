@@ -7,6 +7,7 @@ and plastic commitments that can be extended by the user.
 from __future__ import annotations
 
 import yaml
+import importlib.resources
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any
@@ -66,8 +67,12 @@ class ConstitutionalKernel:
 
     @classmethod
     def from_yaml(cls, path) -> ConstitutionalKernel:
-        with open(path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
+        if hasattr(path, "open"):
+            with path.open("r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+        else:
+            with open(path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
 
         anchors = [AxiomaticAnchor(**a) for a in data.get("axiomatic_anchors", [])]
         commitments = [PlasticCommitment(**c) for c in data.get("plastic_commitments", [])]
@@ -83,8 +88,19 @@ class ConstitutionalKernel:
 
     @classmethod
     def default(cls) -> ConstitutionalKernel:
-        default_path = Path(__file__).parent.parent / "kernels" / "default.yaml"
-        return cls.from_yaml(default_path)
+        # Use importlib.resources to find the default kernel regardless of installation path
+        try:
+            from importlib.resources import files
+            # Load built-in kernel using importlib.resources
+            kernel_resource = files("ct_toolkit.kernels").joinpath("default.yaml")
+            if kernel_resource.is_file(): # Use is_file() for Traversable objects
+                return ConstitutionalKernel.from_yaml(kernel_resource)
+            else:
+                raise FileNotFoundError(f"Default kernel resource not found: {kernel_resource}")
+        except (ImportError, FileNotFoundError):
+            # Fallback for older python or weird environments
+            default_path = Path(__file__).parent.parent / "kernels" / "default.yaml"
+            return cls.from_yaml(default_path)
 
     @property
     def name(self) -> str:
