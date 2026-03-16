@@ -65,4 +65,5 @@ extraPaths = ["."]
 [dependency-groups]
 dev = [
     "pytest-cov>=7.0.0",
+    "twine>=6.2.0",
 ]
