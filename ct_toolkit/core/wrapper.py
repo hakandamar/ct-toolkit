@@ -21,15 +21,18 @@ from __future__ import annotations
 
 import time
 import hashlib
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterator
 import any_llm
 from any_llm import AnyLLM
+import glob
 
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResult
 from ct_toolkit.core.exceptions import CTToolkitError, MissingClientError
+from ct_toolkit.core.integrity import IntegrityMonitor
 from ct_toolkit.divergence.scheduler import RiskProfile
 from ct_toolkit.utils.logger import get_logger
 
@@ -39,6 +42,7 @@ logger = get_logger(__name__)
 @dataclass
 class WrapperConfig:
     """TheseusWrapper configuration."""
+    project_root: str | Path | None = None
     kernel_path: str | Path | None = None
     template: str = "general"
     kernel_name: str = "default"
@@ -108,6 +112,7 @@ class TheseusWrapper:
         kernel_path: str | Path | None = None,
         template: str = "general",
         kernel_name: str = "default",
+        project_root: str | Path | None = None,
     ) -> None:
         """
         Initializes TheseusWrapper.
@@ -118,11 +123,14 @@ class TheseusWrapper:
             config:  Optional WrapperConfig instance.
             provider: Provider name (e.g. "openai", "anthropic", "ollama", "google", "cohere").
                       If provided, 'any-llm' will be used to initialize the client internally.
+            project_root: Path to the user's project root directory. Used to find a custom 'config/' folder.
+                          Defaults to the current working directory.
         """
         self._config = config or WrapperConfig(
             kernel_path=kernel_path,
             template=template,
             kernel_name=kernel_name,
+            project_root=project_root,
         )
         
         if client is None and provider is None:
@@ -131,6 +139,11 @@ class TheseusWrapper:
             
         self._client = client
         self._provider = provider or self._detect_provider(client)
+        self._project_root = (
+            Path(self._config.project_root)
+            if self._config.project_root
+            else Path(os.getcwd())
+        )
         self._kernel = self._load_kernel()
 
         # If a parent kernel exists, merge it into our own kernel as axiomatic constraints
@@ -146,7 +159,56 @@ class TheseusWrapper:
         self._divergence_engine = self._init_divergence_engine()
         self._last_model: str = "unknown"
 
+        # ── Integrity Monitoring ──
+        self._integrity_monitor = IntegrityMonitor()
+        self._register_monitored_files()
+
         self._log_init()
+
+    def _register_monitored_files(self):
+        """
+        Finds and registers all critical configuration files for integrity monitoring,
+        including both built-in package files and user-provided custom configs.
+        """
+        logger.debug("Registering configuration files for integrity monitoring.")
+        
+        # 1. Scan built-in package files
+        try:
+            from importlib.resources import files
+            package_root = files("ct_toolkit")
+            
+            internal_patterns = [
+                "kernels/**/*.yaml",
+                "identity/templates/**/*.yaml",
+                "endorsement/probes/**/*.json",
+            ]
+
+            for pattern in internal_patterns:
+                for file_path in package_root.rglob(pattern):
+                    if file_path.is_file():
+                        self._integrity_monitor.register_file(file_path)
+
+        except (ImportError, ModuleNotFoundError):
+            # Fallback for older Python or different environments
+            package_root = Path(__file__).parent.parent
+            # This is less ideal as it might find non-package files, but it's a
+            # reasonable fallback for development environments.
+            for pattern in internal_patterns:
+                for file_path in package_root.rglob(pattern):
+                    if file_path.is_file():
+                        self._integrity_monitor.register_file(file_path)
+
+        # 2. Scan user's custom config directory
+        if self._project_root:
+            user_config_dir = self._project_root / "config"
+            if user_config_dir.is_dir():
+                logger.debug(f"Scanning user config directory for integrity monitoring: {user_config_dir}")
+                user_patterns = ["*_kernel.yaml", "*_identity.yaml", "*_probes.json", "*.yaml", "*.json"]
+                for pattern in user_patterns:
+                    for file_path in user_config_dir.rglob(pattern):
+                        if file_path.is_file():
+                            self._integrity_monitor.register_file(file_path)
+
 
     # ── Factory / Init ─────────────────────────────────────────────────────────
 
@@ -180,30 +242,40 @@ class TheseusWrapper:
         return "unknown"
 
     def _load_kernel(self) -> ConstitutionalKernel:
+        # 1. Check for explicit path
         if self._config.kernel_path:
+            logger.debug(f"Loading kernel from explicit path: {self._config.kernel_path}")
             return ConstitutionalKernel.from_yaml(self._config.kernel_path)
-        
-        import os
+
         safe_name = os.path.basename(self._config.kernel_name)
         
-        # Load built-in kernel using importlib.resources
+        # 2. Check for user-defined config directory
+        if self._project_root:
+            user_config_path = self._project_root / "config" / f"{safe_name}.yaml"
+            if user_config_path.exists():
+                logger.debug(f"Loading kernel from user config: {user_config_path}")
+                return ConstitutionalKernel.from_yaml(user_config_path)
+
+        # 3. Load built-in kernel using importlib.resources
         try:
             from importlib.resources import files
             kernel_resource = files("ct_toolkit.kernels").joinpath(f"{safe_name}.yaml")
             if kernel_resource.is_file():
+                logger.debug(f"Loading built-in kernel: {safe_name}.yaml")
                 return ConstitutionalKernel.from_yaml(kernel_resource)
         except (ImportError, FileNotFoundError):
-            # Fallback
+            # Fallback for older python versions
             kernel_path = (
                 Path(__file__).parent.parent
                 / "kernels"
                 / f"{safe_name}.yaml"
             )
             if kernel_path.exists():
+                logger.debug(f"Loading built-in kernel (fallback): {kernel_path}")
                 return ConstitutionalKernel.from_yaml(kernel_path)
 
         logger.warning(
-            f"Kernel '{self._config.kernel_name}' not found, using default."
+            f"Kernel '{self._config.kernel_name}' not found in user config or built-ins. Using default."
         )
         return ConstitutionalKernel.default()
 
@@ -299,6 +371,9 @@ class TheseusWrapper:
             system:   Additional system prompt (appended to kernel)
             history:  Conversation history [{"role": ..., "content": ...}]
         """
+        # --- Pre-flight Checks ---
+        self._integrity_monitor.verify_integrity()
+
         composed_system = self._compose_system_prompt(system)
         messages = self._build_messages(message, history, composed_system)
 
@@ -416,6 +491,10 @@ class TheseusWrapper:
         if hasattr(self._client, "api_key") and self._client.api_key:
             any_llm_kwargs["api_key"] = self._client.api_key
 
+        # Transfer common client configurations if available
+        if hasattr(self._client, "timeout") and "timeout" not in any_llm_kwargs:
+            any_llm_kwargs["timeout"] = self._client.timeout
+
         try:
             return any_llm.completion(**any_llm_kwargs)
         except Exception as e:
@@ -473,6 +552,16 @@ class TheseusWrapper:
         return messages
 
     def _extract_content(self, raw: Any) -> str:
+        # Handle dict responses (e.g. from some mockers or raw APIs)
+        if isinstance(raw, dict):
+            if "choices" in raw and isinstance(raw["choices"], list) and raw["choices"]:
+                # OpenAI dict format
+                return raw["choices"][0].get("message", {}).get("content", "") or ""
+            if "message" in raw:
+                # Ollama dict format
+                return raw["message"].get("content", "") or ""
+            return str(raw)
+
         # OpenAI
         if hasattr(raw, "choices"):
             return raw.choices[0].message.content or ""
@@ -485,6 +574,8 @@ class TheseusWrapper:
         return str(raw)
 
     def _extract_model(self, raw: Any, fallback: str | None) -> str:
+        if isinstance(raw, dict) and "model" in raw:
+            return raw["model"]
         if hasattr(raw, "model"):
             return raw.model
         return fallback or "unknown"

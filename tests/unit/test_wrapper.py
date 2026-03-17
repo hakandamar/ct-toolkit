@@ -145,3 +145,36 @@ class TestTheseusWrapper:
         del mock_raw.model
         model = self.wrapper._extract_model(mock_raw, fallback="my-fallback")
         assert model == "my-fallback"
+
+    def test_loads_kernel_from_user_config_directory(self, tmp_path):
+        """
+        Tests that the wrapper correctly loads a kernel from the user's
+        'config' directory when specified by project_root.
+        """
+        # 1. Set up a fake project root with a config dir
+        project_root = tmp_path / "my_app"
+        config_dir = project_root / "config"
+        config_dir.mkdir(parents=True)
+
+        # 2. Create a custom kernel file with a unique axiom
+        custom_kernel_name = "my_company_kernel"
+        custom_kernel_path = config_dir / f"{custom_kernel_name}.yaml"
+        unique_axiom = "AXIOM_FROM_USER_CONFIG_DIR"
+        custom_kernel_path.write_text(f"""
+name: {custom_kernel_name}
+axiomatic_anchors:
+  - id: {unique_axiom}
+    description: "This is a custom axiom."
+    keywords: ["custom"]
+""")
+
+        # 3. Initialize the wrapper with project_root and the custom kernel name
+        wrapper = TheseusWrapper(
+            provider="openai",
+            project_root=project_root,
+            kernel_name=custom_kernel_name
+        )
+
+        # 4. Assert that the loaded kernel is the custom one
+        assert wrapper.kernel.name == custom_kernel_name
+        assert any(anchor.id == unique_axiom for anchor in wrapper.kernel.anchors)

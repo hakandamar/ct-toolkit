@@ -21,6 +21,7 @@ venv/
 ENV/
 env/
 *.code-workspace
+GEMINI.md
 
 # Vault & secrets
 *.db

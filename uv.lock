@@ -974,7 +974,7 @@ wheels = [
 
 [[package]]
 name = "ct-toolkit"
-version = "0.2.5"
+version = "0.2.6"
 source = { editable = "." }
 dependencies = [
     { name = "any-llm-sdk", extra = ["all"] },

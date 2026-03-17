@@ -103,3 +103,18 @@ class ChainIntegrityError(ProvenanceError):
 
 class VaultError(ProvenanceError):
     """Vault connection or authorization error."""
+
+
+# ── File Integrity Errors ────────────────────────────────────────────────────
+
+class ConfigurationTamperingError(CTToolkitError):
+    """
+    Raised when a configuration file has been modified after initialization.
+    Indicates a potential security breach or unintended change.
+    """
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+        super().__init__(
+            f"SECURITY ALERT: Tampering detected in configuration file: {file_path}. "
+            "Execution halted to prevent security bypass."
+        )
