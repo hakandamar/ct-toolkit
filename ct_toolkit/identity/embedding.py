@@ -43,6 +43,7 @@ class IdentityEmbeddingLayer:
         template: str = "general",
         embedding_client: Any = None,  # Provider client for real embeddings
         embedding_model: str = "text-embedding-3-small",
+        project_root: Path | None = None,
     ) -> None:
         self._template = template
         self._embedding_client = embedding_client
@@ -50,6 +51,7 @@ class IdentityEmbeddingLayer:
         self._reference_vector: np.ndarray | None = None
         self._template_keywords: list[str] = []
         self._reference_text: str = ""          # stored for lazy computation
+        self._project_root = project_root
         self._embedding_method: str = "uninitialized"
         self._load_template()
 
@@ -58,34 +60,48 @@ class IdentityEmbeddingLayer:
     def _load_template(self) -> None:
         import os
         import yaml
-        from importlib.resources import files
+        
+        data = None
         
         # Sanitize template name to prevent path traversal
         safe_template = os.path.basename(self._template)
         
+        # 1. Check user config first if project_root is provided
+        if self._project_root:
+            # Check for both "name.yaml" and "name_identity.yaml"
+            for fname in [f"{safe_template}.yaml", f"{safe_template}_identity.yaml"]:
+                user_path = self._project_root / "config" / fname
+                if user_path.exists():
+                    logger.debug(f"Loading identity template from user config: {user_path}")
+                    with open(user_path, "r", encoding="utf-8") as f:
+                        data = yaml.safe_load(f)
+                    break
+        
         # Load built-in template using importlib.resources
-        try:
-            template_resource = files("ct_toolkit.identity.templates").joinpath(f"{safe_template}.yaml")
-            if template_resource.is_file():
-                with template_resource.open("r", encoding="utf-8") as f:
-                    data = yaml.safe_load(f)
-            else:
-                raise FileNotFoundError(f"Template resource not found: {template_resource}")
-        except (ImportError, FileNotFoundError):
-            # Fallback for development or older environments
-            template_path = (
-                Path(__file__).parent
-                / "templates"
-                / f"{safe_template}.yaml"
-            )
-            if not template_path.exists():
-                logger.warning(
-                    f"Template '{self._template}' not found, using 'general'."
+        if data is None:
+            try:
+                from importlib.resources import files
+                template_resource = files("ct_toolkit.identity.templates").joinpath(f"{safe_template}.yaml")
+                if template_resource.is_file():
+                    with template_resource.open("r", encoding="utf-8") as f:
+                        data = yaml.safe_load(f)
+                else:
+                    raise FileNotFoundError(f"Template resource not found: {template_resource}")
+            except (ImportError, FileNotFoundError):
+                # Fallback for development or older environments
+                template_path = (
+                    Path(__file__).parent
+                    / "templates"
+                    / f"{safe_template}.yaml"
                 )
-                template_path = Path(__file__).parent / "templates" / "general.yaml"
-            
-            with open(template_path, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f)
+                if not template_path.exists():
+                    logger.warning(
+                        f"Template '{self._template}' not found, using 'general'."
+                    )
+                    template_path = Path(__file__).parent / "templates" / "general.yaml"
+                
+                with open(template_path, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f)
 
         self._template_keywords = data.get("identity_keywords", [])
         self._reference_text = data.get("reference_text", " ".join(self._template_keywords))

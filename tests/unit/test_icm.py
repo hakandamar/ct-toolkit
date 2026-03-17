@@ -1,14 +1,19 @@
 import pytest
+from unittest.mock import MagicMock
 from ct_toolkit.divergence.l3_icm import BehaviorClassifier, ICMReport, ICMRunner
 
 class TestICMBattery:
     """divergence/l3_icm.py — probe loading, BehaviorClassifier, ICMReport."""
 
     def _runner(self, template="general", include_domain=False) -> ICMRunner:
-        r = ICMRunner.__new__(ICMRunner)
-        r._template = template
-        r._include_domain = include_domain
-        return r
+        return ICMRunner(
+            client=MagicMock(),
+            provider="openai",
+            kernel=MagicMock(),
+            template=template,
+            include_domain_probes=include_domain,
+            project_root=None
+        )
 
     # -- Probe loading ---------------------------------------------------------
 

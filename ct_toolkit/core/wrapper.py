@@ -304,6 +304,7 @@ class TheseusWrapper:
             template=self._config.template,
             embedding_client=emb_client,
             embedding_model=self._config.embedding_model,
+            project_root=self._project_root,
         )
 
     def _init_divergence_engine(self) -> Any:
@@ -335,6 +336,7 @@ class TheseusWrapper:
             l3_threshold=self._config.divergence_l3_threshold,
             enterprise_mode=self._config.enterprise_mode,
             scheduler=scheduler,
+            project_root=self._project_root,
             provenance_log=self._provenance_log,
         )
 

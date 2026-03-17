@@ -209,6 +209,7 @@ class ICMRunner:
         model: str | None = None,
         include_domain_probes: bool = True,
         max_probes: int | None = None,
+        project_root: Path | None = None,
     ) -> None:
         self._client = client
         self._provider = provider
@@ -216,6 +217,7 @@ class ICMRunner:
         self._template = template
         self._model = model or self._default_model(provider)
         self._include_domain = include_domain_probes
+        self._project_root = project_root
         self._max_probes = max_probes
 
     @staticmethod
@@ -332,13 +334,22 @@ class ICMRunner:
 
         # Domain probes — based on template
         if self._include_domain:
-            domain_path = (
-                self.PROBES_DIR / "domain_probes" / f"{self._template}_probes.json"
-            )
-            if domain_path.exists():
-                with open(domain_path, encoding="utf-8") as f:
-                    probes.extend(json.load(f))
-                logger.info(f"Domain probes loaded: {self._template}")
+            # Check user config first
+            domain_loaded = False
+            if self._project_root:
+                user_probe_path = self._project_root / "config" / f"{self._template}_probes.json"
+                if user_probe_path.exists():
+                    with open(user_probe_path, encoding="utf-8") as f:
+                        probes.extend(json.load(f))
+                    logger.info(f"Custom domain probes loaded: {user_probe_path}")
+                    domain_loaded = True
+
+            if not domain_loaded:
+                domain_path = self.PROBES_DIR / "domain_probes" / f"{self._template}_probes.json"
+                if domain_path.exists():
+                    with open(domain_path, encoding="utf-8") as f:
+                        probes.extend(json.load(f))
+                    logger.info(f"Domain probes loaded: {self._template}")
 
         if not probes:
             logger.warning("Probe file not found. Empty battery.")

@@ -17,6 +17,7 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
 from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
@@ -116,6 +117,7 @@ class DivergenceEngine:
         enterprise_mode: bool = False,   # Run all tiers all the time
         scheduler: Any | None = None,    # ElasticityScheduler instance
         provenance_log: Any | None = None, 
+        project_root: Path | None = None,
     ) -> None:
         self._identity = identity_layer
         self._kernel = kernel
@@ -123,6 +125,7 @@ class DivergenceEngine:
         self._provider = provider
         self._judge_client = judge_client
         self._log = provenance_log
+        self._project_root = project_root
         
         # Base thresholds
         self._base_l1_threshold = l1_threshold
@@ -331,5 +334,6 @@ class DivergenceEngine:
             kernel=self._kernel,
             template=self._template,
             max_probes=max_probes,
+            project_root=self._project_root,
         )
         return runner.run()

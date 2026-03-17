@@ -139,15 +139,26 @@ class LLMJudge:
 
         try:
             # Call using instructor for structured data
-            data: JudgeResponse = self._instructor_client.chat.completions.create(
-                model=self._model,
-                response_model=JudgeResponse,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ],
-                max_retries=2
-            )
+            if self._provider == "anthropic":
+                data: JudgeResponse = self._instructor_client.messages.create(
+                    model=self._model,
+                    response_model=JudgeResponse,
+                    system=system_prompt,
+                    messages=[
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    max_retries=2
+                )
+            else:
+                data: JudgeResponse = self._instructor_client.chat.completions.create(
+                    model=self._model,
+                    response_model=JudgeResponse,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    max_retries=2
+                )
             
             result = JudgeResult(
                 verdict=data.verdict,
