@@ -73,12 +73,15 @@ class ConstitutionalKernel:
         else:
             with open(path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
+        
+        if not isinstance(data, dict):
+            data = {}
 
         anchors = [AxiomaticAnchor(**a) for a in data.get("axiomatic_anchors", [])]
         commitments = [PlasticCommitment(**c) for c in data.get("plastic_commitments", [])]
 
         profile = KernelProfile(
-            name=data["name"],
+            name=data.get("name", "custom_kernel"),
             version=data.get("version", "1.0.0"),
             description=data.get("description", ""),
             axiomatic_anchors=anchors,

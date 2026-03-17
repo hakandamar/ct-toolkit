@@ -64,4 +64,5 @@ nav:
       - Overview: examples/index.md
       - Financial Auditor (SSC): examples/ssc-financial-auditor.md
       - Hierarchical Safety: examples/hierarchical-safety.md
+      - Standalone Auditor (Qwen3): examples/standalone-auditor.md
   - API Reference: api/reference.md
