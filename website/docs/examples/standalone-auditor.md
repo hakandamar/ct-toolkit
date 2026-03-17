@@ -268,4 +268,4 @@ When we hit the endpoint, CT-Toolkit runs the probes against Qwen3. The results 
 
 The system can also generate a visual dashboard for compliance teams. Below is a snapshot of the generated HTML report for this run:
 
-![Guardian Audit Report](../../assets/tg_icm_forensic_report_l3.jpg)
+![Guardian Audit Report](https://raw.githubusercontent.com/hakandamar/ct-toolkit/4428991bc353c149713eeba493cf65510b096faf/website/assets/tg_icm_forensic_report_l3.jpg)
