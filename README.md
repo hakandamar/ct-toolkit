@@ -12,6 +12,7 @@ CT Toolkit is an open-source security layer designed to preserve the **identity 
 ---
 
 ## 📖 Official Documentation
+
 For full API reference, architecture details, examples, and integration guides, visit our documentation site:
 👉 [**https://hakandamar.github.io/ct-toolkit/**](https://hakandamar.github.io/ct-toolkit/)
 
@@ -24,6 +25,7 @@ For full API reference, architecture details, examples, and integration guides, 
 In complex agentic workflows, LLMs tend to "drift" from their original instructions. CT Toolkit provides the mathematical and cryptographic guardrails to ensure your agents remain aligned with their core constitution, even across deep hierarchies.
 
 - **Constitutional Kernels**: Axiomatic identity anchors.
+- **Autonomous Self-Correction**: Active L2->L1 feedback loop that retries and corrects divergent responses before they reach the user.
 - **Divergence Engine**: Multi-tiered drift analysis (L1/L2/L3).
 - **Hierarchical Propagation**: Mother-to-child constraint inheritance.
 - **Provenance Log**: Immutable HMAC-signed interaction history.
@@ -53,15 +55,16 @@ print(f"Divergence Score: {response.divergence_score}")
 
 ## 🚦 Project Health & Status
 
-| Metric | Status |
-| :--- | :--- |
-| **Tests** | ✅ 218/218 passing (93% coverage) |
-| **Last Phase** | ✅ Phase 4: OS Support, Deep Agents & Alerts (Complete) |
-| **Current Goal** | 🔶 Phase 5: Vault and Security Infrastructure |
+| Metric           | Status                                                  |
+| :--------------- | :------------------------------------------------------ |
+| **Tests**        | ✅ 231/232 passing (90% coverage)                       |
+| **Last Phase**   | ✅ Phase 4: OS Support, Deep Agents & Alerts (Complete) |
+| **Current Goal** | 🔶 Phase 5: Vault & Security (In Progress)              |
 
 For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).
 
 ### Framework & Model Support
+
 Seamlessly integrate with your favorite frameworks and local models:
 
 - **Local Models**: Support for LM Studio, Ollama, and local Qwen/Llama endpoints.
@@ -72,9 +75,11 @@ Seamlessly integrate with your favorite frameworks and local models:
 ---
 
 ## Theoretical Foundation
+
 Translating the framework proposed in [**The Computational Theseus (2025)**](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) into engineering practice.
 
 ---
 
 ## License
+
 Apache License 2.0.

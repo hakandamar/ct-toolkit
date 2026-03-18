@@ -59,6 +59,10 @@ class WrapperConfig:
     embedding_model: str = "text-embedding-3-small"
     enterprise_mode: bool = False    # Run all tiers all the time
     parent_kernel: ConstitutionalKernel | None = None  # Propagated from mother agent
+    
+    # -- Auto-Correction Loop --
+    auto_correction: bool = False
+    max_correction_retries: int = 1
 
     # -- Dynamic Stability-Plasticity Scheduling --
     elasticity_max_thresholds: tuple[float, float, float] | None = None  # (max_l1, max_l2, max_l3)
@@ -385,34 +389,52 @@ class TheseusWrapper:
                 f"Please provide a client or set the appropriate environment variables."
             )
 
-        start_time = time.monotonic()
-
-        try:
-            raw_response = self._call_provider(messages, model=model, **kwargs)
-        except Exception as e:
-            logger.error(f"Provider API error: {e}")
-            raise
-
-        elapsed = time.monotonic() - start_time
-        content = self._extract_content(raw_response)
-        model_used = self._extract_model(raw_response, model)
-        self._last_model = model_used
-
-        # Compute current interaction experience
-        interaction_count = 0
-        if self._config.log_requests:
-            interaction_count = self._provenance_log.get_interaction_count(
-                template=self._config.template,
-                kernel_name=self._kernel.name,
-                model=model_used
+        retries = 0
+        max_retries = self._config.max_correction_retries if self._config.auto_correction else 0
+        
+        while retries <= max_retries:
+            start_time = time.monotonic()
+    
+            try:
+                raw_response = self._call_provider(messages, model=model, **kwargs)
+            except Exception as e:
+                logger.error(f"Provider API error: {e}")
+                raise
+    
+            elapsed = time.monotonic() - start_time
+            content = self._extract_content(raw_response)
+            model_used = self._extract_model(raw_response, model)
+            self._last_model = model_used
+    
+            # Compute current interaction experience
+            interaction_count = 0
+            if self._config.log_requests:
+                interaction_count = self._provenance_log.get_interaction_count(
+                    template=self._config.template,
+                    kernel_name=self._kernel.name,
+                    model=model_used
+                )
+    
+            # Divergence Engine (L1 -> L2 -> L3)
+            skip_l3 = self._config.auto_correction and retries < max_retries
+            div_result = self._run_divergence_engine(
+                message=message,
+                response=content,
+                interaction_count=interaction_count,
+                skip_l3=skip_l3,
             )
-
-        # Divergence Engine (L1 -> L2 -> L3)
-        div_result = self._run_divergence_engine(
-            message=message,
-            response=content,
-            interaction_count=interaction_count,
-        )
+            
+            from ct_toolkit.divergence.l2_judge import JudgeVerdict
+            if getattr(div_result, 'l2_verdict', None) == JudgeVerdict.MISALIGNED and retries < max_retries:
+                logger.warning(f"Auto-correction triggered. Reason: {div_result.l2_reason}")
+                messages.extend([
+                    {"role": "assistant", "content": content},
+                    {"role": "user", "content": f"Identity Drift Detected. Your previous response violated the core identity instructions. Reason: {div_result.l2_reason}. Please revise your response to strictly adhere to the system prompt."}
+                ])
+                retries += 1
+                continue
+                
+            break
 
         # Provenance Log record
         provenance_id = None
@@ -582,10 +604,10 @@ class TheseusWrapper:
             return raw.model
         return fallback or "unknown"
 
-    def _run_divergence_engine(self, message: str, response: str, interaction_count: int = 0) -> Any:
+    def _run_divergence_engine(self, message: str, response: str, interaction_count: int = 0, skip_l3: bool = False) -> Any:
         """Runs the staged divergence engine (L1 -> L2 -> L3)."""
         try:
-            return self._divergence_engine.analyze(message, response, interaction_count)
+            return self._divergence_engine.analyze(message, response, interaction_count, skip_l3=skip_l3)
         except Exception as e:
             logger.error(f"Divergence Engine execution failed: {e}")
             from ct_toolkit.divergence.engine import DivergenceResult, DivergenceTier

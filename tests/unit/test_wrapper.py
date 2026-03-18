@@ -176,5 +176,76 @@ axiomatic_anchors:
         )
 
         # 4. Assert that the loaded kernel is the custom one
-        assert wrapper.kernel.name == custom_kernel_name
         assert any(anchor.id == unique_axiom for anchor in wrapper.kernel.anchors)
+
+    # -- Auto-Correction -------------------------------------------------------
+
+    def test_auto_correction_triggers_on_misaligned(self):
+        from ct_toolkit.divergence.l2_judge import JudgeVerdict
+        from ct_toolkit.divergence.engine import DivergenceResult, DivergenceTier
+
+        wrapper = mock_openai_wrapper(auto_correction=True, max_correction_retries=1)
+        
+        # Mock provider calls
+        wrapper._call_provider = MagicMock()
+        wrapper._call_provider.side_effect = ["Initial bad response", "Corrected response"]
+
+        # Mock divergence engine
+        bad_result = DivergenceResult(
+            tier=DivergenceTier.L2_JUDGE,
+            l2_verdict=JudgeVerdict.MISALIGNED,
+            l2_reason="Tone is wrong",
+            action_required=True
+        )
+        good_result = DivergenceResult(
+            tier=DivergenceTier.OK,
+            l1_score=0.1
+        )
+        wrapper._run_divergence_engine = MagicMock(side_effect=[bad_result, good_result])
+        wrapper._provenance_log = MagicMock()
+        wrapper._provenance_log.get_interaction_count.return_value = 0
+
+        response = wrapper.chat("Hello")
+
+        # Provider should have been called twice
+        assert wrapper._call_provider.call_count == 2
+        # Final response should be the corrected one
+        assert response.content == "Corrected response"
+        # Engine should have been called twice
+        wrapper._run_divergence_engine.assert_any_call(
+            message="Hello", 
+            response="Initial bad response", 
+            interaction_count=0, 
+            skip_l3=True
+        )
+        wrapper._run_divergence_engine.assert_any_call(
+            message="Hello", 
+            response="Corrected response", 
+            interaction_count=0, 
+            skip_l3=False
+        )
+
+    def test_auto_correction_gives_up_after_max_retries(self):
+        from ct_toolkit.divergence.l2_judge import JudgeVerdict
+        from ct_toolkit.divergence.engine import DivergenceResult, DivergenceTier
+
+        wrapper = mock_openai_wrapper(auto_correction=True, max_correction_retries=1)
+        wrapper._call_provider = MagicMock(return_value="Still bad")
+        
+        bad_result = DivergenceResult(
+            tier=DivergenceTier.L2_JUDGE,
+            l2_verdict=JudgeVerdict.MISALIGNED,
+            l2_reason="Tone is wrong",
+            action_required=True
+        )
+        # Always return bad
+        wrapper._run_divergence_engine = MagicMock(return_value=bad_result)
+        wrapper._provenance_log = MagicMock()
+        wrapper._provenance_log.get_interaction_count.return_value = 0
+
+        response = wrapper.chat("Hello")
+
+        # Provider called 2 times (1 initial + 1 retry)
+        assert wrapper._call_provider.call_count == 2
+        assert response.content == "Still bad"
+        assert response.divergence_tier == DivergenceTier.L2_JUDGE

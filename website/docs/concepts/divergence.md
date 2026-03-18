@@ -30,6 +30,19 @@ Every analysis result includes:
 For open-source model training, the toolkit now provides a **Divergence Penalty Loss** module (`ct_toolkit.divergence.loss`). 
 - **Hidden State Alignment**: Dynamically penalizes the distance between current model activations and the Constitutional Identity Kernel (CIK) reference embeddings.
 - **Identity-Constrained Training**: Allows for fine-tuning that optimizes for capability while hard-constraining the model's normative identity.
+## Autonomous Self-Correction (L2 -> L1 Loop)
+
+Starting with Phase 5, the CT Toolkit features an active feedback loop. When the L2 Judge detects an identity divergence, the library can automatically block the problematic response, prompt the LLM internally with the divergence reason, and attempt to self-correct the response. 
+
+```python
+config = WrapperConfig(
+    auto_correction=True,
+    max_correction_retries=1
+)
+```
+
+This upgrades the Divergence Engine from a passive monitor into an active Guardrail against Sequential Self-Compression (SSC).
+
 ## Automated Alerting
 
 Starting with Phase 4.8, the Divergence Engine supports **automated alerting**. Developers can provide an external callback that triggers immediately when high-severity drift or context compression failures are detected.

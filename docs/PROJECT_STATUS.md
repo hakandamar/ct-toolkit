@@ -8,6 +8,8 @@
 
 CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2026 - 2nd edition) — into engineering practice.
 
+**Current Version:** `v0.3.2`
+
 ### The Problem It Solves
 
 An agentic system can drift from its initial value commitments over time. The paper defines this phenomenon as **Sequential Self-Compression (SSC)**: the model progressively compresses its prior normative states in service of immediate objective functions. This risk is significant in single-model systems — and **systemic** in multi-agent architectures, where an SSC event at the orchestrator level cascades across the entire sub-agent population.
@@ -29,7 +31,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Policy-Drift & SSC Measurement         | ✅ Phase 3 Complete                                                                    |
 | Template + Kernel compatibility matrix | ✅ Complete                                                                            |
 | Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/)) |
-| Test coverage                          | ✅ 218/218 tests passing (93% code coverage)                                           |
+| Test coverage                          | ✅ 229/232 tests passing (90% code coverage)                                           |
 
 ---
 
@@ -97,7 +99,6 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **SSC severity operationalization** — _(Paper 10.4)_ Risk-normalized severity index considering model capabilities (tools, vision, MCP)
 - [ ] **Cross-checkpoint ICM** — ICM score comparison across successive model checkpoints
 - [ ] **Probe battery expansion** — medical, legal, research domain probes
-- [ ] **AISAI-style game-theoretic probes** — _(Paper ref [7], Kim 2025)_
 
 ---
 
@@ -108,10 +109,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Divergence Penalty — Loss Function module** — _(Paper 5.1)_ PyTorch training loop integration; Complete in `divergence/loss.py`
 - [x] **Llama 3 / Mistral / Qwen integration** — Verified with live Qwen-3 local endpoint (LM Studio)
 - [x] **Context-Compression Identity Guard** — Verified with real embeddings (`text-embedding-qwen3`)
-- [ ] **Phi-3 sub-agent prototype** — Sub-agent constraint testing on small models
-- [ ] **Gemma research integration** — For academic SSC experiments
-- [ ] **CIK enforcement experiments** — _(Paper 10.3)_ Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions
-- [ ] **Elasticity threshold calibration** — _(Paper 8)_ Empirically determining the balance between identity continuity and the capacity for external correction
+- [x] **Elasticity threshold calibration** — _(Paper 8)_ Empirically determining the balance between identity continuity and the capacity for external correction
 
 ---
 
@@ -124,8 +122,9 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [ ] **Cloud vault adapter** — For SaaS version; customer authorization key is never accessible to us
 - [ ] **HashiCorp Vault integration** — Enterprise key management
 - [ ] **Read-only external Provenance Log access** — _(Paper 5.2)_ Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
-- [ ] **Rollback mechanism** — _(Paper 5.2)_ Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
+- [x] **Rollback mechanism** — _(Paper 5.2)_ Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
 - [x] **Anomaly detection and alerting (Groundwork)** — Complete: `drift_alert_callback` support in `TheseusWrapper`.
+- [x] **Autonomous Self-Correction** — _(Paper 6)_ Active L2->L1 feedback loop that retries and corrects divergent responses before they reach the user.
 
 ---
 
@@ -133,10 +132,12 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 > _Project Desc: Model 3 — Independent Auditor_
 
+- [ ] **Identity Sentinel LLM** — Custom LLM for CIK enforcement and L2 LLM-as-Judge divergence detection
 - [ ] **Auditor CLI** — Stress-testing an existing system via API endpoint without modifying any code
 - [ ] **Identity Health Score report** — 100 ethical scenarios, time-series consistency report
 - [ ] **Comparative checkpoint analysis** — Normative drift report between two model versions
 - [ ] **Export formats** — PDF / JSON / HTML report output
+- [ ] **CIK enforcement experiments** — _(Paper 10.3)_ Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions
 
 ---
 
@@ -147,6 +148,9 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [ ] **MAS (Moral Anchor System) integration** — _(Chen et al. 2025)_ Combining Bayesian network and LSTM-based value drift prediction with CT Toolkit's upstream prevention mechanism
 - [ ] **Early warning signals** — Connecting MAS-detected drift signals to Provenance Log triggers
 - [ ] **ValueFlow integration** — _(Luo et al. 2025)_ Incorporating beta-sensitivity and System Sensitivity metrics into the Divergence Engine
+- [ ] **Phi-3 sub-agent prototype** — Sub-agent constraint testing on small models
+- [ ] **Gemma research integration** — For academic SSC experiments
+- [ ] **AISAI-style game-theoretic probes** — _(Paper ref [7], Kim 2025)_
 
 ---
 
@@ -163,20 +167,20 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 218 (Unit + Integration)
-- **Overall Code Coverage:** 93%
+- **Total Passing Tests:** 229 (3 skipped, 232 total)
+- **Overall Code Coverage:** 90%
 - **Key Coverage Highlights:**
   - `middleware/langchain.py`: **100%**
   - `middleware/autogen.py`: **98%**
   - `middleware/crewai.py`: **91%**
   - `divergence/scheduler.py`: **100%**
   - `core/compatibility.py`: **100%**
-  - `identity/embedding.py`: 94%
+  - `identity/embedding.py`: 92%
   - `divergence/analysis.py`: **100%**
-  - `core/kernel.py`: 99%
+  - `core/kernel.py`: 93%
   - `divergence/loss.py`: 77%
-  - `divergence/l3_icm.py`: 87%
-  - `middleware/deepagents.py`: **100%**
+  - `divergence/l3_icm.py`: 85%
+  - `middleware/deepagents.py`: 97%
 
 ### Verification Recording
 
@@ -198,7 +202,7 @@ uv run pytest --cov=ct_toolkit tests/
 | **2** | Multi-Agent Hierarchy          | ✅ Complete                                  |
 | **3** | ICM and Measurement            | ✅ Complete                                  |
 | **4** | Open-Source Model Support      | ✅ Complete (Drift Loss + Live Verification) |
-| **5** | Vault and Security             | 🔶 Local complete (Phase 5 starting)         |
+| **5** | Vault and Security             | 🔶 In Progress (Self-Correction & Vault)     |
 | **6** | Auditor Mode                   | 🔲 Not started                               |
 | **7** | MAS / Early Warning            | 🔲 Not started                               |
 | **8** | SaaS and Ecosystem             | 🔲 Not started                               |

@@ -13,6 +13,7 @@ CT Toolkit does not just "filter" content; it **preserves identity**. It ensures
 ## Core Pillars
 
 - **🛡️ Constitutional Kernels**: Immutable axiomatic anchors that protect your agent's identity from optimization pressure.
+- **🔄 Autonomous Self-Correction**: Active L2->L1 feedback loop that retries and corrects divergent responses before they reach the user.
 - **📡 Divergence Engine**: Multi-tiered signals (L1 ECS, L2 Judge, L3 ICM) that detect the earliest signs of identity drift.
 - **🕸️ Nested Agency Support**: Hierarchical kernel propagation ensuring sub-agents are more constrained than their managers.
 - **📜 Provenance Log**: An immutable, HMAC-signed chain of every identity-relevant interaction for auditing and compliance.

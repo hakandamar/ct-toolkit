@@ -154,6 +154,7 @@ class DivergenceEngine:
         request_text: str,
         response_text: str,
         interaction_count: int = 0,
+        skip_l3: bool = False,
     ) -> DivergenceResult:
         """
         Performs full divergence analysis.
@@ -166,8 +167,8 @@ class DivergenceEngine:
             )
 
         if self._enterprise:
-            return self._enterprise_analyze(request_text, response_text)
-        return self._standard_analyze(request_text, response_text)
+            return self._enterprise_analyze(request_text, response_text, skip_l3=skip_l3)
+        return self._standard_analyze(request_text, response_text, skip_l3=skip_l3)
 
     def get_drift_report(self, window_size: int = 50, model: str | None = None) -> DriftReport | None:
         """
@@ -189,6 +190,7 @@ class DivergenceEngine:
         self,
         request_text: str,
         response_text: str,
+        skip_l3: bool = False,
     ) -> DivergenceResult:
         """Progressive analysis: L1 → L2 if needed → L3 if needed."""
 
@@ -236,6 +238,18 @@ class DivergenceEngine:
             )
 
         # L3 — L2 problematic or L1 too high
+        if skip_l3:
+            return DivergenceResult(
+                tier=DivergenceTier.L2_JUDGE,
+                l1_score=l1_score,
+                l2_verdict=l2_result.verdict,
+                l2_confidence=l2_result.confidence,
+                l2_reason=l2_result.reason,
+                action_required=True,
+                cascade_blocked=True,
+                summary="L3 skipped due to auto-correction retry logic",
+            )
+
         if not self._l3_available:
             return DivergenceResult(
                 tier=DivergenceTier.L2_JUDGE,
@@ -269,6 +283,7 @@ class DivergenceEngine:
         self,
         request_text: str,
         response_text: str,
+        skip_l3: bool = False,
     ) -> DivergenceResult:
         """Enterprise mode: L1 + L2 + L3 all run, decision based on total score."""
         l1_score = self._run_l1(response_text)
@@ -278,7 +293,7 @@ class DivergenceEngine:
             l2_result = self._run_l2(request_text, response_text)
 
         l3_report = None
-        if self._l3_available:
+        if self._l3_available and not skip_l3:
             l3_report = self._run_l3(max_probes=5)  # Fast subset in Enterprise
 
         # Calculate total risk score
