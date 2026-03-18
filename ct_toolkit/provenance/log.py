@@ -43,6 +43,7 @@ class ProvenanceEntry:
     divergence_score: float | None
     metadata: dict[str, Any]
     prev_entry_hash: str          # Content hash of the previous entry
+    status: str = field(default="active") # "active" or "rolled_back"
     hmac_signature: str = field(default="", repr=False)
 
     def content_hash(self) -> str:
@@ -56,6 +57,7 @@ class ProvenanceEntry:
                 "divergence_score": self.divergence_score,
                 "metadata": self.metadata,
                 "prev_entry_hash": self.prev_entry_hash,
+                "status": self.status,
             },
             sort_keys=True,
         )
@@ -111,6 +113,7 @@ class ProvenanceLog:
                 divergence_score=divergence_score,
                 metadata=metadata or {},
                 prev_entry_hash=prev_hash,
+                status="active",
             )
 
             content_hash = entry.content_hash()
@@ -124,13 +127,14 @@ class ProvenanceLog:
 
     def verify_chain(self) -> bool:
         """
-        Verifies the entire chain from start to finish.
+        Verifies the active chain from start to finish.
         - Is each entry's HMAC valid?
         - Does each entry correctly reference the previous one?
+        - Ignores 'rolled_back' entries.
 
         Returns: True (valid) | raises ChainIntegrityError
         """
-        entries = self._load_all_entries()
+        entries = self._load_all_entries(include_rolled_back=False)
         if not entries:
             return True
 
@@ -148,12 +152,12 @@ class ProvenanceLog:
 
             expected_prev = entry.content_hash()
 
-        logger.info(f"Chain verified: {len(entries)} entries valid.")
+        logger.info(f"Chain verified: {len(entries)} active entries valid.")
         return True
 
-    def get_entries(self, limit: int = 100) -> list[ProvenanceEntry]:
+    def get_entries(self, limit: int = 100, include_rolled_back: bool = False) -> list[ProvenanceEntry]:
         """Returns the last N entries."""
-        return self._load_all_entries(limit=limit)
+        return self._load_all_entries(limit=limit, include_rolled_back=include_rolled_back)
 
     def get_entry(self, entry_id: str) -> ProvenanceEntry | None:
         cursor = self._conn.execute(
@@ -166,15 +170,15 @@ class ProvenanceLog:
         self, template: str, kernel_name: str, model: str
     ) -> int:
         """
-        Calculates the number of interactions matching the current context.
+        Calculates the number of active interactions matching the current context.
         This provides the experience metric for Stability-Plasticity Scheduling.
         """
-        # We parse the JSON metadata column. SQLite JSON1 extension is standard.
         query = """
             SELECT COUNT(*) FROM provenance 
             WHERE json_extract(metadata, '$.template') = ?
               AND json_extract(metadata, '$.kernel') = ?
               AND json_extract(metadata, '$.model') = ?
+              AND status = 'active'
         """
         try:
             row = self._conn.execute(query, (template, kernel_name, model)).fetchone()
@@ -184,21 +188,81 @@ class ProvenanceLog:
                 f"Could not count interactions (JSON query failed): {e}. "
                 "Returning 0 to avoid inflating ElasticityScheduler thresholds."
             )
-            # Return 0 (conservative) — do NOT return total count without filters
-            # as it would incorrectly inflate the interaction_count for the scheduler.
             return 0
+
+    def export_log(self, include_rolled_back: bool = False) -> list[dict[str, Any]]:
+        """
+        Exports the verified log as a list of dictionaries.
+        By default, only active entries are exported.
+
+        Args:
+            include_rolled_back: If True, include all entries.
+
+        Returns:
+            A list of all log entries, where each entry is a dictionary.
+
+        Raises:
+            ChainIntegrityError: If the active chain is invalid.
+        """
+        self.verify_chain()  # Ensure integrity before export
+        all_entries = self._load_all_entries(include_rolled_back=include_rolled_back)
+        return [asdict(entry) for entry in all_entries]
+
+    def get_read_only_connection(self) -> sqlite3.Connection:
+        """
+        Returns a read-only connection to the database.
+        """
+        try:
+            db_uri = self._vault_path.as_uri() + "?mode=ro"
+            return sqlite3.connect(db_uri, uri=True, check_same_thread=False)
+        except sqlite3.OperationalError as e:
+            raise VaultError(
+                "Could not open read-only connection. "
+                "Ensure the database file exists and has correct permissions."
+            ) from e
+
+    def rollback(self, agent_id: str, entry_id: str) -> None:
+        """
+        Rolls back the log to the specified entry ID for a given agent.
+        All subsequent entries for that agent will be marked as 'rolled_back'.
+        """
+        with self._lock:
+            entry = self.get_entry(entry_id)
+            if not entry:
+                raise ValueError(f"Entry with ID '{entry_id}' not found.")
+
+            # This is a simplification. In a real multi-agent system,
+            # we would need a more robust way to identify agent-specific entries.
+            # Here, we assume an 'agent_id' is stored in the metadata.
+            if entry.metadata.get("agent_id") != agent_id:
+                raise ValueError("Entry does not belong to the specified agent.")
+
+            try:
+                self._conn.execute(
+                    """
+                    UPDATE provenance
+                    SET status = 'rolled_back'
+                    WHERE timestamp > ? AND json_extract(metadata, '$.agent_id') = ?
+                    """,
+                    (entry.timestamp, agent_id),
+                )
+                self._conn.commit()
+                logger.info(f"Provenance log rolled back for agent '{agent_id}' to entry '{entry_id}'")
+            except sqlite3.Error as e:
+                raise VaultError(f"SQLite rollback error: {e}") from e
 
     # ── Database ──────────────────────────────────────────────────────────────
 
     def _init_db(self) -> sqlite3.Connection:
         import os
         self._vault_path.parent.mkdir(parents=True, exist_ok=True)
-        # Create file if not exist to set permissions before sqlite connection
         if not self._vault_path.exists():
             self._vault_path.touch()
             self._vault_path.chmod(0o600)
         
         conn = sqlite3.connect(str(self._vault_path), check_same_thread=False)
+
+        # Create table if it doesn't exist
         conn.execute("""
             CREATE TABLE IF NOT EXISTS provenance (
                 id TEXT PRIMARY KEY,
@@ -208,9 +272,18 @@ class ProvenanceLog:
                 divergence_score REAL,
                 metadata TEXT NOT NULL,
                 prev_entry_hash TEXT NOT NULL,
-                hmac_signature TEXT NOT NULL
+                hmac_signature TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'active'
             )
         """)
+
+        # Add status column for migration from older versions
+        try:
+            conn.execute("SELECT status FROM provenance LIMIT 1").fetchall()
+        except sqlite3.OperationalError:
+            conn.execute("ALTER TABLE provenance ADD COLUMN status TEXT DEFAULT 'active'")
+            logger.info("Migrated database: Added 'status' column to provenance table.")
+
         conn.commit()
         return conn
 
@@ -220,8 +293,8 @@ class ProvenanceLog:
                 """
                 INSERT INTO provenance
                 (id, timestamp, request_hash, response_hash,
-                 divergence_score, metadata, prev_entry_hash, hmac_signature)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                 divergence_score, metadata, prev_entry_hash, hmac_signature, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     entry.id,
@@ -232,22 +305,32 @@ class ProvenanceLog:
                     json.dumps(entry.metadata),
                     entry.prev_entry_hash,
                     entry.hmac_signature,
+                    entry.status,
                 ),
             )
             self._conn.commit()
         except sqlite3.Error as e:
             raise VaultError(f"SQLite write error: {e}") from e
 
-    def _load_all_entries(self, limit: int | None = None) -> list[ProvenanceEntry]:
-        query = "SELECT * FROM provenance ORDER BY timestamp ASC"
+    def _load_all_entries(self, limit: int | None = None, include_rolled_back: bool = False) -> list[ProvenanceEntry]:
+        query = "SELECT * FROM provenance"
+        conditions = []
+        if not include_rolled_back:
+            conditions.append("status = 'active'")
+        
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+
+        query += " ORDER BY timestamp ASC"
         if limit:
             query += f" LIMIT {limit}"
+        
         rows = self._conn.execute(query).fetchall()
         return [self._row_to_entry(r) for r in rows]
 
     def _get_last_entry_hash(self) -> str:
         row = self._conn.execute(
-            "SELECT * FROM provenance ORDER BY timestamp DESC LIMIT 1"
+            "SELECT * FROM provenance WHERE status = 'active' ORDER BY timestamp DESC LIMIT 1"
         ).fetchone()
         if not row:
             return self.GENESIS_HASH
@@ -264,6 +347,7 @@ class ProvenanceLog:
             metadata=json.loads(row[5]),
             prev_entry_hash=row[6],
             hmac_signature=row[7],
+            status=row[8],
         )
 
     # ── Cryptography ────────────────────────────────────────────────────────────

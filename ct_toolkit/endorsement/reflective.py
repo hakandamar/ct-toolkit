@@ -210,6 +210,7 @@ class ReflectiveEndorsement:
         self._log = provenance_log
         self._approval_channel = approval_channel or cli_approval_channel
         self._pending_records: list[EndorsementRecord] = []
+        self._pre_update_snapshot: dict[str, Any] | None = None
 
     # ── Main Flow ───────────────────────────────────────────────────────────────
 

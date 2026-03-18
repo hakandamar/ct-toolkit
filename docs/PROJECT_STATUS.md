@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2025) — into engineering practice.
+CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2026 - 2nd edition) — into engineering practice.
 
 ### The Problem It Solves
 
@@ -18,18 +18,18 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 
 ### Current State
 
-| Area                                   | Status                                       |
-| -------------------------------------- | -------------------------------------------- |
-| Python library (pip install)           | ✅ MVP complete                              |
-| OpenAI / Anthropic / Ollama support    | ✅ Complete                                  |
-| Constitutional Kernel                  | ✅ Complete                                  |
-| Reflective Endorsement                 | ✅ Complete                                  |
-| Provenance Log (HMAC hash chain)       | ✅ Complete                                  |
-| Divergence Engine (L1+L2+L3)           | ✅ Complete                                  |
-| Policy-Drift & SSC Measurement        | ✅ Phase 3 Complete                         |
-| Template + Kernel compatibility matrix | ✅ Complete                                  |
+| Area                                   | Status                                                                                 |
+| -------------------------------------- | -------------------------------------------------------------------------------------- |
+| Python library (pip install)           | ✅ MVP complete                                                                        |
+| OpenAI / Anthropic / Ollama support    | ✅ Complete                                                                            |
+| Constitutional Kernel                  | ✅ Complete                                                                            |
+| Reflective Endorsement                 | ✅ Complete                                                                            |
+| Provenance Log (HMAC hash chain)       | ✅ Complete                                                                            |
+| Divergence Engine (L1+L2+L3)           | ✅ Complete                                                                            |
+| Policy-Drift & SSC Measurement         | ✅ Phase 3 Complete                                                                    |
+| Template + Kernel compatibility matrix | ✅ Complete                                                                            |
 | Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/)) |
-| Test coverage                          | ✅ 218/218 tests passing (93% code coverage)                                          |
+| Test coverage                          | ✅ 218/218 tests passing (93% code coverage)                                           |
 
 ---
 
@@ -77,9 +77,9 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Hierarchical Kernel Propagation** — Propagating the mother agent's CIK to sub-agents as a read-only constraint
 - [x] **Sub-agent constraint enforcement** — Logic for sub-agents to reject and log instructions from the mother agent that conflict with the propagated kernel
 - [x] **Cascade compression detection** — Blocking SSC events at the orchestrator before propagation to sub-agents
-- [x] **LangChain / LangGraph middleware** — ✅ Complete: `TheseusLangChainCallback` + `TheseusChatModel`. Added **Deep Agents** support in `middleware/deepagents.py`.
-- [x] **CrewAI integration** — ✅ Complete: `apply_to_crew` for hierarchical wrap
-- [x] **AutoGen integration** — ✅ Complete: `register_reply` + `post_send_hook`
+- [x] **LangChain / LangGraph middleware** — Complete: `TheseusLangChainCallback` + `TheseusChatModel`. Added **Deep Agents** support in `middleware/deepagents.py`.
+- [x] **CrewAI integration** — Complete: `apply_to_crew` for hierarchical wrap
+- [x] **AutoGen integration** — Complete: `register_reply` + `post_send_hook`
 - [ ] **Topology-aware propagation** — _(Based on ValueFlow [5] findings)_ Propagation mechanism that accounts for non-uniform drift intensity shaped by network topology
 
 ---
@@ -105,9 +105,9 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 > _Paper: Section 5.1 (Divergence Penalty), 10.3 (CIK Enforcement Experiments)_
 
-- [x] **Divergence Penalty — Loss Function module** — _(Paper 5.1)_ PyTorch training loop integration; ✅ Complete in `divergence/loss.py`
-- [x] **Llama 3 / Mistral / Qwen integration** — ✅ Verified with live Qwen-3 local endpoint (LM Studio)
-- [x] **Context-Compression Identity Guard** — ✅ Verified with real embeddings (`text-embedding-qwen3`)
+- [x] **Divergence Penalty — Loss Function module** — _(Paper 5.1)_ PyTorch training loop integration; Complete in `divergence/loss.py`
+- [x] **Llama 3 / Mistral / Qwen integration** — Verified with live Qwen-3 local endpoint (LM Studio)
+- [x] **Context-Compression Identity Guard** — Verified with real embeddings (`text-embedding-qwen3`)
 - [ ] **Phi-3 sub-agent prototype** — Sub-agent constraint testing on small models
 - [ ] **Gemma research integration** — For academic SSC experiments
 - [ ] **CIK enforcement experiments** — _(Paper 10.3)_ Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions
@@ -125,7 +125,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [ ] **HashiCorp Vault integration** — Enterprise key management
 - [ ] **Read-only external Provenance Log access** — _(Paper 5.2)_ Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
 - [ ] **Rollback mechanism** — _(Paper 5.2)_ Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
-- [x] **Anomaly detection and alerting (Groundwork)** — ✅ Complete: `drift_alert_callback` support in `TheseusWrapper`.
+- [x] **Anomaly detection and alerting (Groundwork)** — Complete: `drift_alert_callback` support in `TheseusWrapper`.
 
 ---
 
@@ -191,17 +191,17 @@ uv run pytest --cov=ct_toolkit tests/
 
 ## Summary Table
 
-| Phase | Scope                          | Status                                                         |
-| ----- | ------------------------------ | -------------------------------------------------------------- |
-| **0** | MVP Core Infrastructure        | ✅ Complete                                                    |
-| **1** | Identity Continuity Mechanisms | ✅ Complete                                                    |
-| **2** | Multi-Agent Hierarchy          | ✅ Complete                                                    |
-| **3** | ICM and Measurement            | ✅ Complete                                                    |
-| **4** | Open-Source Model Support      | ✅ Complete (Drift Loss + Live Verification)                   |
-| **5** | Vault and Security             | 🔶 Local complete (Phase 5 starting)                           |
-| **6** | Auditor Mode                   | 🔲 Not started                                                 |
-| **7** | MAS / Early Warning            | 🔲 Not started                                                 |
-| **8** | SaaS and Ecosystem             | 🔲 Not started                                                 |
+| Phase | Scope                          | Status                                       |
+| ----- | ------------------------------ | -------------------------------------------- |
+| **0** | MVP Core Infrastructure        | ✅ Complete                                  |
+| **1** | Identity Continuity Mechanisms | ✅ Complete                                  |
+| **2** | Multi-Agent Hierarchy          | ✅ Complete                                  |
+| **3** | ICM and Measurement            | ✅ Complete                                  |
+| **4** | Open-Source Model Support      | ✅ Complete (Drift Loss + Live Verification) |
+| **5** | Vault and Security             | 🔶 Local complete (Phase 5 starting)         |
+| **6** | Auditor Mode                   | 🔲 Not started                               |
+| **7** | MAS / Early Warning            | 🔲 Not started                               |
+| **8** | SaaS and Ecosystem             | 🔲 Not started                               |
 
 ---
 

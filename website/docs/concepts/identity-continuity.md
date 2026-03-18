@@ -19,7 +19,7 @@ Existing guardrails like Llama-Guard or rule engines are often insufficient for 
 1.  **Stateful Identity Drift**: Guardrails are stateless; they check a single prompt. CT Toolkit prevents slow, stateful drift (SSC) over thousands of safe-looking interactions.
 2.  **Plastic Adaptation**: Traditional filters are binary (Yes/No). CT Toolkit's **Reflective Endorsement** allows rules to evolve safely through formal approval.
 3.  **Nested Agency Support**: In Multi-Agent Systems, a 2% deviation in a manager agent amplifies exponentially in sub-agents. CT Toolkit ensures hierarchical alignment.
-4.  **Cryptographic Proof**: The **Provenance Log** provides an immutable audit trail, allowing enterprises to prove their system's identity integrity to regulators.
+4.  **Cryptographic Proof**: The **Provenance Log** provides an immutable audit trail, allowing enterprises to prove their system's identity integrity to regulators. It features secure, read-only access for external auditors and a safe, agent-specific rollback mechanism. This allows system administrators to revert an individual agent's state without compromising the integrity of the overall multi-agent system, ensuring both stability and accountability.
 
 ## The Solution
 
@@ -27,3 +27,4 @@ CT Toolkit solves this by:
 1.  **Axiomatic Guardrails**: Inflexible rules that stop drift before it happens.
 2.  **Divergence Tracking**: Measuring exactly how much an agent has drifted from its core template.
 3.  **Hereditary Constraints**: Ensuring sub-agents are more constrained than their managers.
+4.  **Configuration Integrity**: Cryptographically verifying that core configuration files (like Kernels and Identity Templates) have not been tampered with at runtime.

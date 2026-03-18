@@ -635,6 +635,21 @@ class TheseusWrapper:
             commitment_new_value=commitment_new_value,
         )
 
+    def export_provenance_log(self) -> list[dict[str, Any]]:
+        """
+        Exports the entire verified provenance log.
+
+        Verifies the integrity of the log before returning the data.
+        This is intended for external auditing and analysis.
+
+        Returns:
+            A list of all log entries as dictionaries.
+
+        Raises:
+            ChainIntegrityError: If the log's hash chain is broken.
+        """
+        return self._provenance_log.export_log()
+
     @property
     def kernel(self) -> ConstitutionalKernel:
         return self._kernel

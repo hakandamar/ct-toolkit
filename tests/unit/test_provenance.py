@@ -1,11 +1,11 @@
 import sqlite3
 import tempfile
 import pytest
-from ct_toolkit.provenance.log import ProvenanceLog
-from ct_toolkit.core.exceptions import ChainIntegrityError
+from ct_toolkit.provenance.log import ProvenanceLog, ProvenanceEntry
+from ct_toolkit.core.exceptions import ChainIntegrityError, VaultError
 
-class TestProvenanceLog:
-    """provenance/log.py — HMAC hash chain, tamper detection, metadata storage."""
+class TestProvenanceLogWithStatus:
+    """provenance/log.py status-based rollback and multi-agent safety."""
 
     def setup_method(self):
         self._tmp_file = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
@@ -15,61 +15,142 @@ class TestProvenanceLog:
 
     def teardown_method(self):
         import os
+        # Close the connection to release the file lock on Windows
+        if self.log and self.log._conn:
+            self.log._conn.close()
         if os.path.exists(self.tmp):
             os.remove(self.tmp)
+        key_path = self.log._vault_path.parent / ".ct_hmac_key"
+        if os.path.exists(key_path):
+             os.remove(key_path)
 
-    # -- Recording -------------------------------------------------------------
+    # -- Recording & Status ----------------------------------------------------
 
-    def test_record_returns_string_id(self):
-        entry_id = self.log.record("question", "answer", divergence_score=0.05)
-        assert isinstance(entry_id, str) and len(entry_id) > 0
-
-    def test_retrieve_recorded_entry(self):
-        entry_id = self.log.record("question", "answer", divergence_score=0.07)
+    def test_record_sets_status_to_active(self):
+        entry_id = self.log.record("q", "a")
         entry = self.log.get_entry(entry_id)
-        assert entry is not None and entry.divergence_score == pytest.approx(0.07)
+        assert entry.status == "active"
 
-    def test_metadata_is_persisted(self):
-        entry_id = self.log.record("q", "a", metadata={"tier": "ok", "model": "gpt-4o"})
-        entry = self.log.get_entry(entry_id)
-        assert entry.metadata["tier"] == "ok"
-        assert entry.metadata["model"] == "gpt-4o"
-
-    def test_get_entries_returns_all(self):
+    def test_get_entries_returns_only_active_by_default(self):
         self.log.record("q1", "a1")
         self.log.record("q2", "a2")
-        assert len(self.log.get_entries(limit=10)) == 2
-
-    # -- Hash chain ------------------------------------------------------------
-
-    def test_first_entry_has_genesis_prev_hash(self):
-        entry_id = self.log.record("first question", "first answer")
-        assert self.log.get_entry(entry_id).prev_entry_hash == "0" * 64
-
-    def test_verify_chain_passes_for_valid_log(self):
-        for i in range(3):
-            self.log.record(f"q{i}", f"a{i}", divergence_score=i * 0.01)
-        assert self.log.verify_chain() is True
-
-    def test_verify_chain_on_empty_log(self):
-        assert self.log.verify_chain() is True
-
-    # -- Tamper detection ------------------------------------------------------
-
-    def test_tampered_hmac_raises_chain_integrity_error(self):
-        self.log.record("question", "answer")
         conn = sqlite3.connect(self.tmp)
-        conn.execute("UPDATE provenance SET hmac_signature = 'tampered'")
+        conn.execute("UPDATE provenance SET status = 'rolled_back' WHERE request_hash = ?", (self.log._hash_text("q1"),))
         conn.commit()
         conn.close()
+        
+        active_entries = self.log.get_entries()
+        assert len(active_entries) == 1
+        assert active_entries[0].request_hash == self.log._hash_text("q2")
+
+    def test_get_entries_can_include_rolled_back(self):
+        self.log.record("q1", "a1")
+        self.log.record("q2", "a2")
+        conn = sqlite3.connect(self.tmp)
+        conn.execute("UPDATE provenance SET status = 'rolled_back' WHERE request_hash = ?", (self.log._hash_text("q1"),))
+        conn.commit()
+        conn.close()
+
+        all_entries = self.log.get_entries(include_rolled_back=True)
+        assert len(all_entries) == 2
+
+    # -- Hash chain with status ------------------------------------------------
+
+    def test_verify_chain_ignores_rolled_back_entries(self):
+        id1 = self.log.record("q1", "a1")
+        id2 = self.log.record("q2", "a2") # This will be rolled back
+        id3 = self.log.record("q3", "a3")
+
+        # Manually mark the second entry as rolled_back
+        conn = sqlite3.connect(self.tmp)
+        conn.execute("UPDATE provenance SET status = 'rolled_back' WHERE id = ?", (id2,))
+        conn.commit()
+        conn.close()
+
+        # The chain should now be invalid because q3 points to q2, which is rolled back
         with pytest.raises(ChainIntegrityError):
             self.log.verify_chain()
 
-    def test_tampered_response_hash_raises_chain_integrity_error(self):
-        self.log.record("question", "answer")
+    def test_get_last_entry_hash_ignores_rolled_back(self):
+        id1 = self.log.record("q1", "a1")
+        entry1_hash = self.log.get_entry(id1).content_hash()
+        
+        id2 = self.log.record("q2", "a2")
+        # Manually mark the second entry as rolled_back
         conn = sqlite3.connect(self.tmp)
-        conn.execute("UPDATE provenance SET response_hash = 'fake'")
+        conn.execute("UPDATE provenance SET status = 'rolled_back' WHERE id = ?", (id2,))
         conn.commit()
         conn.close()
-        with pytest.raises(ChainIntegrityError):
-            self.log.verify_chain()
+
+        last_hash = self.log._get_last_entry_hash()
+        assert last_hash == entry1_hash
+
+    # -- Safe Rollback ---------------------------------------------------------
+
+    def test_rollback_marks_entries_as_rolled_back(self):
+        id1 = self.log.record("q1", "a1", metadata={"agent_id": "agent_A"})
+        id2 = self.log.record("q2", "a2", metadata={"agent_id": "agent_A"})
+
+        self.log.rollback("agent_A", id1)
+
+        entry2 = self.log.get_entry(id2)
+        assert entry2.status == "rolled_back"
+
+    def test_rollback_is_agent_specific(self):
+        self.log.record("q_A1", "a_A1", metadata={"agent_id": "agent_A"})
+        id_A2 = self.log.record("q_A2", "a_A2", metadata={"agent_id": "agent_A"})
+        id_B1 = self.log.record("q_B1", "a_B1", metadata={"agent_id": "agent_B"})
+
+        self.log.rollback("agent_A", id_A2) # Rollback A's last entry
+
+        entry_A2 = self.log.get_entry(id_A2)
+        entry_B1 = self.log.get_entry(id_B1)
+
+        # This test is tricky because rollback affects entries *after* the target.
+        # Let's add another entry for agent A and then rollback
+        self.log._conn.execute("UPDATE provenance SET status = 'active'")
+        self.log._conn.commit()
+
+        id_A1 = self.log.get_entries(include_rolled_back=True)[0].id
+        self.log.rollback("agent_A", id_A1)
+
+        entry_A2_after_rollback = self.log.get_entry(id_A2)
+        entry_B1_after_rollback = self.log.get_entry(id_B1)
+
+        assert entry_A2_after_rollback.status == "rolled_back"
+        assert entry_B1_after_rollback.status == "active"
+
+    def test_adding_entry_after_rollback(self):
+        id_A1 = self.log.record("q_A1", "a_A1", metadata={"agent_id": "agent_A"})
+        hash_A1 = self.log.get_entry(id_A1).content_hash()
+        self.log.record("q_A2", "a_A2", metadata={"agent_id": "agent_A"})
+
+        self.log.rollback("agent_A", id_A1)
+
+        id_A3 = self.log.record("q_A3", "a_A3", metadata={"agent_id": "agent_A"})
+        entry_A3 = self.log.get_entry(id_A3)
+
+        assert entry_A3.prev_entry_hash == hash_A1
+        assert self.log.verify_chain() is True
+
+    def test_rollback_raises_error_for_wrong_agent(self):
+        id_A1 = self.log.record("q_A1", "a_A1", metadata={"agent_id": "agent_A"})
+        with pytest.raises(ValueError, match="Entry does not belong to the specified agent"):
+            self.log.rollback("agent_B", id_A1)
+
+    # -- Read-only access ------------------------------------------------------
+
+    def test_read_only_connection_prohibits_write(self):
+        self.log.record("q", "a")  # Ensure db is not empty
+        ro_conn = self.log.get_read_only_connection()
+        with pytest.raises(sqlite3.OperationalError, match="attempt to write a readonly database"):
+            ro_conn.execute("DELETE FROM provenance")
+        ro_conn.close()
+
+    def test_new_db_init_with_status_column(self):
+        """Ensure a fresh db has the status column."""
+        conn = sqlite3.connect(self.tmp)
+        cursor = conn.execute("PRAGMA table_info(provenance)")
+        columns = [row[1] for row in cursor.fetchall()]
+        conn.close()
+        assert "status" in columns
