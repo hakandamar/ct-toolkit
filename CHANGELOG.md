@@ -1,0 +1,42 @@
+# Changelog
+
+All notable changes to the **Computational Theseus Toolkit (CT Toolkit)** will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+*(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
+
+## [Unreleased]
+
+### Added
+- Comprehensive API Reference documentation focusing on high Developer Experience.
+- Repository `SECURITY.md`, `CHANGELOG.md`, and updated `CONTRIBUTING.md`.
+
+## [0.3.3] - 2026-03-19
+
+### Changed
+- Core API restructuring and improvements towards stability and plasticity scheduling.
+- Compatibility layer enhancements.
+
+## [0.2.5] - 2026-03-16
+
+### Security
+- Latest security hardening changes implemented to prevent configuration tampering.
+
+## [0.2.4] - 2026-03-15
+
+### Added
+- Auto-Correction loop mechanism allowing autonomous retry of agentic failures when Identity Drift is detected by L2 Judge.
+- New endpoints and domain probes for real-world scenarios.
+
+### Fixed
+- Fixed packaging configuration regarding identity templates `FileNotFoundError`.
+- Addressed PyPI version discrepancy mapping issues.
+
+## [0.2.0] - Initial Public Structuring
+
+### Added
+- Core `TheseusWrapper` and `ConstitutionalKernel` logic.
+- Divergence Engine with multi-tiered (L1/L2/L3) mechanisms.
+- Provenance Vault using SQLite and HMAC hash chaining.
