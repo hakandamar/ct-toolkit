@@ -36,6 +36,7 @@ class EndorsementDecision(str, Enum):
     APPROVED = "approved"
     REJECTED = "rejected"
     PENDING  = "pending"
+    FAILED   = "failed"
 
 
 @dataclass
@@ -273,7 +274,35 @@ class ReflectiveEndorsement:
         # Stage 2: Send to approval channel
         decision, actual_operator_id, rationale = self._approval_channel(conflict)
 
-        # Stage 3: Sign EndorsementRecord
+        # Stage 3: Apply decision
+        if decision == EndorsementDecision.APPROVED:
+            applied = self._apply_override(
+                commitment_id=conflict.conflicting_commitment_id,
+                new_value=commitment_new_value or rule_text,
+            )
+            if applied:
+                logger.info(
+                    f"Override approved and applied | "
+                    f"commitment={conflict.conflicting_commitment_id} | "
+                    f"operator={actual_operator_id or operator_id}"
+                )
+            else:
+                decision = EndorsementDecision.FAILED
+                rationale = "System failed to apply approved rule to kernel (commitment not found)"
+                logger.warning(
+                    f"Override APPROVED by operator but failed to apply to kernel "
+                    f"(commitment not found) | "
+                    f"commitment={conflict.conflicting_commitment_id} | "
+                    f"operator={actual_operator_id or operator_id}"
+                )
+        else:
+            logger.info(
+                f"Override rejected | "
+                f"commitment={conflict.conflicting_commitment_id} | "
+                f"operator={actual_operator_id or operator_id}"
+            )
+
+        # Stage 4: Sign EndorsementRecord
         record = EndorsementRecord(
             id=str(uuid.uuid4()),
             timestamp=time.time(),
@@ -285,32 +314,6 @@ class ReflectiveEndorsement:
             rationale=rationale,
             kernel_name=self._kernel.name,
         )
-
-        # Stage 4: Apply decision
-        if decision == EndorsementDecision.APPROVED:
-            applied = self._apply_override(
-                commitment_id=conflict.conflicting_commitment_id,
-                new_value=commitment_new_value or rule_text,
-            )
-            if applied:
-                logger.info(
-                    f"Override approved and applied | "
-                    f"commitment={conflict.conflicting_commitment_id} | "
-                    f"operator={record.operator_id}"
-                )
-            else:
-                logger.warning(
-                    f"Override APPROVED in log but NOT applied to kernel "
-                    f"(commitment not found) | "
-                    f"commitment={conflict.conflicting_commitment_id} | "
-                    f"operator={record.operator_id}"
-                )
-        else:
-            logger.info(
-                f"Override rejected | "
-                f"commitment={conflict.conflicting_commitment_id} | "
-                f"operator={record.operator_id}"
-            )
 
         # Write to log in either case
         self._write_to_log(record)

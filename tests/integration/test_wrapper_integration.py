@@ -65,8 +65,10 @@ class TestWrapperIntegration:
         assert wrapper.compatibility.level == CompatibilityLevel.NATIVE
         assert wrapper.kernel.name == "default"
 
-    def test_basic_chat_flow(self, wrapper, mock_any_llm):
+    @patch("ct_toolkit.identity.embedding.IdentityEmbeddingLayer.compute_divergence")
+    def test_basic_chat_flow(self, mock_divergence, wrapper, mock_any_llm):
         """Test a normal chat completion flow."""
+        mock_divergence.return_value = 0.0
         response = wrapper.chat("Hello, what can you do?")
         
         # Verify the wrapper called any_llm correctly

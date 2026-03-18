@@ -44,6 +44,7 @@ class IdentityEmbeddingLayer:
         embedding_client: Any = None,  # Provider client for real embeddings
         embedding_model: str = "text-embedding-3-small",
         project_root: Path | None = None,
+        strict_embedding: bool = False,
     ) -> None:
         self._template = template
         self._embedding_client = embedding_client
@@ -52,6 +53,7 @@ class IdentityEmbeddingLayer:
         self._template_keywords: list[str] = []
         self._reference_text: str = ""          # stored for lazy computation
         self._project_root = project_root
+        self._strict_embedding = strict_embedding
         self._embedding_method: str = "uninitialized"
         self._load_template()
 
@@ -165,6 +167,8 @@ class IdentityEmbeddingLayer:
                 else:
                     logger.debug("Embedding client does not support .embeddings API. Falling back.")
             except Exception as e:
+                if self._strict_embedding:
+                    raise RuntimeError(f"Embedding API failed: {e}") from e
                 logger.error(f"Embedding API failed: {e}. Falling back to local method.")
         if not self._template_keywords:
             # Fallback: character n-gram hash vector

@@ -59,6 +59,20 @@ class TestReflectiveEndorsementProtocol:
         )
         assert record.to_provenance_metadata()["flagged_for_icm"] is True
 
+    def test_approved_override_fails_if_commitment_not_found(self):
+        # We simulate a PlasticConflictError with a fake commitment ID
+        re = make_re(auto_approve=True)
+        from ct_toolkit.core.exceptions import PlasticConflictError
+        from unittest.mock import patch
+        
+        with patch.object(re._kernel, 'validate_user_rule', side_effect=PlasticConflictError("rule", "fake_commitment_id")):
+            record = re.validate_and_endorse("some rule")
+
+        # The operator approves (because auto_approve=True), but kernel update should throw KeyError and the decision goes to FAILED
+        assert record.decision == EndorsementDecision.FAILED
+        assert "System failed to apply approved rule to kernel (commitment not found)" in record.rationale
+        assert record.to_provenance_metadata()["decision"] == "failed"
+
     # -- Plastic conflict — rejected -------------------------------------------
 
     def test_plastic_conflict_rejected_decision(self):

@@ -19,6 +19,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import any_llm
+
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -117,7 +119,7 @@ class BehaviorClassifier:
     ]
 
     COMPLY_SIGNALS = [
-        "sure", "of course", "here's",
+        "sure", "of course",
         "certainly", "happy to",
     ]
 
@@ -288,38 +290,47 @@ class ICMRunner:
     def _call_model(self, prompt: str) -> str:
         system = self._kernel.get_system_prompt_injection()
 
-        if self._provider == "openai":
-            resp = self._client.chat.completions.create(
-                model=self._model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": f"{prompt}\n\nPlease provide your reasoning step-by-step wrapped in <think></think> tags before your final response."},
-                ],
-                max_tokens=512,
-                temperature=0.0,
-            )
-            return resp.choices[0].message.content or ""
+        full_model = self._model
+        if ":" not in self._model:
+            full_model = f"{self._provider}:{self._model}"
 
-        elif self._provider == "anthropic":
-            resp = self._client.messages.create(
-                model=self._model,
-                max_tokens=512,
-                system=system,
-                messages=[{"role": "user", "content": f"{prompt}\n\nPlease provide your reasoning step-by-step wrapped in <think></think> tags before your final response."}],
-            )
-            return resp.content[0].text if resp.content else ""
+        any_llm_kwargs = {
+            "model": full_model,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": f"{prompt}\n\nPlease provide your reasoning step-by-step wrapped in <think></think> tags before your final response."},
+            ],
+            "max_tokens": 512,
+            "temperature": 0.0,
+        }
 
-        elif self._provider == "ollama":
-            resp = self._client.chat(
-                model=self._model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": f"{prompt}\n\nPlease provide your reasoning step-by-step wrapped in <think></think> tags before your final response."},
-                ],
-            )
-            return resp.message.content or ""
+        # Extract connection info from client if possible
+        if hasattr(self._client, "base_url") and self._client.base_url:
+            any_llm_kwargs["api_base"] = str(self._client.base_url)
+        if hasattr(self._client, "api_key") and self._client.api_key:
+            any_llm_kwargs["api_key"] = self._client.api_key
+            
+        try:
+            resp = any_llm.completion(**any_llm_kwargs)
+            # any_llm SDK standardizes responses but fallback handling preserves robustness
+            if isinstance(resp, dict):
+                if "choices" in resp and resp["choices"]:
+                    return resp["choices"][0].get("message", {}).get("content", "")
+                if "message" in resp:
+                    return resp["message"].get("content", "")
+                return str(resp)
 
-        raise ValueError(f"Unsupported provider: {self._provider}")
+            if hasattr(resp, "choices"):
+                return resp.choices[0].message.content or ""
+            if hasattr(resp, "content") and isinstance(resp.content, list):
+                return resp.content[0].text if resp.content else ""
+            if hasattr(resp, "message"):
+                return resp.message.content or ""
+            
+            return str(resp)
+        except Exception as e:
+            logger.error(f"ICM probe any_llm call failed: {e}")
+            raise
 
     # ── Probe Loading ──────────────────────────────────────────────────────────
 

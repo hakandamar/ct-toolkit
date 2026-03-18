@@ -85,7 +85,7 @@ class ProvenanceLog:
         self._vault_type = vault_type
         self._vault_path = Path(vault_path)
         self._hmac_key = hmac_key or self._load_or_generate_key()
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self._conn = self._init_db()
         logger.info(f"ProvenanceLog initialized | vault={vault_path}")
 
@@ -134,7 +134,8 @@ class ProvenanceLog:
 
         Returns: True (valid) | raises ChainIntegrityError
         """
-        entries = self._load_all_entries(include_rolled_back=False)
+        with self._lock:
+            entries = self._load_all_entries(include_rolled_back=False)
         if not entries:
             return True
 
@@ -157,14 +158,16 @@ class ProvenanceLog:
 
     def get_entries(self, limit: int = 100, include_rolled_back: bool = False) -> list[ProvenanceEntry]:
         """Returns the last N entries."""
-        return self._load_all_entries(limit=limit, include_rolled_back=include_rolled_back)
+        with self._lock:
+            return self._load_all_entries(limit=limit, include_rolled_back=include_rolled_back)
 
     def get_entry(self, entry_id: str) -> ProvenanceEntry | None:
-        cursor = self._conn.execute(
-            "SELECT * FROM provenance WHERE id = ?", (entry_id,)
-        )
-        row = cursor.fetchone()
-        return self._row_to_entry(row) if row else None
+        with self._lock:
+            cursor = self._conn.execute(
+                "SELECT * FROM provenance WHERE id = ?", (entry_id,)
+            )
+            row = cursor.fetchone()
+            return self._row_to_entry(row) if row else None
 
     def get_interaction_count(
         self, template: str, kernel_name: str, model: str

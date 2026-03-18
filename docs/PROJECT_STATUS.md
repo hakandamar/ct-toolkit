@@ -121,7 +121,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **HMAC key management** — Environment variable or local file
 - [ ] **Cloud vault adapter** — For SaaS version; customer authorization key is never accessible to us
 - [ ] **HashiCorp Vault integration** — Enterprise key management
-- [ ] **Read-only external Provenance Log access** — _(Paper 5.2)_ Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
+- [x] **Read-only external Provenance Log access** — _(Paper 5.2)_ Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
 - [x] **Rollback mechanism** — _(Paper 5.2)_ Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
 - [x] **Anomaly detection and alerting (Groundwork)** — Complete: `drift_alert_callback` support in `TheseusWrapper`.
 - [x] **Autonomous Self-Correction** — _(Paper 6)_ Active L2->L1 feedback loop that retries and corrects divergent responses before they reach the user.

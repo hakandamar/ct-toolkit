@@ -24,7 +24,7 @@ import hashlib
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Iterator, Optional, Callable, Dict
 import any_llm
 from any_llm import AnyLLM
 import glob
@@ -68,6 +68,8 @@ class WrapperConfig:
     elasticity_max_thresholds: tuple[float, float, float] | None = None  # (max_l1, max_l2, max_l3)
     elasticity_growth_rate: float | None = None
     risk_profile: RiskProfile | None = None
+
+    strict_embedding: bool = False   # Raise error if embedding API fails
 
 
 @dataclass
@@ -192,7 +194,7 @@ class TheseusWrapper:
                     if file_path.is_file():
                         self._integrity_monitor.register_file(file_path)
 
-        except (ImportError, ModuleNotFoundError):
+        except Exception:
             # Fallback for older Python or different environments
             package_root = Path(__file__).parent.parent
             # This is less ideal as it might find non-package files, but it's a
@@ -309,6 +311,7 @@ class TheseusWrapper:
             embedding_client=emb_client,
             embedding_model=self._config.embedding_model,
             project_root=self._project_root,
+            strict_embedding=self._config.strict_embedding,
         )
 
     def _init_divergence_engine(self) -> Any:
