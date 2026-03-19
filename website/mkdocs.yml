@@ -84,6 +84,8 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - toc:
       permalink: true
+  - pymdownx.arithmatex:
+      generic: true
 
 plugins:
   - search:
@@ -106,6 +108,11 @@ extra:
 
 extra_css:
   - assets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
   - Home: index.md

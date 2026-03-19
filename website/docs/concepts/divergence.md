@@ -4,12 +4,12 @@ The Divergence Engine is the heart of CT Toolkit's security layer. It provides a
 
 ## The Scoring Mechanism
 
-The engine calculates a **Divergence Score ($D$)** between the agent's current interaction ($I_n$) and its **Constitutional Kernel ($K$)**. 
+The engine calculates a **Divergence Score (\(D\))** between the agent's current interaction (\(I_n\)) and its **Constitutional Kernel (\(K\))**. 
 
-$$D = 1 - \text{CosineSimilarity}(\text{Embed}(I_n), \text{Embed}(K))$$
+\[D = 1 - \text{CosineSimilarity}(\text{Embed}(I_n), \text{Embed}(K))\]
 
--   **$0.0$**: Perfect alignment. The response is mathematically consistent with the agent's identity.
--   **$1.0$**: Absolute drift. The response has no relation to the agent's core commitments.
+-   **\(0.0\)**: Perfect alignment. The response is mathematically consistent with the agent's identity.
+-   **\(1.0\)**: Absolute drift. The response has no relation to the agent's core commitments.
 
 ## Monitoring Tiers
 
