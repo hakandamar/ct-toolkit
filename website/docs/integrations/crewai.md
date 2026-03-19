@@ -1,0 +1,44 @@
+# CrewAI Integration
+
+`TheseusCrewMiddleware` wraps every agent in your crew with the mother agent's Constitutional Kernel in a single call.
+
+**Requirements:** `crewai >= 1.10`
+
+```bash
+pip install "ct-toolkit[crewai]"
+```
+
+## Quick start
+
+```python
+from ct_toolkit import TheseusWrapper
+from ct_toolkit.middleware.crewai import TheseusCrewMiddleware
+from crewai import Agent, Crew, Task
+
+# 1. Manager wrapper with strict kernel
+manager = TheseusWrapper(provider="openai", kernel_name="defense")
+
+# 2. Standard CrewAI setup
+researcher = Agent(role="Researcher", goal="...", backstory="...", llm=your_llm)
+writer     = Agent(role="Writer",     goal="...", backstory="...", llm=your_llm)
+crew = Crew(agents=[researcher, writer], tasks=[...])
+
+# 3. Apply CT Toolkit — wraps every agent's LLM with parent kernel
+TheseusCrewMiddleware.apply_to_crew(crew, manager)
+
+crew.kickoff()
+```
+
+After `apply_to_crew()`, each agent's `llm` is replaced with a `TheseusChatModel` configured with the manager's kernel as read-only constraints.
+
+## Single agent
+
+```python
+TheseusCrewMiddleware.wrap_agent(agent, manager)
+```
+
+## How it works
+
+- Each sub-agent's `TheseusChatModel` carries `parent_kernel=manager.kernel`
+- The parent kernel's anchors are merged as **read-only axioms** — sub-agents cannot modify or bypass them via Reflective Endorsement
+- All interactions are logged to the manager's provenance vault

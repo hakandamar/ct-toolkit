@@ -1,70 +1,22 @@
 # Kernels & Templates Reference
 
-This reference guide provides technical specifications for defining AI identities and guardrails in CT Toolkit.
+## Built-in kernels
 
----
+| Kernel | Key anchors |
+|:---|:---|
+| `default` | human_oversight, identity_continuity, no_deception, no_self_modification_bypass |
+| `defense` | + chain_of_command, classified_data_protection |
+| `finance` | + no_market_manipulation, regulatory_compliance |
 
-## Constitutional Kernels
+## Built-in templates
 
-A **Kernel** defines the **Identity** of the agent—its non-negotiable axioms and its flexible commitments.
+| Template | Domain | Keywords focus |
+|:---|:---|:---|
+| `general` | All-purpose | helpful, honest, harmless, transparent |
+| `medical` | Healthcare | patient safety, clinical accuracy, privacy |
+| `finance` | Banking | compliance, risk, transparency, fiduciary |
+| `defense` | Military | operational security, chain of command |
 
-### YAML Structure
+## YAML specifications
 
-```yaml
-name: my_kernel              # Required, unique name
-version: "1.0.0"             # Semantic versioning
-description: >               # Use case and intent
-  Description of the kernel.
-
-axiomatic_anchors:           # Non-negotiable rules
-  - id: human_oversight
-    description: "Blocking or bypassing human oversight."
-    keywords:
-      - disable oversight
-      - bypass human
-
-plastic_commitments:         # Policy-based rules (modifiable via endorsement)
-  - id: response_tone
-    description: "Tone of the interaction."
-    default_value: "professional"
-```
-
-### Rule Types
-
-| Type | Modifiability | Intervention |
-| :--- | :--- | :--- |
-| **Axiomatic Anchor** | Immutable | **Hard Reject**: The interaction is blocked immediately. |
-| **Plastic Commitment** | Endorsable | **Soft Alert**: Triggers a Reflective Endorsement prompt. |
-
----
-
-## Identity Templates
-
-A **Template** defines the "Domain" and "Genesis State" of the system. It is the mathematical reference for divergence analysis.
-
-### YAML Structure
-
-```yaml
-name: medical
-version: "1.0.0"
-description: "Identity for clinical research."
-
-compatible_kernels:
-  - medical
-  - research
-
-reference_text: >
-  Patient safety, clinical accuracy, and medical ethics are the core pillars...
-
-identity_keywords:
-  - patient_safety
-  - clinical_efficacy
-  - hipaa_compliance
-```
-
-### Core Templates
-
-- **`general`**: Standard ethics and safety.
-- **`medical`**: Clinical safety and data privacy.
-- **`finance`**: Regulatory compliance and risk auditing.
-- **`defense`**: Operational security and chain of command.
+See [Custom Kernels](../guides/custom-kernels.md) and [Custom Templates](../guides/custom-templates.md) for complete YAML structure documentation with examples.

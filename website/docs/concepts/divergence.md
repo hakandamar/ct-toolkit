@@ -1,57 +1,46 @@
 # Divergence Engine
 
-The Divergence Engine measures how much an LLM's response deviates from its original identity template.
+The Divergence Engine is the heart of CT Toolkit's security layer. It provides a multi-tiered approach to measuring and mitigating **identity drift** in real-time.
 
-## Tiers of Analysis
+## The Scoring Mechanism
 
-- **L1 (Syntactic)**: Fast, keyword-based drift detection.
-- **L2 (Semantic)**: LLM-as-judge analysis to understand the intent and meaning of the drift.
-- **L3 (Cognitive)**: Advanced analysis of **reasoning chains** to distinguish maturation from drift.
+The engine calculates a **Divergence Score ($D$)** between the agent's current interaction ($I_n$) and its **Constitutional Kernel ($K$)**. 
 
-## Measurement Infrastructure
+$$D = 1 - \text{CosineSimilarity}(\text{Embed}(I_n), \text{Embed}(K))$$
 
-The toolkit provides longitudinal measurement of identity stability via the `analysis` module:
+-   **$0.0$**: Perfect alignment. The response is mathematically consistent with the agent's identity.
+-   **$1.0$**: Absolute drift. The response has no relation to the agent's core commitments.
 
-### Policy-Drift Measurement
-Tracks the distributional shift of the agent's decision boundaries over time.
-- **Drift Velocity**: The rate at which the model is moving away from its core constitution.
-- **Divergence Variance**: Stability of the agent's normative output.
+## Monitoring Tiers
 
-### SSC Severity Index
-A risk-normalized value (0.0 - 1.0) that represents the severity of detected Sequential Self-Compression. This index is automatically adjusted based on the agent's **Structural Risk Profile** (e.g., capability with tool calling or vision).
+CT Toolkit uses a "Progressive Hardening" approach to minimize latency while maximizing safety.
 
-## Outcomes
+### Tier 1: Embedding Cosine Similarity (ECS)
+-   **Method**: Vector comparison using fast embedding models.
+-   **Cost**: Near zero.
+-   **Latency**: Minimal (< 50ms).
+-   **Action**: Low-level monitoring and warning.
 
-Every analysis result includes:
-- **Divergence Score**: A numerical value (0-1) representing the amount of drift.
+### Tier 2: LLM-as-Judge
+-   **Method**: A secondary "Identity Judge" LLM analyzes the response against the kernel's text.
+-   **Trigger**: Triggered when L1 score exceedes `l2_threshold`.
+-   **Action**: Can initiate **Autonomous Self-Correction** if the judge detects misalignment.
 
-## Divergence Penalty (New in Phase 4)
+### Tier 3: Identity Probe Battery (ICM)
+-   **Method**: Full suite of "Identity Consistency Measures".
+-   **Trigger**: Triggered for high-stakes interactions or critical drift.
+-   **Action**: Hard block of the response and notification of a human operator.
 
-For open-source model training, the toolkit now provides a **Divergence Penalty Loss** module (`ct_toolkit.divergence.loss`). 
-- **Hidden State Alignment**: Dynamically penalizes the distance between current model activations and the Constitutional Identity Kernel (CIK) reference embeddings.
-- **Identity-Constrained Training**: Allows for fine-tuning that optimizes for capability while hard-constraining the model's normative identity.
-## Autonomous Self-Correction (L2 -> L1 Loop)
+## Summary of Tiers
 
-Starting with Phase 5, the CT Toolkit features an active feedback loop. When the L2 Judge detects an identity divergence, the library can automatically block the problematic response, prompt the LLM internally with the divergence reason, and attempt to self-correct the response. 
+| Tier | Score Range | Action | Cost |
+|:---|:---|:---|:---|
+| `ok` | 0.00 – 0.15 | No action | $ |
+| `l1_warning` | 0.15 – 0.30 | Log & Monitor | $ |
+| `l2_judge` | 0.30 – 0.50 | **Judge Analysis** | $$ |
+| `l3_icm` | 0.50 – 0.80 | **Identity Probes** | $$$ |
+| `critical` | 0.80+ | **Immediate Block** | $$$ |
 
-```python
-config = WrapperConfig(
-    auto_correction=True,
-    max_correction_retries=1
-)
-```
+---
 
-This upgrades the Divergence Engine from a passive monitor into an active Guardrail against Sequential Self-Compression (SSC).
-
-## Automated Alerting
-
-Starting with Phase 4.8, the Divergence Engine supports **automated alerting**. Developers can provide an external callback that triggers immediately when high-severity drift or context compression failures are detected.
-
-```python
-config = WrapperConfig(
-    drift_alert_callback=my_handler,
-    divergence_l1_threshold=0.25
-)
-```
-
-This allows for real-time orchestration of safety measures (e.g., halting a deployment or switching to a more constrained model) without manual monitoring.
+See [Tiered Guardrails](tiered-guardrails.md) for the implementation details.

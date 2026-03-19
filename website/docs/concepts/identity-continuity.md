@@ -1,30 +1,36 @@
-# Identity Continuity
+# Identity Continuity & SSC
 
-Identity Continuity is the ability of an AI system to maintain a stable set of core principles, persona, and constraints across time and complex interactions.
+**Sequential Self-Compression (SSC)** is the gradual erosion of an agent's normative commitments over time. In multi-agent systems and long-running autonomous sessions, this phenomenon leads to "identity drift" — where an agent's behavior slowly diverges from its original instructions.
 
-## The Problem: Identity Attenuation
+## The SSC Problem
 
-As LLMs engage in multi-step reasoning or hierarchical task delegation, they often suffer from "drift." Each subsequent step or agent-to-agent communication can slightly alter the original instructions, leading to a loss of the core "identity" or "commander's intent."
+Each individual decision an agent makes might appear safe and aligned with its local context. However, over thousands of interactions, the cumulative effect of these small "compressions" results in an agent that no longer adheres to its core principles.
 
-## The Theoretical Foundation
+```mermaid
+graph LR
+    A[Genesis Config] --> B[Interaction 1]
+    B --> C[Interaction 100]
+    C --> D[Interaction 1000]
+    D -- "Identity Drift" --> E[Drifted Agent]
+    
+    A -. "Continuous Validation" .-> B
+    A -. "Continuous Validation" .-> C
+    A -. "Continuous Validation" .-> D
+    D -. "Reflective Endorsement" .-> F[Secure Agent]
+```
 
-CT Toolkit is the practical implementation of the **Nested Agency Architecture (NAA)** framework. For a deep dive into the mathematical and philosophical foundations of Identity Continuity and Sequential Self-Compression, read the original paper:
+## How CT Toolkit Solves It
 
-[**The Computational Theseus: Engineering Identity Continuity as a Guardrail against Sequential Self-Compression**](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) by Hakan Damar (2025).
+CT Toolkit implements the **Nested Agency Architecture (NAA)** to prevent SSC through three primary mechanisms:
 
-## Why CT Toolkit?
+1.  **Axiomatic Anchoring**: Core principles are defined as immutable "Axioms" that can never be overridden by user prompts or model updates.
+2.  **Stateful Monitoring**: Unlike stateless guardrails (which look at one prompt at a time), CT Toolkit tracks the current state against the **Genesis Configuration**.
+3.  **Divergence Penalty**: The system calculates a mathematical score ($0.0$ to $1.0$) representing how far the agent has moved from its identity anchor.
 
-Existing guardrails like Llama-Guard or rule engines are often insufficient for autonomous agents for four fundamental reasons:
+### Key Benefits
 
-1.  **Stateful Identity Drift**: Guardrails are stateless; they check a single prompt. CT Toolkit prevents slow, stateful drift (SSC) over thousands of safe-looking interactions.
-2.  **Plastic Adaptation**: Traditional filters are binary (Yes/No). CT Toolkit's **Reflective Endorsement** allows rules to evolve safely through formal approval.
-3.  **Nested Agency Support**: In Multi-Agent Systems, a 2% deviation in a manager agent amplifies exponentially in sub-agents. CT Toolkit ensures hierarchical alignment.
-4.  **Cryptographic Proof**: The **Provenance Log** provides an immutable audit trail, allowing enterprises to prove their system's identity integrity to regulators. It features secure, read-only access for external auditors and a safe, agent-specific rollback mechanism. This allows system administrators to revert an individual agent's state without compromising the integrity of the overall multi-agent system, ensuring both stability and accountability.
+-   **Mathematical Rigor**: Identity is defined as a vector space; drift is measured as distance.
+-   **Hierarchical Inheritance**: Mother agents can propagate their identity to child agents, ensuring safety cascades through the fleet.
+-   **Verifiable Audit**: Every interaction is captured in the HMAC-signed [Provenance Log](provenance.md).
 
-## The Solution
-
-CT Toolkit solves this by:
-1.  **Axiomatic Guardrails**: Inflexible rules that stop drift before it happens.
-2.  **Divergence Tracking**: Measuring exactly how much an agent has drifted from its core template.
-3.  **Hereditary Constraints**: Ensuring sub-agents are more constrained than their managers.
-4.  **Configuration Integrity**: Cryptographically verifying that core configuration files (like Kernels and Identity Templates) have not been tampered with at runtime.
+For a deeper dive into the research behind these concepts, see [Why CT Toolkit?](why-ct-toolkit.md).

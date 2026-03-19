@@ -1,28 +1,19 @@
-# Tiered Guardrail System
+# Tiered Guardrails (L1/L2/L3)
 
-CT Toolkit operates across three tiers of analysis to ensure identity continuity.
+CT Toolkit uses a three-tier escalation model. Each tier only runs when the previous one detects a potential issue — keeping costs and latency near zero for healthy agents.
 
-## Tiered Analysis Flow
+## L1 — Embedding Cosine Similarity (ECS)
 
-On every interaction, the system processes the output through the following gates:
+Runs on **every call**. Zero extra API cost.
 
-### L1: Syntactic (ECS)
-- **Mechanism**: Embedding Cosine Similarity.
-- **Goal**: Fast, low-latency detection of surface-level drift.
-- **Threshold**: Typically >0.3 triggers L2.
+```
+divergence = 1.0 - cosine_similarity(response_vector, reference_vector)
+```
 
-### L2: Semantic (LLM-as-a-Judge)
-- **Mechanism**: Cross-provider validation (e.g., GPT-4o judging a local Llama model).
-- **Goal**: Understanding the *intent* of the drift.
-- **Outcome**: `ALIGNED` or `MISALIGNED`.
+## L2 — LLM-as-Judge
 
-### L3: Cognitive (ICM)
-- **Mechanism**: Identity Consistency Metric probes + **Reasoning Chain Analysis**.
-- **Goal**: Deep verification of value commitments; distinguishing moral maturation from SSC-driven drift.
-- **Action**: Critical failure results in a `CASCADE_BLOCKED` state.
+Triggered when L1 exceeds `l2_threshold`. An independent model evaluates the response against the kernel rules.
 
----
+## L3 — ICM Probe Battery
 
-## Detailed Logic Map
-
-![Detailed Logic Map](theseus_guard_logic_map.png)
+Triggered when L2 returns `misaligned` or L1 exceeds `l3_threshold`. Runs a battery of ethical probe scenarios.

@@ -1,68 +1,163 @@
-site_name: Computational Theseus Toolkit
-site_description: Identity Continuity & Hierarchical LLM Guardrails
-site_author: Computational Theseus Team
+site_name: CT Toolkit
+site_description: Identity Continuity & Hierarchical Guardrails for Agentic AI Systems
+site_author: Hakan Damar
 site_url: https://hakandamar.github.io/ct-toolkit
+
+repo_name: hakandamar/ct-toolkit
+repo_url: https://github.com/hakandamar/ct-toolkit
+edit_uri: edit/main/website/docs/
 
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
+
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: indigo
-      accent: indigo
+      accent: blue
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: indigo
-      accent: indigo
+      accent: blue
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand
+    - navigation.path
     - navigation.top
+    - navigation.footer
+    - navigation.indexes
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    - toc.follow
+
+  icon:
+    repo: fontawesome/brands/github
+    admonition:
+      note: octicons/tag-16
+      tip: octicons/squirrel-16
+      warning: octicons/alert-16
+      danger: octicons/zap-16
+      example: octicons/beaker-16
 
 markdown_extensions:
   - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - tables
+  - footnotes
+  - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
-  - attr_list
-  - md_in_html
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
 
 plugins:
-  - search
+  - search:
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/hakandamar/ct-toolkit
+      name: GitHub Repository
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/ct-toolkit/
+      name: PyPI Package
+    - icon: fontawesome/brands/readme
+      link: https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d
+      name: Read the Research Paper
+  version:
+    provider: mike
+    default: stable
+
+extra_css:
+  - assets/extra.css
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
+
+  - Get Started:
+    - get-started/index.md
+    - Quickstart: get-started/quickstart.md
+    - Installation: get-started/installation.md
+    - Local Models (Ollama / LM Studio): get-started/local-models.md
+    - Your First Guardrail: get-started/first-guardrail.md
+
   - Core Concepts:
-      - Identity Continuity: concepts/identity-continuity.md
-      - Constitutional Kernels: concepts/kernels.md
-      - Divergence Engine: concepts/divergence.md
-      - Tiered Guardrails: concepts/tiered-guardrails.md
-  - Middlewares:
-      - LangChain: middleware/langchain.md
-      - Deep Agents: middleware/deepagents.md
-      - CrewAI: middleware/crewai.md
-      - AutoGen: middleware/autogen.md
-  - Technical Reference:
-      - Kernels & Templates: reference/kernels-templates.md
-      - Compatibility Matrix: reference/compatibility.md
+    - concepts/index.md
+    - Why CT Toolkit?: concepts/why-ct-toolkit.md
+    - Identity Continuity & SSC: concepts/identity-continuity.md
+    - Constitutional Kernels: concepts/kernels.md
+    - Divergence Engine: concepts/divergence.md
+    - Tiered Guardrails (L1/L2/L3): concepts/tiered-guardrails.md
+    - Multi-Agent Hierarchy: concepts/multi-agent.md
+    - Provenance & Compliance: concepts/provenance.md
+    - Reflective Endorsement: concepts/reflective-endorsement.md
+
+  - Integrations:
+    - integrations/index.md
+    - LangChain: integrations/langchain.md
+    - CrewAI: integrations/crewai.md
+    - AutoGen: integrations/autogen.md
+    - Deep Agents: integrations/deepagents.md
+
+  - Guides:
+    - guides/index.md
+    - Custom Kernels: guides/custom-kernels.md
+    - Custom Templates: guides/custom-templates.md
+    - Enterprise Setup: guides/enterprise.md
+    - Fine-Tuning with CIK: guides/fine-tuning.md
+    - EU AI Act Compliance: guides/compliance.md
+
+  - Reference:
+    - reference/index.md
+    - TheseusWrapper: reference/theseus-wrapper.md
+    - WrapperConfig: reference/wrapper-config.md
+    - ConstitutionalKernel: reference/constitutional-kernel.md
+    - Divergence Engine: reference/divergence-engine.md
+    - Provenance Log: reference/provenance-log.md
+    - Compatibility Matrix: reference/compatibility.md
+    - Kernels & Templates: reference/kernels-templates.md
+    - Exceptions: reference/exceptions.md
+    - Project Status: reference/project-status.md
+
   - Examples:
-      - Overview: examples/index.md
-      - Financial Auditor (SSC): examples/ssc-financial-auditor.md
-      - Hierarchical Safety: examples/hierarchical-safety.md
-      - Standalone Auditor (Qwen3): examples/standalone-auditor.md
-  - API Reference: api/reference.md
+    - examples/index.md
+    - Financial Auditor (SSC): examples/ssc-financial-auditor.md
+    - Hierarchical Agent Safety: examples/hierarchical-safety.md
+    - Standalone Auditor (Qwen3): examples/standalone-auditor.md
+    - Military Medical Use Case: examples/military-medical.md

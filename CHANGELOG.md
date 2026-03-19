@@ -7,9 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
-## [Unreleased]
+## [0.3.4] - 2026-03-19
 
 ### Added
+- Redesigned documentation website to align with Google ADK Docs 2.0 style.
+- Enhanced homepage with interactive card grid and optimized hero section.
+- Integrated SVG logo and favicon for professional branding.
+- Expanded technical documentation for Identity Continuity and Divergence Engine.
+
+### Fixed
+- Improved Dark Mode support with theme-aware CSS overrides for grid cards.
+- Fixed Markdown parsing issues in website homepage layout.
+
+### Added (Previous Unreleased)
 - Comprehensive API Reference documentation focusing on high Developer Experience.
 - Repository `SECURITY.md`, `CHANGELOG.md`, and updated `CONTRIBUTING.md`.
 

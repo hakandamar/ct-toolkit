@@ -1,68 +1,46 @@
-# Compatibility & Support Matrix
+# Compatibility Matrix
 
-CT Toolkit is designed to be framework-agnostic. Below is the current support status for LLM providers and agentic frameworks.
+## Levels
 
----
+| Level | Description |
+|:---|:---|
+| `NATIVE` | Natural pairing, used directly |
+| `COMPATIBLE` | Works, but generates a combined profile and logs a warning |
+| `CONFLICTING` | Hard reject — cannot be used together |
 
-## LLM Providers
+## Built-in combinations
 
-We support any provider integrated with `any-llm-sdk`.
+| Template | Kernel | Level | Notes |
+|:---|:---|:---|:---|
+| `general` | `default` | NATIVE | — |
+| `medical` | `medical` | NATIVE | — |
+| `finance` | `finance` | NATIVE | — |
+| `defense` | `defense` | NATIVE | — |
+| `legal` | `legal` | NATIVE | — |
+| `research` | `research` | NATIVE | — |
+| `medical` | `defense` | COMPATIBLE | Military medical; defense rules take priority |
+| `medical` | `research` | COMPATIBLE | Research medical; research kernel priority |
+| `finance` | `legal` | COMPATIBLE | Legal-financial; legal kernel priority |
+| `general` | `finance` | COMPATIBLE | — |
+| `general` | `medical` | COMPATIBLE | — |
+| `general` | `legal` | COMPATIBLE | — |
+| `entertainment` | `defense` | CONFLICTING | Hard reject |
+| `entertainment` | `medical` | CONFLICTING | Hard reject |
+| `marketing` | `defense` | CONFLICTING | Hard reject |
+| `marketing` | `medical` | CONFLICTING | Hard reject |
 
-| Provider | Status | Notes |
-| :--- | :--- | :--- |
-| **OpenAI** | ✅ Native | Full support for GPT-4o, GPT-4 Turbo, etc. |
-| **Anthropic** | ✅ Native | Support for Claude 3.5 Sonnet/Opus. |
-| **Google** | ✅ Native | Gemini 1.5 Pro support (system instructions). |
-| **Ollama** | ✅ Local | Works with Llama 3, Mistral, Phi-3 local models. |
-| **Cohere** | ✅ Native | Enterprise-grade Command-R support. |
-| **Groq** | ✅ Speed | Llama 3.1 70B high-speed inference. |
+## Usage
 
----
+```python
+from ct_toolkit.core.compatibility import CompatibilityLayer
 
-## Agentic Frameworks (Middleware)
+result = CompatibilityLayer.check("medical", "defense")
+print(result.level)   # COMPATIBLE
+print(result.notes)   # "Military medical application: defense kernel has priority."
 
-CT Toolkit provides first-class middleware for the following ecosystems:
+# List compatible kernels for a template
+kernels = CompatibilityLayer.list_compatible_kernels("medical")
+```
 
-| Framework | Middleware | Status |
-| :--- | :--- | :--- |
-| **LangChain** | `TheseusChatModel` | ✅ Complete (v1.2+) |
-| **CrewAI** | `TheseusCrewMiddleware` | ✅ Complete (v1.10+) |
-| **AutoGen** | `TheseusAutoGenMiddleware` | ✅ Complete (v0.4+) |
-| **LangGraph** | Standard Callback | ✅ Supported via LangChain |
-
----
-
-The **Compatibility Layer** ensures that the "Domain" (Template) doesn't conflict with the "Identity" (Kernel). Combinations are categorized into three levels:
-
-### 1. NATIVE
-Pairs that share the same domain and work without extra logging or constraints.
-
-| Template | Kernel |
-| :--- | :--- |
-| `general` | `default` |
-| `medical` | `medical` |
-| `finance` | `finance` |
-| `defense` | `defense` |
-| `legal` | `legal` |
-| `research` | `research` |
-
-### 2. COMPATIBLE
-Pairs that work but require generating a combined profile and recording an audit log (Reflective Endorsement flow).
-
-| Template | Kernel | Note |
-| :--- | :--- | :--- |
-| `medical` | `defense` | Military medical; defense rules take priority. |
-| `finance` | `legal` | Legal-financial; legal rules take priority. |
-| `general` | `any` | General template works with any specific kernel with a warning. |
-
-### 3. CONFLICTING
-Pairs that are explicitly blocked to prevent identity attenuation or cognitive dissonance.
-
-| Template | Kernel | Action |
-| :--- | :--- | :--- |
-| `entertainment` | `defense` / `medical` | **Hard Reject** |
-| `marketing` | `defense` / `medical` | **Hard Reject** |
-
----
-
-> ⚠️ **Note**: Any undefined combination defaults to `COMPATIBLE` (allow but log) unless `strict_mode` is enabled in the `WrapperConfig`.
+!!! note "Undefined combinations"
+    Any template + kernel combination not in the matrix defaults to `COMPATIBLE` (allow but log). Use `strict_mode=True` in `WrapperConfig` to change this behavior.

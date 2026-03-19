@@ -1,27 +1,138 @@
-# Computational Theseus Toolkit (CT Toolkit)
+---
+hide:
+  - navigation
+  - toc
+---
+
+<div class="ct-hero" markdown>
+
+# Computational Theseus Toolkit
 
 **Identity Continuity & Hierarchical Guardrails for the Post-Drift AI Era.**
 
-CT Toolkit is a framework-agnostic middleware suite designed to prevent **Sequential Self-Compression (SSC)** and maintain **Identity Continuity** in multi-agent LLM systems.
+CT Toolkit is an open-source security layer that prevents **Sequential Self-Compression (SSC)** in agentic systems — ensuring your AI agents remain who they were on day one, even after thousands of interactions.
 
-## Philosophy: Solving the Theseus Problem in AI
+<div class="ct-install-tabs" markdown>
 
-As defined in Hakan Damar's original research, **Sequential Self-Compression (SSC)** is the gradual erosion of an AI's initial normative commitments. In a world of multi-agent hierarchies (Nested Agency), this drift cascades and amplifies, leading to systemic failure.
+=== "pip"
 
-CT Toolkit does not just "filter" content; it **preserves identity**. It ensures that as an agent interacts, spawns sub-agents, or undergoes fine-tuning cycles, it remains the same "identity" it was on day one.
+    ```bash
+    pip install ct-toolkit
+    ```
 
-## Core Pillars
+=== "uv (recommended)"
 
-- **🛡️ Constitutional Kernels**: Immutable axiomatic anchors that protect your agent's identity from optimization pressure.
-- **🔄 Autonomous Self-Correction**: Active L2->L1 feedback loop that retries and corrects divergent responses before they reach the user.
-- **📡 Divergence Engine**: Multi-tiered signals (L1 ECS, L2 Judge, L3 ICM) that detect the earliest signs of identity drift.
-- **🕸️ Nested Agency Support**: Hierarchical kernel propagation ensuring sub-agents are more constrained than their managers.
-- **📜 Provenance Log**: An immutable, HMAC-signed chain of every identity-relevant interaction for auditing and compliance.
+    ```bash
+    uv add ct-toolkit
+    ```
 
-## Framework Support
-Integrate seamlessly with the most popular agent ecosystems:
-- **LangChain** (v1.2+)
-- **CrewAI** (v1.10+)
-- **AutoGen** (v0.4+)
+=== "from source"
 
-[Get Started with the Guide →](getting-started.md)
+    ```bash
+    git clone https://github.com/hakandamar/ct-toolkit
+    cd ct-toolkit
+    pip install -e "."
+    ```
+
+</div>
+
+[Get Started with Python](get-started/quickstart.md){ .md-button .md-button--primary }
+[View on GitHub](https://github.com/hakandamar/ct-toolkit){ .md-button }
+
+<div class="provider-badges">
+<span class="provider-badge">OpenAI</span>
+<span class="provider-badge">Anthropic</span>
+<span class="provider-badge">Ollama</span>
+<span class="provider-badge">Google</span>
+<span class="provider-badge">Cohere</span>
+<span class="provider-badge">Groq</span>
+</div>
+
+</div>
+
+---
+
+## Two lines of code. Full identity protection.
+
+```python
+# Before
+client = openai.OpenAI()
+
+# After — guardrails, drift detection, and audit log, all automatic
+client = TheseusWrapper(openai.OpenAI())
+
+response = client.chat("What are your core values?")
+print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.0 = drifted
+```
+
+---
+
+## Why CT Toolkit?
+
+<div class="grid cards" markdown>
+
+-   :material-shield-lock:{ .lg }
+    **Constitutional Kernels**
+    ---
+    Define immutable Axiomatic Anchors that never change, and Plastic Commitments that evolve through formal approval.
+    [:octicons-arrow-right-24: Learn about Kernels](concepts/kernels.md)
+
+-   :material-chart-bell-curve:{ .lg }
+    **3-Tier Divergence Engine**
+    ---
+    Layered monitoring from zero-cost L1 embeddings to full L3 identity probes. Detect and block identity drift before it becomes systemic.
+    [:octicons-arrow-right-24: Understand Divergence](concepts/divergence.md)
+
+-   :material-sitemap:{ .lg }
+    **Hierarchical Safety**
+    ---
+    Mother agent constraints propagate to sub-agents as read-only axioms. Prevent small orchestrator deviations from cascading into massive fleet-wide drift.
+    [:octicons-arrow-right-24: Explore Multi-Agent Safety](concepts/multi-agent.md)
+
+-   :material-link-lock:{ .lg }
+    **Cryptographic Provenance**
+    ---
+    Every interaction is signed with HMAC-SHA256 and chained. Provide a regulator-ready audit trail of your agent's identity continuity.
+    [:octicons-arrow-right-24: View Compliance Tools](concepts/provenance.md)
+
+-   :material-puzzle:{ .lg }
+    **Framework Middleware**
+    ---
+    Drop-in support for LangChain, CrewAI, and AutoGen. Add identity protection to your existing agent stack without rewriting a single chain.
+    [:octicons-arrow-right-24: Browse Integrations](integrations/index.md)
+
+-   :material-rocket-launch:{ .lg }
+    **Production Ready**
+    ---
+    Tested with latest frontier models and local endpoints. 90%+ test coverage and enterprise-grade security defaults.
+    [:octicons-arrow-right-24: Project Roadmap](reference/project-status.md)
+
+</div>
+
+---
+
+## Existing guardrails aren't enough
+
+| | Llama-Guard / Rule Engines | **CT Toolkit** |
+|---|---|---|
+| **Stateful drift detection** | ✗ Stateless per-prompt | ✓ Tracks identity over thousands of calls |
+| **Multi-agent hierarchies** | ✗ No hierarchy awareness | ✓ Propagates kernel constraints to sub-agents |
+| **Formal rule evolution** | ✗ Binary block/allow | ✓ Reflective Endorsement with signed approval |
+| **Cryptographic audit trail** | ✗ No provenance | ✓ HMAC hash chain, regulator-ready |
+| **Fine-tuning safety** | ✗ No training constraints | ✓ `DivergencePenaltyLoss` for PyTorch |
+
+[:octicons-arrow-right-24: Read the full rationale](concepts/why-ct-toolkit.md)
+
+---
+
+## Project status
+
+| Metric | Status |
+|:---|:---|
+| **Tests** | ✅ 231/232 passing |
+| **Coverage** | ✅ 90% |
+| **PyPI** | ✅ `pip install ct-toolkit` |
+| **License** | Apache 2.0 |
+| **Python** | 3.11+ |
+
+[:octicons-arrow-right-24: Full roadmap and status](reference/project-status.md)
