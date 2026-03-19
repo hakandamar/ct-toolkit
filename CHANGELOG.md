@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.5] - 2026-03-19
+
+### Added
+- **Standalone Auditor CLI**: Introduced `ct-toolkit` command-line interface for independent L3 ICM audits.
+- **ASCII Art Banner**: Added "THESEUS GUARD" branding to CLI startup.
+- **Auditor Commands**: Added `audit`, `list-kernels`, and `list-templates` to the CLI.
+- **CLI Documentation**: Added comprehensive guides and examples for CLI usage on the website.
+
+### Fixed
+- Improved error handling in `ICMRunner` for empty probe batteries and failed LLM connections.
+- Resolved package versioning inconsistency in `__init__.py`.
+
 ## [0.3.4] - 2026-03-19
 
 ### Added

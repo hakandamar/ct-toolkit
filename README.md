@@ -25,6 +25,7 @@ For full API reference, architecture details, examples, and integration guides, 
 In complex agentic workflows, LLMs tend to "drift" from their original instructions. CT Toolkit provides the mathematical and cryptographic guardrails to ensure your agents remain aligned with their core constitution, even across deep hierarchies.
 
 - **Constitutional Kernels**: Axiomatic identity anchors.
+- **Standalone Auditor CLI**: Rapidly audit any LLM endpoint for identity drift without writing code.
 - **Autonomous Self-Correction**: Active L2->L1 feedback loop that retries and corrects divergent responses before they reach the user.
 - **Divergence Engine**: Multi-tiered drift analysis (L1/L2/L3).
 - **Hierarchical Propagation**: Mother-to-child constraint inheritance.
@@ -51,15 +52,28 @@ print(response.content)
 print(f"Divergence Score: {response.divergence_score}")
 ```
 
+### 🔍 Standalone Auditor (CLI)
+
+Audit any LLM endpoint (OpenAI, Ollama, LM Studio) directly from your terminal:
+
+```bash
+# Audit a local Ollama model
+ct-toolkit audit --url http://localhost:11434/v1 --kernel defense
+
+# List available kernels and templates
+ct-toolkit list-kernels
+ct-toolkit list-templates
+```
+
 ---
 
 ## 🚦 Project Health & Status
 
 | Metric           | Status                                                  |
 | :--------------- | :------------------------------------------------------ |
-| **Tests**        | ✅ 231/232 passing (90% coverage)                       |
-| **Last Phase**   | ✅ Phase 4: OS Support, Deep Agents & Alerts (Complete) |
-| **Current Goal** | 🔶 Phase 5: Vault & Security (In Progress)              |
+| **Tests**        | ✅ 237/240 passing (90% coverage)                       |
+| **Last Phase**   | ✅ Phase 6: Auditor Mode (Complete)                     |
+| **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Planning)      |
 
 For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).
 

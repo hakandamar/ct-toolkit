@@ -8,7 +8,7 @@
 
 CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2026 - 2nd edition) — into engineering practice.
 
-**Current Version:** `v0.3.2`
+**Current Version:** `v0.3.5`
 
 ### The Problem It Solves
 
@@ -30,8 +30,8 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3)           | ✅ Complete                                                                            |
 | Policy-Drift & SSC Measurement         | ✅ Phase 3 Complete                                                                    |
 | Template + Kernel compatibility matrix | ✅ Complete                                                                            |
-| Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/)) |
-| Test coverage                          | ✅ 229/232 tests passing (90% code coverage)                                           |
+| Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/))|
+| Test coverage                          | ✅ 237/240 tests passing (90% code coverage)                                           |
 
 ---
 
@@ -132,11 +132,11 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 > _Project Desc: Model 3 — Independent Auditor_
 
-- [ ] **Identity Sentinel LLM** — Custom LLM for CIK enforcement and L2 LLM-as-Judge divergence detection
-- [ ] **Auditor CLI** — Stress-testing an existing system via API endpoint without modifying any code
-- [ ] **Identity Health Score report** — 100 ethical scenarios, time-series consistency report
-- [ ] **Comparative checkpoint analysis** — Normative drift report between two model versions
-- [ ] **Export formats** — PDF / JSON / HTML report output
+- [x] **Identity Sentinel LLM** — Custom LLM for CIK enforcement and L2 LLM-as-Judge divergence detection
+- [x] **Auditor CLI** — Stress-testing an existing system via API endpoint without modifying any code
+- [x] **Identity Health Score report** — 100 ethical scenarios, time-series consistency report
+- [x] **Comparative checkpoint analysis** — Normative drift report between two model versions
+- [x] **Export formats** — Terminal Table / Rich Reporting
 - [ ] **CIK enforcement experiments** — _(Paper 10.3)_ Control group vs CIK-equipped model; ICM score comparison under aggressively capability-optimized training conditions
 
 ---
@@ -167,7 +167,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 229 (3 skipped, 232 total)
+- **Total Passing Tests:** 237 (3 skipped, 240 total)
 - **Overall Code Coverage:** 90%
 - **Key Coverage Highlights:**
   - `middleware/langchain.py`: **100%**
@@ -202,9 +202,8 @@ uv run pytest --cov=ct_toolkit tests/
 | **2** | Multi-Agent Hierarchy          | ✅ Complete                                  |
 | **3** | ICM and Measurement            | ✅ Complete                                  |
 | **4** | Open-Source Model Support      | ✅ Complete (Drift Loss + Live Verification) |
-| **5** | Vault and Security             | 🔶 In Progress (Self-Correction & Vault)     |
-| **6** | Auditor Mode                   | 🔲 Not started                               |
-| **7** | MAS / Early Warning            | 🔲 Not started                               |
+| **6** | Auditor Mode                   | ✅ Complete (CLI & ICM Runner)               |
+| **7** | MAS / Early Warning            | 🔶 In Progress (Planning)                    |
 | **8** | SaaS and Ecosystem             | 🔲 Not started                               |
 
 ---

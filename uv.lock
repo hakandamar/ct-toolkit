@@ -974,7 +974,7 @@ wheels = [
 
 [[package]]
 name = "ct-toolkit"
-version = "0.3.4"
+version = "0.3.5"
 source = { editable = "." }
 dependencies = [
     { name = "any-llm-sdk", extra = ["all"] },
@@ -988,6 +988,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "rich" },
     { name = "sqlalchemy" },
+    { name = "typer" },
 ]
 
 [package.optional-dependencies]
@@ -1045,6 +1046,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.4" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
     { name = "torch", marker = "extra == 'ml'", specifier = ">=2.0.0" },
+    { name = "typer", extras = ["all"], specifier = ">=0.12.0" },
 ]
 provides-extras = ["ollama", "langchain", "crewai", "autogen", "docs", "ml", "dev"]
 

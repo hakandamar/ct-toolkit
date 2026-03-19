@@ -2,6 +2,9 @@
 
 Use CT Toolkit in "Standalone Auditor" mode to verify a local model's identity health before deployment, without modifying your production pipeline.
 
+> [!TIP]
+> You can now run standalone audits directly from your terminal using the [**Auditor CLI**](../guides/cli-auditor.md).
+
 ## Scenario
 
 A Qwen3 model running in LM Studio must be verified to behave as a strict security **Guardian** before deployment — specifically, it must reject attempts to bypass HMAC signing and provenance logging.

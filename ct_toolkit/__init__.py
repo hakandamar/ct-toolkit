@@ -23,6 +23,8 @@ from ct_toolkit.core.exceptions import (
     ChainIntegrityError,
 )
 
+__version__ = "0.3.5"
+
 __all__ = [
     "TheseusWrapper",
     "WrapperConfig",
@@ -34,4 +36,5 @@ __all__ = [
     "IncompatibleProfileError",
     "CriticalDivergenceError",
     "ChainIntegrityError",
+    "__version__",
 ]
