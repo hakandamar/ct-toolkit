@@ -40,12 +40,12 @@ CT Toolkit is an open-source security layer that prevents **Sequential Self-Comp
 [View on GitHub](https://github.com/hakandamar/ct-toolkit){ .md-button }
 
 <div class="provider-badges">
-<span class="provider-badge">OpenAI</span>
-<span class="provider-badge">Anthropic</span>
-<span class="provider-badge">Ollama</span>
-<span class="provider-badge">Google</span>
-<span class="provider-badge">Cohere</span>
-<span class="provider-badge">Groq</span>
+<span class="provider-badge"><img src="assets/logos/openai.svg" alt="OpenAI" width="24" style="vertical-align: middle; margin-right: 8px;">OpenAI</span>
+<span class="provider-badge"><img src="assets/logos/anthropic.svg" alt="Anthropic" width="24" style="vertical-align: middle; margin-right: 8px;">Anthropic</span>
+<span class="provider-badge"><img src="assets/logos/ollama.svg" alt="Ollama" width="24" style="vertical-align: middle; margin-right: 8px;">Ollama</span>
+<span class="provider-badge"><img src="assets/logos/google.svg" alt="Google" width="24" style="vertical-align: middle; margin-right: 8px;">Google</span>
+<span class="provider-badge"><img src="assets/logos/cohere.svg" alt="Cohere" width="24" style="vertical-align: middle; margin-right: 8px;">Cohere</span>
+<span class="provider-badge"><img src="assets/logos/groq.svg" alt="Groq" width="24" style="vertical-align: middle; margin-right: 8px;">Groq</span>
 </div>
 
 </div>
