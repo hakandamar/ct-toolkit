@@ -23,12 +23,15 @@ Long-running agents auto-summarize their history. CT Toolkit monitors whether th
 ```python
 from ct_toolkit import WrapperConfig
 
-config = WrapperConfig(drift_alert_callback=my_alert)
+config = WrapperConfig(
+    drift_alert_callback=my_alert,
+    compression_threshold=0.85,
+    compression_passive_detection=True
+)
 
 protected_factory = wrap_deep_agent_factory(
     create_deep_agent,
     wrapper_config=config,
-    compression_threshold=0.85,
 )
 ```
 

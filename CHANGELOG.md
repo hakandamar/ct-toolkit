@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.6] - 2026-03-21
+
+### Added
+- **Core Context Compression Guard**: Integrated `ContextCompressionGuard` into the core toolkit layer.
+- **Passive Compression Detection**: Universal, provider-agnostic detection of "silent" context compression (e.g., OpenAI compaction, Anthropic beta summarization) using message history shrinkage analysis.
+- **Passive Detection Heuristic**: Automatic drift analysis triggers when context history shrinks significantly (>30% drop).
+- **Middleware Propagations**: Enhanced `crewai`, `langchain`, and `deepagents` middlewares to inherit compression settings from the parent `WrapperConfig`.
+
+### Changed
+- **Unified Configuration**: Moved `compression_threshold` and `compression_passive_detection` into the standard `WrapperConfig`.
+- **Exposed Property**: `TheseusChatModel` (LangChain) now exposes `compression_guard` for manual audits.
+
 ## [0.3.5] - 2026-03-19
 
 ### Added

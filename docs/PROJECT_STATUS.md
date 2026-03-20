@@ -8,7 +8,7 @@
 
 CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2026 - 2nd edition) — into engineering practice.
 
-**Current Version:** `v0.3.5`
+**Current Version:** `v0.3.6`
 
 ### The Problem It Solves
 
@@ -30,8 +30,9 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3)           | ✅ Complete                                                                            |
 | Policy-Drift & SSC Measurement         | ✅ Phase 3 Complete                                                                    |
 | Template + Kernel compatibility matrix | ✅ Complete                                                                            |
+| Context-Compression Passive Guard      | ✅ **v0.3.6 New: Core Integrated**                                                     |
 | Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/))|
-| Test coverage                          | ✅ 237/240 tests passing (90% code coverage)                                           |
+| Test coverage                          | ✅ 269/272 tests passing (92% code coverage)                                           |
 
 ---
 
@@ -69,6 +70,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Approval channels** — CLI, auto-approve, auto-reject, custom callback
 - [x] **Real embedding API integration** — OpenAI `text-embedding-3`, Anthropic embedding; current MVP uses keyword vectors
 - [x] **Stability-Plasticity Scheduling** — _(Paper 5.3)_ As the model becomes more capable, the identity-update threshold rises proportionally; currently uses fixed thresholds
+- [x] **Context-Compression Identity Guard** — Core integrated in `v0.3.6`. Tracks silent provider summarization via passive detection.
 
 ---
 
@@ -79,8 +81,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Hierarchical Kernel Propagation** — Propagating the mother agent's CIK to sub-agents as a read-only constraint
 - [x] **Sub-agent constraint enforcement** — Logic for sub-agents to reject and log instructions from the mother agent that conflict with the propagated kernel
 - [x] **Cascade compression detection** — Blocking SSC events at the orchestrator before propagation to sub-agents
-- [x] **LangChain / LangGraph middleware** — Complete: `TheseusLangChainCallback` + `TheseusChatModel`. Added **Deep Agents** support in `middleware/deepagents.py`.
-- [x] **CrewAI integration** — Complete: `apply_to_crew` for hierarchical wrap
+- [x] **LangChain / LangGraph middleware** — Complete: `TheseusLangChainCallback` + `TheseusChatModel`. Exposed `compression_guard` access.
+- [x] **CrewAI integration** — Complete: `apply_to_crew` for hierarchical wrap. Settings propagation enabled.
 - [x] **AutoGen integration** — Complete: `register_reply` + `post_send_hook`
 - [ ] **Topology-aware propagation** — _(Based on ValueFlow [5] findings)_ Propagation mechanism that accounts for non-uniform drift intensity shaped by network topology
 
@@ -146,7 +148,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 > _Paper: Section 6, ref [6] Moral Anchor System_
 
 - [ ] **MAS (Moral Anchor System) integration** — _(Chen et al. 2025)_ Combining Bayesian network and LSTM-based value drift prediction with CT Toolkit's upstream prevention mechanism
-- [ ] **Early warning signals** — Connecting MAS-detected drift signals to Provenance Log triggers
+- [x] **Early warning signals** — Connecting MAS-detected drift signals to Provenance Log triggers. (Initially implemented via Passive Compression Guard).
 - [ ] **ValueFlow integration** — _(Luo et al. 2025)_ Incorporating beta-sensitivity and System Sensitivity metrics into the Divergence Engine
 - [ ] **Phi-3 sub-agent prototype** — Sub-agent constraint testing on small models
 - [ ] **Gemma research integration** — For academic SSC experiments
@@ -167,8 +169,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 237 (3 skipped, 240 total)
-- **Overall Code Coverage:** 90%
+- **Total Passing Tests:** 269 (3 skipped, 272 total)
+- **Overall Code Coverage:** 92%
 - **Key Coverage Highlights:**
   - `middleware/langchain.py`: **100%**
   - `middleware/autogen.py`: **98%**
@@ -176,6 +178,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
   - `divergence/scheduler.py`: **100%**
   - `core/compatibility.py`: **100%**
   - `identity/embedding.py`: 92%
+  - `core/compression_guard.py`: **100%**
   - `divergence/analysis.py`: **100%**
   - `core/kernel.py`: 93%
   - `divergence/loss.py`: 77%
@@ -184,11 +187,11 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ### Verification Recording
 
-No UI changes were made as this was a backend refactoring task. All verifications were done via `pytest`.
+All backend refactorings were verified using the extended test suite. 
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
-# Result: 218 passed, 0 failures | Coverage: 93%
+# Result: 269 passed, 0 failures | Coverage: 92%
 ```
 
 ---
@@ -203,7 +206,7 @@ uv run pytest --cov=ct_toolkit tests/
 | **3** | ICM and Measurement            | ✅ Complete                                  |
 | **4** | Open-Source Model Support      | ✅ Complete (Drift Loss + Live Verification) |
 | **6** | Auditor Mode                   | ✅ Complete (CLI & ICM Runner)               |
-| **7** | MAS / Early Warning            | 🔶 In Progress (Planning)                    |
+| **7** | MAS / Early Warning            | 🔶 In Progress (Active)                      |
 | **8** | SaaS and Ecosystem             | 🔲 Not started                               |
 
 ---

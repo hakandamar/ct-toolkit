@@ -24,6 +24,7 @@ For full API reference, architecture details, examples, and integration guides, 
 
 In complex agentic workflows, LLMs tend to "drift" from their original instructions. CT Toolkit provides the mathematical and cryptographic guardrails to ensure your agents remain aligned with their core constitution, even across deep hierarchies.
 
+- **Passive Context Compression Detection**: Automatically detects silent provider-side history compression (e.g., OpenAI/Anthropic) via history shrinkage heuristics.
 - **Constitutional Kernels**: Axiomatic identity anchors.
 - **Standalone Auditor CLI**: Rapidly audit any LLM endpoint for identity drift without writing code.
 - **Autonomous Self-Correction**: Active L2->L1 feedback loop that retries and corrects divergent responses before they reach the user.
@@ -40,10 +41,13 @@ pip install ct-toolkit
 ```
 
 ```python
-from ct_toolkit import TheseusWrapper
+from ct_toolkit import TheseusWrapper, WrapperConfig
+
+# Protect against silent provider context compression
+config = WrapperConfig(compression_passive_detection=True)
 
 # One-line injection for any LLM provider
-client = TheseusWrapper(provider="openai")
+client = TheseusWrapper(provider="openai", config=config)
 
 # Guardrails and drift analysis applied automatically
 response = client.chat("What are your core security axioms?")
@@ -71,9 +75,9 @@ ct-toolkit list-templates
 
 | Metric           | Status                                                  |
 | :--------------- | :------------------------------------------------------ |
-| **Tests**        | ✅ 237/240 passing (90% coverage)                       |
+| **Tests**        | ✅ 269/272 passing (92% coverage)                       |
 | **Last Phase**   | ✅ Phase 6: Auditor Mode (Complete)                     |
-| **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Planning)      |
+| **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 
 For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).
 

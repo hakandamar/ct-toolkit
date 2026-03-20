@@ -147,6 +147,7 @@ nav:
     - Custom Kernels: guides/custom-kernels.md
     - Custom Templates: guides/custom-templates.md
     - CLI Auditor: guides/cli-auditor.md
+    - Passive Compression Guard: guides/passive-compression.md
     - Enterprise Setup: guides/enterprise.md
     - Fine-Tuning with CIK: guides/fine-tuning.md
     - EU AI Act Compliance: guides/compliance.md
