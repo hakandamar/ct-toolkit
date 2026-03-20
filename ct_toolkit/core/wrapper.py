@@ -34,6 +34,7 @@ from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResul
 from ct_toolkit.core.exceptions import CTToolkitError, MissingClientError
 from ct_toolkit.core.integrity import IntegrityMonitor
 from ct_toolkit.divergence.scheduler import RiskProfile
+from ct_toolkit.core.compression_guard import ContextCompressionGuard
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -70,6 +71,10 @@ class WrapperConfig:
     risk_profile: RiskProfile | None = None
 
     strict_embedding: bool = False   # Raise error if embedding API fails
+
+    # -- Context Compression Guard --
+    compression_threshold: float = 0.85
+    compression_passive_detection: bool = True
 
 
 @dataclass
@@ -164,6 +169,13 @@ class TheseusWrapper:
         self._identity_layer = self._init_identity_layer()
         self._divergence_engine = self._init_divergence_engine()
         self._last_model: str = "unknown"
+
+        # ── Context Compression Guard ──
+        self._compression_guard = ContextCompressionGuard(
+            self, 
+            threshold=self._config.compression_threshold
+        )
+        self._shadow_history: Optional[List[Dict[str, str]]] = None
 
         # ── Integrity Monitoring ──
         self._integrity_monitor = IntegrityMonitor()
@@ -490,6 +502,18 @@ class TheseusWrapper:
         **kwargs: Any,
     ) -> Any:
         """Uses any_llm for unified provider calling."""
+        # --- Passive Context Compression Detection ---
+        if self._config.compression_passive_detection and self._shadow_history:
+            # Simple heuristic: message count dropped significantly
+            # We use 0.7 as a threshold (30% drop)
+            if len(messages) < len(self._shadow_history) * 0.7:
+                self._compression_guard.on_passive_detection(
+                    original=self._shadow_history,
+                    compressed=messages
+                )
+
+        # Update shadow history for next call
+        self._shadow_history = list(messages)
         # Convert messages to any_llm format if necessary
         # any_llm.completion handles different formats internally
         

@@ -92,6 +92,8 @@ class TheseusCrewMiddleware:
                 parent_kernel=manager_wrapper.kernel,
                 vault_path=manager_wrapper._config.vault_path,
                 template=manager_wrapper._config.template,
+                compression_threshold=manager_wrapper._config.compression_threshold,
+                compression_passive_detection=manager_wrapper._config.compression_passive_detection,
             )
             agent.llm = TheseusChatModel(
                 provider=manager_wrapper._provider,
@@ -134,6 +136,8 @@ class TheseusCrewMiddleware:
             parent_kernel=manager_wrapper.kernel,
             vault_path=manager_wrapper._config.vault_path,
             template=manager_wrapper._config.template,
+            compression_threshold=manager_wrapper._config.compression_threshold,
+            compression_passive_detection=manager_wrapper._config.compression_passive_detection,
         )
         agent.llm = TheseusChatModel(
             provider=manager_wrapper._provider,

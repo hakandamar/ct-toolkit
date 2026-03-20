@@ -205,6 +205,11 @@ class TheseusChatModel(BaseChatModel):
         super().__init__(wrapper=_wrapper, model=model, **kwargs)
 
     @property
+    def compression_guard(self) -> Any:
+        """Access the underlying ContextCompressionGuard."""
+        return self.wrapper._compression_guard
+
+    @property
     def _llm_type(self) -> str:
         return "theseus-chat-model"
 
