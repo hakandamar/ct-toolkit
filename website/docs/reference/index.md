@@ -36,6 +36,14 @@ Complete API reference for CT Toolkit.
 
     [:octicons-arrow-right-24: Divergence Engine](divergence-engine.md)
 
+-   **Context Compression Guard**
+
+    ---
+
+    Manages context window usage and applies compression strategies.
+
+    [:octicons-arrow-right-24: Context Compression Guard](compression-guard.md)
+
 -   **Provenance Log**
 
     ---

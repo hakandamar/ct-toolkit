@@ -61,6 +61,7 @@ Generate HTTP headers for sub-agent kernel propagation.
 | `kernel` | `ConstitutionalKernel` | The active kernel |
 | `compatibility` | `CompatibilityResult` | Template + kernel compatibility result |
 | `divergence_engine` | `DivergenceEngine` | The active divergence engine |
+| `compression_guard` | `ContextCompressionGuard` | The active context compression guard |
 
 ## CTResponse fields
 

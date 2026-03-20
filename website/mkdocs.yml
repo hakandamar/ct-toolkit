@@ -158,6 +158,7 @@ nav:
     - WrapperConfig: reference/wrapper-config.md
     - ConstitutionalKernel: reference/constitutional-kernel.md
     - Divergence Engine: reference/divergence-engine.md
+    - ContextCompressionGuard: reference/compression-guard.md
     - Provenance Log: reference/provenance-log.md
     - Compatibility Matrix: reference/compatibility.md
     - Kernels & Templates: reference/kernels-templates.md
