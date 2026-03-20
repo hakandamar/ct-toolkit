@@ -112,6 +112,21 @@ config = WrapperConfig(
 )
 ```
 
+### Context Compression (v0.3.6+)
+
+| Parameter | Type | Default | Description |
+|:---|:---|:---|:---|
+| `compression_passive_detection` | `bool` | `True` | Automatically detect silent provider-side history compression via shrinkage heuristics. |
+| `compression_threshold` | `float` | `0.80` | Similarity score floor (0.0 to 1.0) for summarization drift analysis. |
+
+```python
+config = WrapperConfig(
+    compression_passive_detection=True,
+    compression_threshold=0.88,
+    drift_alert_callback=my_handler  # Triggered on drift
+)
+```
+
 ---
 
 ## Enterprise mode

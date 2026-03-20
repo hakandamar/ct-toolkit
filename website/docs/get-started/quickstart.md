@@ -114,6 +114,7 @@ Provenance ID    : 3f7a2c1e-9b4d-4f8a-b2e1-1c5d9e3f7a2c
     1. Injected the **Constitutional Kernel** into the system prompt
     2. Ran **L1 divergence scoring** (embedding cosine similarity) on the response
     3. Wrote a **signed provenance entry** to a local SQLite vault
+    4. **v0.3.6:** Initialized **Passive Compression Guard** to monitor silent provider history summaries.
 
 ---
 

@@ -111,6 +111,28 @@ The callback validates prompts **before** the LLM call and runs divergence analy
 
 ---
 
+## Passive Compression Guard
+
+One of the key features of `v0.3.6` is the core integration of the **Passive Compression Guard**. This automatically protects your LangChain agents against silent context summarization performed by LLM providers (e.g., OpenAI, Anthropic).
+
+### Manual Guard access
+
+You can access the underlying guard from `TheseusChatModel` to perform manual audits of any compressed history or summary:
+
+```python
+from ct_toolkit.middleware.langchain import TheseusChatModel
+
+llm = TheseusChatModel(model="gpt-4o")
+
+# Access the guard
+audit_result = llm.compression_guard.analyze_summary_drift(
+    original_messages, 
+    new_summary
+)
+```
+
+---
+
 ## Parent kernel propagation
 
 To enforce a parent agent's constraints on a LangChain sub-agent:

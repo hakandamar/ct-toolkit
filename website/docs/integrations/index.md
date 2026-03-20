@@ -19,31 +19,27 @@ CT Toolkit provides first-class middleware for the most popular agentic framewor
 
     ---
 
-    `TheseusCrewMiddleware.apply_to_crew()` wraps every agent in your crew in a single call. Parent kernel constraints propagate automatically.
-
-    **Supported:** CrewAI v1.10+  
-    **Install:** `pip install "ct-toolkit[crewai]"`
-
-    [:octicons-arrow-right-24: CrewAI guide](crewai.md)
+    `TheseusCrewMiddleware.apply_to_crew()` wraps every agent in your crew in a single call. Parent kernel constraints and **compression settings** propagate automatically.
 
 -   :simple-microsoft: **AutoGen**
 
     ---
 
-    `TheseusAutoGenMiddleware.apply_to_agent()` hooks into AutoGen's reply system to validate incoming messages and log outgoing ones.
-
-    **Supported:** AutoGen v0.4+  
-    **Install:** `pip install "ct-toolkit[autogen]"`
-
-    [:octicons-arrow-right-24: AutoGen guide](autogen.md)
+    `TheseusAutoGenMiddleware` hooks into AutoGen's reply system to validate incoming messages and log outgoing ones. Includes **Passive Compression Guard** for conversation history.
 
 -   :material-graph: **Deep Agents (LangChain)**
 
     ---
 
-    `wrap_deep_agent_factory` adds identity protection and context compression monitoring to long-running deep agents.
+    `wrap_deep_agent_factory` adds identity protection and **v0.3.6 core passive detection** to long-running deep agents.
 
-    [:octicons-arrow-right-24: Deep Agents guide](deepagents.md)
+-   :simple-securityscorecard: **Passive Compression Guard**
+
+    ---
+
+    Universal, provider-agnostic monitoring of silent context summarization (OpenAI/Anthropic). Now integrated directly into the `TheseusWrapper` core.
+
+    [:octicons-arrow-right-24: Guard guide](../guides/passive-compression.md)
 
 </div>
 

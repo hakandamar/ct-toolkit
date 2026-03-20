@@ -42,3 +42,20 @@ TheseusCrewMiddleware.wrap_agent(agent, manager)
 - Each sub-agent's `TheseusChatModel` carries `parent_kernel=manager.kernel`
 - The parent kernel's anchors are merged as **read-only axioms** — sub-agents cannot modify or bypass them via Reflective Endorsement
 - All interactions are logged to the manager's provenance vault
+- **v0.3.6 New:** Compression settings (`compression_threshold`) are automatically propagated from the manager to every sub-agent in the crew.
+- **Passive Protection:** Sub-agents benefit from universal passive compression detection to monitor if the LLM provider silently summarizes the agent's context.
+
+## Configuration
+
+```python
+from ct_toolkit import WrapperConfig
+
+manager_config = WrapperConfig(
+    compression_passive_detection=True,
+    compression_threshold=0.88
+)
+
+manager = TheseusWrapper(provider="openai", config=manager_config)
+# Sub-agents in the crew will inherit these settings automatically
+TheseusCrewMiddleware.apply_to_crew(crew, manager)
+```

@@ -24,7 +24,7 @@ TheseusAutoGenMiddleware.apply_to_agent(assistant, wrapper)
 ## What it does
 
 - **Incoming:** Validates every message against the kernel before the agent processes it. Axiomatic violations return a `[CT Toolkit BLOCKED]` response.
-- **Outgoing:** Runs divergence analysis on every generated reply and records it in the Provenance Log.
+- **Outgoing:** Runs divergence analysis on every generated reply and records it in the Provenance Log. Also supports **Passive Compression Guard** to monitor if the conversation history is silently summarized by the LLM provider.
 
 ## Inject headers for HTTP sub-agents
 
