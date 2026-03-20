@@ -21,7 +21,7 @@ CT Toolkit provides first-class middleware for the most popular agentic framewor
 
     `TheseusCrewMiddleware.apply_to_crew()` wraps every agent in your crew in a single call. Parent kernel constraints and **compression settings** propagate automatically.
 
--   :simple-microsoft: **AutoGen**
+-   :material-microsoft: **AutoGen**
 
     ---
 
@@ -33,7 +33,7 @@ CT Toolkit provides first-class middleware for the most popular agentic framewor
 
     `wrap_deep_agent_factory` adds identity protection and **v0.3.6 core passive detection** to long-running deep agents.
 
--   :simple-securityscorecard: **Passive Compression Guard**
+-   :material-shield-sync: **Passive Compression Guard**
 
     ---
 
