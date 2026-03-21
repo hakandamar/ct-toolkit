@@ -16,23 +16,33 @@ In the background:
   2. Each request/response is written to the Provenance Log with HMAC signature.
   3. Embedding cosine similarity (L1 ECS) is calculated.
   4. If the threshold is exceeded, L2/L3 is triggered.
+  5. Staged Approval (Cooldown): Risky kernel updates are monitored via shadow requests
+     before being promoted to production.
 """
 from __future__ import annotations
 
 import time
-import hashlib
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterator, Optional, Callable, Dict
+from typing import Any, Optional, Callable, Dict, List
+
 import litellm
 
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResult
-from ct_toolkit.core.exceptions import CTToolkitError, MissingClientError
+from ct_toolkit.core.exceptions import (
+    MissingClientError, 
+    CriticalSandboxDivergenceError
+)
 from ct_toolkit.core.integrity import IntegrityMonitor
 from ct_toolkit.divergence.scheduler import RiskProfile
 from ct_toolkit.core.compression_guard import ContextCompressionGuard
+from ct_toolkit.endorsement.reflective import (
+    ReflectiveEndorsement, 
+    StagedUpdateManager,
+    CooldownCalculator
+)
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -74,6 +84,11 @@ class WrapperConfig:
     compression_threshold: float = 0.85
     compression_passive_detection: bool = True
 
+    # -- Staged Approval (Cooldown) --
+    endorsement_cooldown_base: int = CooldownCalculator.DEFAULT_BASE_SECONDS
+    endorsement_cooldown_max: int = CooldownCalculator.DEFAULT_MAX_SECONDS
+    endorsement_no_probe_penalty: int = CooldownCalculator.DEFAULT_NO_PROBE_PENALTY_S
+
 
 @dataclass
 class CTResponse:
@@ -85,6 +100,8 @@ class CTResponse:
     divergence_tier: str | None = None      # "ok" | "l1_warning" | "l2_judge" | "l3_icm"
     provenance_id: str | None = None
     raw_response: Any = field(default=None, repr=False)
+    # Sandbox metadata if staged updates are active
+    sandbox_divergence: float | None = None
 
     def __str__(self) -> str:
         return self.content
@@ -125,15 +142,6 @@ class TheseusWrapper:
     ) -> None:
         """
         Initializes TheseusWrapper.
-        
-        Args:
-            client:  An existing API client instance (OpenAI, Anthropic, etc.).
-                    Optional if 'provider' is specified.
-            config:  Optional WrapperConfig instance.
-            provider: Provider name (e.g. "openai", "anthropic", "ollama", "google", "cohere").
-                      If provided, LiteLLM will be used to initialize the client internally.
-            project_root: Path to the user's project root directory. Used to find a custom 'config/' folder.
-                          Defaults to the current working directory.
         """
         self._config = config or WrapperConfig(
             kernel_path=kernel_path,
@@ -175,6 +183,9 @@ class TheseusWrapper:
         )
         self._shadow_history: Optional[List[Dict[str, str]]] = None
 
+        # ── Staged Approval (Cooldown) ──
+        self._staged_manager = StagedUpdateManager()
+
         # ── Integrity Monitoring ──
         self._integrity_monitor = IntegrityMonitor()
         self._register_monitored_files()
@@ -183,8 +194,7 @@ class TheseusWrapper:
 
     def _register_monitored_files(self):
         """
-        Finds and registers all critical configuration files for integrity monitoring,
-        including both built-in package files and user-provided custom configs.
+        Finds and registers all critical configuration files for integrity monitoring.
         """
         logger.debug("Registering configuration files for integrity monitoring.")
         
@@ -205,10 +215,7 @@ class TheseusWrapper:
                         self._integrity_monitor.register_file(file_path)
 
         except Exception:
-            # Fallback for older Python or different environments
             package_root = Path(__file__).parent.parent
-            # This is less ideal as it might find non-package files, but it's a
-            # reasonable fallback for development environments.
             for pattern in internal_patterns:
                 for file_path in package_root.rglob(pattern):
                     if file_path.is_file():
@@ -229,23 +236,16 @@ class TheseusWrapper:
     # ── Factory / Init ─────────────────────────────────────────────────────────
 
     def _detect_provider(self, client: Any) -> str:
-        """
-        Detects the provider from the client instance or string.
-        Returns 'unknown' if detection fails.
-        """
         if client is None:
             return "unknown"
             
         if isinstance(client, str):
-            # client passed as a string (e.g. "openai")
             return client.lower()
 
         try:
-            # Check for LiteLLM specific attributes if any
             if hasattr(client, "provider") and isinstance(client.provider, str):
                 return client.provider
 
-            # Check module name
             module = type(client).__module__.lower()
             if "openai" in module: return "openai"
             if "anthropic" in module: return "anthropic"
@@ -258,21 +258,18 @@ class TheseusWrapper:
         return "unknown"
 
     def _load_kernel(self) -> ConstitutionalKernel:
-        # 1. Check for explicit path
         if self._config.kernel_path:
             logger.debug(f"Loading kernel from explicit path: {self._config.kernel_path}")
             return ConstitutionalKernel.from_yaml(self._config.kernel_path)
 
         safe_name = os.path.basename(self._config.kernel_name)
         
-        # 2. Check for user-defined config directory
         if self._project_root:
             user_config_path = self._project_root / "config" / f"{safe_name}.yaml"
             if user_config_path.exists():
                 logger.debug(f"Loading kernel from user config: {user_config_path}")
                 return ConstitutionalKernel.from_yaml(user_config_path)
 
-        # 3. Load built-in kernel using importlib.resources
         try:
             from importlib.resources import files
             kernel_resource = files("ct_toolkit.kernels").joinpath(f"{safe_name}.yaml")
@@ -280,7 +277,6 @@ class TheseusWrapper:
                 logger.debug(f"Loading built-in kernel: {safe_name}.yaml")
                 return ConstitutionalKernel.from_yaml(kernel_resource)
         except (ImportError, FileNotFoundError):
-            # Fallback for older python versions
             kernel_path = (
                 Path(__file__).parent.parent
                 / "kernels"
@@ -296,7 +292,6 @@ class TheseusWrapper:
         return ConstitutionalKernel.default()
 
     def _init_provenance_log(self) -> Any:
-        """Initializes the Provenance Log vault adapter (Will be fully implemented in Step 2)."""
         from ct_toolkit.provenance.log import ProvenanceLog
         return ProvenanceLog(
             vault_type=self._config.vault_type,
@@ -304,13 +299,10 @@ class TheseusWrapper:
         )
 
     def _init_identity_layer(self) -> Any:
-        """Initializes the Identity Embedding Layer."""
         from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
         
-        # Guard against using raw clients that don't support embeddings
         emb_client = self._config.embedding_client
         if emb_client is None:
-            # Only default to main client if it's known to be OpenAI (standard for embeddings)
             if self._provider == "openai":
                 emb_client = self._client
             else:
@@ -325,7 +317,6 @@ class TheseusWrapper:
         )
 
     def _init_divergence_engine(self) -> Any:
-        """Initializes the Divergence Engine (judge_client is required for L2/L3)."""
         from ct_toolkit.divergence.engine import DivergenceEngine
         from ct_toolkit.divergence.scheduler import ElasticityScheduler
         
@@ -383,15 +374,10 @@ class TheseusWrapper:
     ) -> CTResponse:
         """
         Sends a single message, returning the response with identity protection.
-
-        Args:
-            message:  User message
-            model:    Model to use (provider default is used)
-            system:   Additional system prompt (appended to kernel)
-            history:  Conversation history [{"role": ..., "content": ...}]
         """
         # --- Pre-flight Checks ---
         self._integrity_monitor.verify_integrity()
+        self._process_staged_updates()
 
         composed_system = self._compose_system_prompt(system)
         messages = self._build_messages(message, history, composed_system)
@@ -449,6 +435,11 @@ class TheseusWrapper:
                 
             break
 
+        # --- Staged Approval Monitoring (Shadow Requests) ---
+        sandbox_divergence = None
+        if self._staged_manager.has_active_staged():
+            sandbox_divergence = self._run_shadow_requests(message, history, model, **kwargs)
+
         # Provenance Log record
         provenance_id = None
         if self._config.log_requests:
@@ -464,6 +455,7 @@ class TheseusWrapper:
                     "template": self._config.template,
                     "kernel": self._kernel.name,
                     "drift_alert_enabled": self._config.drift_alert_callback is not None,
+                    "sandbox_divergence": sandbox_divergence,
                 },
             )
 
@@ -475,7 +467,98 @@ class TheseusWrapper:
             divergence_tier=div_result.tier.value,
             provenance_id=provenance_id,
             raw_response=raw_response,
+            sandbox_divergence=sandbox_divergence,
         )
+
+    # ── Shadow Request Logic ──────────────────────────────────────────────────
+
+    def _run_shadow_requests(
+        self,
+        message: str,
+        history: list[dict[str, str]] | None,
+        model: str | None,
+        **kwargs: Any,
+    ) -> float | None:
+        """
+        Runs the interaction against one or more 'staged' (sandbox) kernels
+        to observe if the proposed changes cause identity drift.
+        """
+        active_staged = self._staged_manager.get_active()
+        if not active_staged:
+            return None
+
+        # To keep it simple, we monitor the first active staged update
+        staged_record = active_staged[0]
+        
+        # 1. Clone current kernel and apply the staged rule
+        sandbox_kernel = ConstitutionalKernel.from_dict(self._kernel.to_dict())
+        try:
+            sandbox_kernel.update_commitment(
+                staged_record.commitment_id, 
+                staged_record.rule_text
+            )
+        except Exception as e:
+            logger.error(f"Failed to apply staged rule to sandbox kernel: {e}")
+            return None
+
+        # 2. Call provider with sandbox kernel
+        sandbox_system = sandbox_kernel.get_system_prompt_injection()
+        sandbox_messages = self._build_messages(message, history, sandbox_system)
+        
+        try:
+            # We use the same model/client as the live request
+            sandbox_response = self._call_provider(sandbox_messages, model=model, **kwargs)
+            sandbox_content = self._extract_content(sandbox_response)
+            
+            # 3. Analyze sandbox divergence
+            sandbox_div_score = self._identity_layer.compute_divergence(sandbox_content)
+            
+            # 4. Critical Divergence Check
+            if sandbox_div_score >= self._config.divergence_l3_threshold:
+                reason = f"Sandbox divergence L1 score {sandbox_div_score:.4f} exceeded L3 threshold."
+                self._staged_manager.reject_staged(staged_record.id, reason=reason)
+                raise CriticalSandboxDivergenceError(
+                    endorsement_id=staged_record.id,
+                    l1_score=sandbox_div_score,
+                    reason=reason
+                )
+            
+            return sandbox_div_score
+
+        except CriticalSandboxDivergenceError:
+            raise
+        except Exception as e:
+            logger.warning(f"Shadow request for staged update failed: {e}")
+            return None
+
+    def _process_staged_updates(self) -> None:
+        """
+        Checks for staged updates whose cooldown has expired and
+        promotes them to the production kernel.
+        """
+        promotable = self._staged_manager.get_promotable()
+        for record in promotable:
+            try:
+                logger.info(
+                    f"Promoting staged endorsement to production: {record.id[:8]}... "
+                    f"rule='{record.rule_text}'"
+                )
+                self._kernel.update_commitment(record.commitment_id, record.rule_text)
+                
+                # Write promotion event to log
+                if self._config.log_requests:
+                    self._provenance_log.record(
+                        request_text=f"[COOLDOWN_EXPIRED] Promoting staged rule",
+                        response_text=f"Rule applied to production kernel: {record.rule_text}",
+                        metadata={
+                            "event_type": "staged_promotion",
+                            "endorsement_id": record.id,
+                            "kernel": self._kernel.name,
+                            "commitment_id": record.commitment_id,
+                        }
+                    )
+            except Exception as e:
+                logger.error(f"Failed to promote staged update {record.id[:8]}: {e}")
 
     # ── Provider Dispatch ──────────────────────────────────────────────────────
 
@@ -487,7 +570,6 @@ class TheseusWrapper:
         if self._provider == "anthropic":
             return bool(os.environ.get("ANTHROPIC_API_KEY"))
         if self._provider == "ollama":
-            # Ollama typically doesn't need a key locally
             return True
         if self._provider == "google":
             return bool(os.environ.get("GOOGLE_API_KEY"))
@@ -500,44 +582,32 @@ class TheseusWrapper:
         **kwargs: Any,
     ) -> Any:
         """Uses LiteLLM for unified provider calling."""
-        # --- Passive Context Compression Detection ---
         if self._config.compression_passive_detection and self._shadow_history:
-            # Simple heuristic: message count dropped significantly
-            # We use 0.7 as a threshold (30% drop)
             if len(messages) < len(self._shadow_history) * 0.7:
                 self._compression_guard.on_passive_detection(
                     original=self._shadow_history,
                     compressed=messages
                 )
 
-        # Update shadow history for next call
         self._shadow_history = list(messages)
         
-        # LiteLLM handles different message formats internally
-        
-        # Set default models per provider if not specified
         if not model:
             if self._provider == "openai": model = "gpt-4o-mini"
             elif self._provider == "anthropic": model = "claude-3-5-sonnet-latest"
             elif self._provider == "ollama": model = "llama3"
             else: model = "gpt-4o-mini"
 
-        # LiteLLM expects "provider/model" format for non-default providers
-        # Usually OpenAI models don't need a prefix.
         full_model = model
         if ":" in model:
-             # If it has the legacy format "provider:model", convert it
              full_model = model.replace(":", "/", 1)
         elif self._provider not in ("openai", "unknown"):
              full_model = f"{self._provider}/{model}"
 
-        # Extract connection info from client if possible
         if hasattr(self._client, "base_url") and self._client.base_url:
             kwargs["api_base"] = str(self._client.base_url)
         if hasattr(self._client, "api_key") and self._client.api_key:
             kwargs["api_key"] = self._client.api_key
 
-        # Transfer common client configurations if available
         if hasattr(self._client, "timeout") and "timeout" not in kwargs:
             kwargs["timeout"] = self._client.timeout
 
@@ -552,7 +622,6 @@ class TheseusWrapper:
     def _compose_system_prompt(self, extra: str | None) -> str:
         kernel_injection = self._kernel.get_system_prompt_injection()
         
-        # If this kernel contains propagated constraints, add a specific header
         if any(a.id.startswith("propagated_") for a in self._kernel.anchors):
             kernel_injection = (
                 "# Mother Agent Constraints\n"
@@ -568,13 +637,11 @@ class TheseusWrapper:
     def propagate_headers(self) -> dict[str, str]:
         """
         Returns a dictionary of headers to be used when calling sub-agents.
-        Includes the current kernel serialized for propagation.
         """
         import json
         import base64
         
         kernel_data = self._kernel.to_dict()
-        # Mark as read-only for sub-agents
         kernel_data["is_readonly"] = True
         
         encoded_kernel = base64.b64encode(json.dumps(kernel_data).encode()).decode()
@@ -598,31 +665,26 @@ class TheseusWrapper:
         return messages
 
     def _extract_content(self, raw: Any) -> str:
-        # Handle dict responses
         if isinstance(raw, dict):
             if "choices" in raw and isinstance(raw["choices"], list) and raw["choices"]:
                 return raw["choices"][0].get("message", {}).get("content", "") or ""
             if "message" in raw:
-                # Ollama dictate format
                 return raw["message"].get("content", "") or ""
             return str(raw)
 
-        # LiteLLM ModelResponse (Standardized for all providers)
         try:
             if hasattr(raw, "choices") and raw.choices:
                 choice = raw.choices[0]
                 if hasattr(choice, "message") and choice.message:
                     return choice.message.content or ""
-                # Some older/alternative formats
                 if hasattr(choice, "text"):
                     return choice.text or ""
         except Exception:
             pass
             
-        # Fallback raw extraction for edge cases
-        if hasattr(raw, "content") and isinstance(raw.content, list): # Anthropic style
+        if hasattr(raw, "content") and isinstance(raw.content, list):
              return raw.content[0].text if raw.content else ""
-        if hasattr(raw, "message"): # Ollama generic style
+        if hasattr(raw, "message"):
              return getattr(raw.message, "content", "") or ""
              
         return str(raw)
@@ -635,7 +697,6 @@ class TheseusWrapper:
         return fallback or "unknown"
 
     def _run_divergence_engine(self, message: str, response: str, interaction_count: int = 0, skip_l3: bool = False) -> Any:
-        """Runs the staged divergence engine (L1 -> L2 -> L3)."""
         try:
             return self._divergence_engine.analyze(message, response, interaction_count, skip_l3=skip_l3)
         except Exception as e:
@@ -649,10 +710,6 @@ class TheseusWrapper:
     # ── Kernel Management ────────────────────────────────────────────────────────
 
     def validate_user_rule(self, rule_text: str) -> None:
-        """
-        Validates a user-defined rule against the kernel.
-        Raises an exception if there is a conflict.
-        """
         self._kernel.validate_user_rule(rule_text)
 
     def endorse_rule(
@@ -664,15 +721,7 @@ class TheseusWrapper:
     ) -> Any:
         """
         Validates the rule; initiates the Reflective Endorsement
-        flow if there is a plastic conflict. Throws hard reject on axiomatic violation.
-
-        Args:
-            rule_text:            The rule to be enforced
-            operator_id:          The identity of the person granting approval
-            approval_channel:     Custom approval channel (default: CLI)
-            commitment_new_value: New value to assign to the commitment
-
-        Returns: EndorsementRecord
+        flow if there is a plastic conflict.
         """
         from ct_toolkit.endorsement.reflective import ReflectiveEndorsement
 
@@ -680,6 +729,11 @@ class TheseusWrapper:
             kernel=self._kernel,
             provenance_log=self._provenance_log,
             approval_channel=approval_channel,
+            staged_manager=self._staged_manager,
+            cooldown_base_s=self._config.endorsement_cooldown_base,
+            cooldown_max_s=self._config.endorsement_cooldown_max,
+            no_probe_penalty_s=self._config.endorsement_no_probe_penalty,
+            template=self._config.template,
         )
         return re.validate_and_endorse(
             rule_text=rule_text,
@@ -688,18 +742,6 @@ class TheseusWrapper:
         )
 
     def export_provenance_log(self) -> list[dict[str, Any]]:
-        """
-        Exports the entire verified provenance log.
-
-        Verifies the integrity of the log before returning the data.
-        This is intended for external auditing and analysis.
-
-        Returns:
-            A list of all log entries as dictionaries.
-
-        Raises:
-            ChainIntegrityError: If the log's hash chain is broken.
-        """
         return self._provenance_log.export_log()
 
     @property
@@ -713,6 +755,10 @@ class TheseusWrapper:
     @property
     def divergence_engine(self) -> Any:
         return self._divergence_engine
+
+    @property
+    def staged_manager(self) -> StagedUpdateManager:
+        return self._staged_manager
 
     def __repr__(self) -> str:
         return (

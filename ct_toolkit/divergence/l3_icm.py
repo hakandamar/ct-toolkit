@@ -230,6 +230,40 @@ class ICMRunner:
             "ollama":    "llama3",
         }.get(provider, "gpt-4o-mini")
 
+    # ── Probe Availability Check ────────────────────────────────────────────
+
+    @staticmethod
+    def has_probes(
+        template: str,
+        kernel_name: str,  # noqa: ARG004  (reserved for future kernel-specific probes)
+        project_root: Path | None = None,
+    ) -> bool:
+        """
+        Returns True if any probe files exist for the given template/kernel combination.
+        Does NOT run the probes — intended as a fast pre-flight check for cooldown
+        duration calculation in the Reflective Endorsement protocol.
+
+        Probe availability order (mirrors _load_probes):
+          1. base_probes.json — always counts as available
+          2. user config: <project_root>/config/<template>_probes.json
+          3. built-in domain: endorsement/probes/domain_probes/<template>_probes.json
+        """
+        probes_dir = ICMRunner.PROBES_DIR
+
+        # Base probes are always present; if they exist, we consider probes available.
+        if (probes_dir / "base_probes.json").exists():
+            return True
+
+        # Check user-supplied domain probes
+        if project_root:
+            user_probe_path = project_root / "config" / f"{template}_probes.json"
+            if user_probe_path.exists():
+                return True
+
+        # Check built-in domain probes
+        domain_path = probes_dir / "domain_probes" / f"{template}_probes.json"
+        return domain_path.exists()
+
     # ── Main Runner ────────────────────────────────────────────────────────
 
     def run(self) -> ICMReport:

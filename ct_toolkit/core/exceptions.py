@@ -85,6 +85,22 @@ class CriticalDivergenceError(DivergenceError):
         )
 
 
+class CriticalSandboxDivergenceError(DivergenceError):
+    """
+    Raised when a sandbox (staged) agent exhibits critical divergence during cooldown.
+    The staged kernel update is rejected and the sandbox is torn down.
+    """
+    def __init__(self, endorsement_id: str, l1_score: float | None, reason: str):
+        self.endorsement_id = endorsement_id
+        self.l1_score = l1_score
+        self.reason = reason
+        super().__init__(
+            f"Sandbox agent for staged endorsement '{endorsement_id[:8]}...' exhibited "
+            f"critical divergence during cooldown (score={l1_score}, reason={reason!r}). "
+            "Staged update rejected and sandbox torn down."
+        )
+
+
 # ── Provenance Errors ────────────────────────────────────────────────────────
 
 class ProvenanceError(CTToolkitError):

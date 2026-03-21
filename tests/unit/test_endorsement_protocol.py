@@ -205,6 +205,29 @@ class TestReflectiveEndorsementProtocol:
                 with patch("builtins.print") as mock_print:
                     decision, _, _ = cli_approval_channel(conflict)
                 # Verify invalid input warning was printed
-                mock_print.assert_any_call("Invalid input. Type 'y' or 'n'.")
+                mock_print.assert_any_call("Invalid input. Type 'y', 's', or 'n'.")
             
         assert decision == EndorsementDecision.REJECTED
+
+    def test_cli_approval_channel_stage(self):
+        """CLI approval channel should return STAGED when user types 's'."""
+        from unittest.mock import patch
+        from ct_toolkit.endorsement.reflective import cli_approval_channel, ConflictRecord
+        conflict = ConflictRecord(
+            id="test-conflict",
+            timestamp=0.0,
+            rule_text="new rule",
+            conflicting_commitment_id="harm_avoidance",
+            conflict_description="conflict",
+            kernel_name="default"
+        )
+        
+        # Mock inputs: 's', then operator 'dev', then rationale 'staged test'
+        with patch("sys.stdin.isatty", return_value=True):
+            with patch("builtins.input", side_effect=["s", "dev", "staged test"]):
+                decision, op, rat = cli_approval_channel(conflict)
+            
+        assert decision == EndorsementDecision.STAGED
+        assert op == "dev"
+        assert rat == "staged test"
+

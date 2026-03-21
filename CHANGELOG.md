@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.8] - 2026-03-21
+
+### Added
+- **Staged Approval (Cooldown)**: Introduced a dynamic cooldown stage for Reflective Endorsement. Risky kernel updates are now monitored in a sandbox before final production promotion.
+- **Shadow Request Monitoring**: `TheseusWrapper` now performs concurrent shadow requests against staged kernels to detect identity drift in real-time.
+- **Dynamic Cooldown Calculator**: Automatically adjusts cooldown duration based on probe availability (penalties) and traffic volume (RPM).
+- **Critical Sandbox Protection**: Immediate rejection of staged updates if sandbox divergence exceeds L3 thresholds.
+- **StagedUpdateManager**: New state management for tracking and automatically promoting expired staged endorsements.
+
+### Changed
+- **CLI Reference**: Updated CLI approval prompts to include the `[s] Stage` option.
+- **WrapperConfig**: Added `endorsement_cooldown_base`, `endorsement_cooldown_max`, and `endorsement_no_probe_penalty` settings.
+- **Documentation**: Added "Staged Approval" example and updated API reference for new components.
+
+### Fixed
+- Improved `ICMRunner` logic for pre-flight probe availability checks.
+
 ## [0.3.7] - 2026-03-21
 
 ### Added

@@ -62,6 +62,7 @@ Generate HTTP headers for sub-agent kernel propagation.
 | `compatibility` | `CompatibilityResult` | Template + kernel compatibility result |
 | `divergence_engine` | `DivergenceEngine` | The active divergence engine |
 | `compression_guard` | `ContextCompressionGuard` | The active context compression guard |
+| `staged_manager` | `StagedUpdateManager` | Tracks staged (cooldown) endorsements |
 
 ## CTResponse fields
 
@@ -74,3 +75,4 @@ Generate HTTP headers for sub-agent kernel propagation.
 | `divergence_tier` | `str \| None` | `ok`, `l1_warning`, `l2_judge`, `l3_icm`, `critical` |
 | `provenance_id` | `str \| None` | UUID of the log entry |
 | `raw_response` | `Any` | Raw SDK response object |
+| `sandbox_divergence` | `float \| None` | Divergence score of the shadow/sandbox agent (if staged) |

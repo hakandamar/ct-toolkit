@@ -12,6 +12,14 @@ Real-world scenarios demonstrating CT Toolkit's identity protection in action.
 
     [:octicons-arrow-right-24: View example](ssc-financial-auditor.md)
 
+-   **Staged Approval (Cooldown)**
+
+    ---
+
+    Verify risky kernel updates in a sandbox using shadow requests before promoting to production.
+
+    [:octicons-arrow-right-24: View example](staged-approval.md)
+
 -   **Hierarchical Agent Safety**
 
     ---

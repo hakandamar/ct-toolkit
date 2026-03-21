@@ -127,6 +127,21 @@ config = WrapperConfig(
 )
 ```
 
+### Staged Approval (Cooldown) (v0.3.8+)
+
+| Parameter | Type | Default | Description |
+|:---|:---|:---|:---|
+| `endorsement_cooldown_base` | `int` | `300` | Minimum cooldown duration in seconds (5 min). |
+| `endorsement_cooldown_max` | `int` | `3600` | Maximum cooldown duration (1 hour). |
+| `endorsement_no_probe_penalty` | `int` | `600` | Penalty added if no probes are found (+10 min). |
+
+```python
+config = WrapperConfig(
+    endorsement_cooldown_base=600, # 10 min
+    endorsement_no_probe_penalty=1200, # +20 min
+)
+```
+
 ---
 
 ## Enterprise mode
