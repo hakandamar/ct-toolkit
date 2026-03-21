@@ -8,7 +8,7 @@
 
 CT Toolkit is an open-source Python library that brings the **Nested Agency Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2026 - 2nd edition) — into engineering practice.
 
-**Current Version:** `v0.3.6`
+**Current Version:** `v0.3.8`
 
 ### The Problem It Solves
 
@@ -30,9 +30,10 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Divergence Engine (L1+L2+L3)           | ✅ Complete                                                                            |
 | Policy-Drift & SSC Measurement         | ✅ Phase 3 Complete                                                                    |
 | Template + Kernel compatibility matrix | ✅ Complete                                                                            |
-| Context-Compression Passive Guard      | ✅ **v0.3.6 New: Core Integrated**                                                     |
+| Context-Compression Passive Guard      | ✅ Core Integrated (v0.3.6)                                                           |
+| Staged Approval (Cooldown)            | ✅ **v0.3.8 New: Sandbox Shadow Requests**                                             |
 | Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/))|
-| Test coverage                          | ✅ 281/292 tests passing (95% code coverage)                                           |
+| Test coverage                          | ✅ 285/296 tests passing (95% code coverage)                                           |
 
 ---
 
@@ -67,7 +68,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **Divergence Engine** — L1→L2→L3 cascaded orchestration + enterprise mode
 - [x] **Provenance Log** — HMAC hash chain, SQLite vault, tamper detection
 - [x] **Reflective Endorsement protocol** — Conflict record, signed approval, ICM flag
-- [x] **Approval channels** — CLI, auto-approve, auto-reject, custom callback
+- [x] **Staged Approval (Cooldown)** — _(Paper 6)_ Sandbox shadow requests + dynamic penalty/RPM duration. (New in `v0.3.8`)
+- [x] **Approval channels** — CLI, auto-approve, auto-reject, staged, custom callback
 - [x] **Real embedding API integration** — OpenAI `text-embedding-3`, Anthropic embedding; current MVP uses keyword vectors
 - [x] **Stability-Plasticity Scheduling** — _(Paper 5.3)_ As the model becomes more capable, the identity-update threshold rises proportionally; currently uses fixed thresholds
 - [x] **Context-Compression Identity Guard** — Core integrated in `v0.3.6`. Tracks silent provider summarization via passive detection.
@@ -169,7 +171,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 281 (11 skipped, 292 total)
+- **Total Passing Tests:** 285 (11 skipped, 296 total)
 - **Overall Code Coverage:** 95%
 - **Key Coverage Highlights:**
   - `middleware/langchain.py`: **100%**
@@ -191,7 +193,7 @@ All backend refactorings were verified using the extended test suite.
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
-# Result: 281 passed, 0 failures | Coverage: 95%
+# Result: 285 passed, 0 failures | Coverage: 95%
 ```
 
 ---
@@ -219,6 +221,7 @@ uv run pytest --cov=ct_toolkit tests/
 | Axiomatic Anchors                  | `kernels/*.yaml → axiomatic_anchors`   | ✅ 0  |
 | Plastic Commitments                | `kernels/*.yaml → plastic_commitments` | ✅ 0  |
 | Reflective Endorsement             | `endorsement/reflective.py`            | ✅ 1  |
+| Staged Approval (Cooldown)        | `core/wrapper.py`, `endorsement/reflective.py` | ✅ 1  |
 | Divergence Penalty (API level)     | `divergence/engine.py`                 | ✅ 1  |
 | Divergence Penalty (loss function) | `divergence/loss.py`                   | ✅ 4  |
 | Provenance Log                     | `provenance/log.py`                    | ✅ 1  |
