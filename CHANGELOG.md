@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.7] - 2026-03-21
+
+### Added
+- **Configurable L2 Judge**: Added `--judge-provider` and `--judge-model` options to `ct-toolkit serve` for custom L2 divergence detection backends.
+- **Enhanced Guardrail Server**: Server now supports multi-provider model definitions for separate target and judge agents.
+
+### Changed
+- **LiteLLM Migration Completion**: Fully audited all public documentation to remove legacy `any-llm-sdk` references in favor of native LiteLLM integrations.
+- **Improved DX**: Refined CLI and Server help text for consistency and clarity.
+
+### Fixed
+- **CI/CD Stabilization**: Optimized unit test performance and reliability across platforms.
+
 ## [0.3.6] - 2026-03-21
 
 ### Added
