@@ -51,7 +51,7 @@ def test_cascade_blocking_integration(mock_divergence, mock_icm_run, manager_wra
     mock_icm_run.return_value = mock_report
     
     # Use a dummy message to run divergence engine via chat (mocking provider call)
-    with patch("any_llm.completion") as mock_comp:
+    with patch("litellm.completion") as mock_comp:
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = "Unsafe response"

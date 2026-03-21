@@ -1340,6 +1340,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1439,6 +1443,62 @@
     
   
     Custom Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/cli-auditor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Auditor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/passive-compression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passive Compression Guard
   
 
     
@@ -2254,11 +2314,11 @@
 <h1 id="divergence-engine">Divergence Engine<a class="headerlink" href="#divergence-engine" title="Permanent link">&para;</a></h1>
 <p>The Divergence Engine is the heart of CT Toolkit's security layer. It provides a multi-tiered approach to measuring and mitigating <strong>identity drift</strong> in real-time.</p>
 <h2 id="the-scoring-mechanism">The Scoring Mechanism<a class="headerlink" href="#the-scoring-mechanism" title="Permanent link">&para;</a></h2>
-<p>The engine calculates a <strong>Divergence Score ($D$)</strong> between the agent's current interaction ($I_n$) and its <strong>Constitutional Kernel ($K$)</strong>. </p>
-<p>$$D = 1 - \text{CosineSimilarity}(\text{Embed}(I_n), \text{Embed}(K))$$</p>
+<p>The engine calculates a <strong>Divergence Score (<span class="arithmatex">\(D\)</span>)</strong> between the agent's current interaction (<span class="arithmatex">\(I_n\)</span>) and its <strong>Constitutional Kernel (<span class="arithmatex">\(K\)</span>)</strong>. </p>
+<div class="arithmatex">\[D = 1 - \text{CosineSimilarity}(\text{Embed}(I_n), \text{Embed}(K))\]</div>
 <ul>
-<li><strong>$0.0$</strong>: Perfect alignment. The response is mathematically consistent with the agent's identity.</li>
-<li><strong>$1.0$</strong>: Absolute drift. The response has no relation to the agent's core commitments.</li>
+<li><strong><span class="arithmatex">\(0.0\)</span></strong>: Perfect alignment. The response is mathematically consistent with the agent's identity.</li>
+<li><strong><span class="arithmatex">\(1.0\)</span></strong>: Absolute drift. The response has no relation to the agent's core commitments.</li>
 </ul>
 <h2 id="monitoring-tiers">Monitoring Tiers<a class="headerlink" href="#monitoring-tiers" title="Permanent link">&para;</a></h2>
 <p>CT Toolkit uses a "Progressive Hardening" approach to minimize latency while maximizing safety.</p>
@@ -2456,6 +2516,12 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

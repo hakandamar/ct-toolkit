@@ -84,7 +84,7 @@ Run the tests:
 
 ```bash
 pytest tests/ -v
-# 231 passed, 1 skipped
+# 242 passed, 8 skipped
 ```
 
 ---
@@ -159,7 +159,7 @@ CT Toolkit's core dependencies:
 
 | Package | Purpose |
 |:---|:---|
-| `any-llm-sdk` | Unified provider interface (OpenAI, Anthropic, Ollama, etc.) |
+| `litellm` | Unified transport layer (OpenAI, Anthropic, Ollama, etc.) |
 | `instructor` | Structured L2 Judge responses |
 | `numpy` | L1 embedding calculations |
 | `pyyaml` | Kernel and template YAML loading |

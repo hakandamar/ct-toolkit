@@ -14,7 +14,7 @@ keywords = ["llm", "ai-safety", "identity-continuity", "guardrails", "alignment"
 
 dependencies = [
     "instructor>=1.3.0",
-    "any-llm-sdk[all]>=1.0.0",
+    "litellm>=1.40.0",
     "numpy>=1.26.0",
     "pyyaml>=6.0",
     "pydantic>=2.5.0",

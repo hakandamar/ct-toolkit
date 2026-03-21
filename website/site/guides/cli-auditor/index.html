@@ -12,25 +12,31 @@
         <meta name="author" content="Hakan Damar">
       
       
+        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/">
       
+      
+        <link rel="prev" href="../custom-templates/">
+      
+      
+        <link rel="next" href="../passive-compression/">
       
       
         
       
       
-      <link rel="icon" href="/ct-toolkit/assets/favicon.svg">
+      <link rel="icon" href="../../assets/favicon.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
-        <title>CT Toolkit</title>
+        <title>CLI Auditor - CT Toolkit</title>
       
     
     
-      <link rel="stylesheet" href="/ct-toolkit/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="/ct-toolkit/assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
   
@@ -79,9 +85,9 @@
       
     
     
-      <link rel="stylesheet" href="/ct-toolkit/assets/extra.css">
+      <link rel="stylesheet" href="../../assets/extra.css">
     
-    <script>__md_scope=new URL("/ct-toolkit/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -105,6 +111,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#standalone-auditor-cli" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -121,9 +132,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/ct-toolkit/." title="CT Toolkit" class="md-header__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
+    <a href="../.." title="CT Toolkit" class="md-header__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
       
-  <img src="/ct-toolkit/assets/logo.svg" alt="logo">
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -140,7 +151,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              CLI Auditor
             
           </span>
         </div>
@@ -252,7 +263,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/ct-toolkit/." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -273,7 +284,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ct-toolkit/get-started/" class="md-tabs__link">
+        <a href="../../get-started/" class="md-tabs__link">
           
   
   
@@ -295,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ct-toolkit/concepts/" class="md-tabs__link">
+        <a href="../../concepts/" class="md-tabs__link">
           
   
   
@@ -317,7 +328,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ct-toolkit/integrations/" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -335,11 +346,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="/ct-toolkit/guides/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -361,7 +374,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ct-toolkit/reference/" class="md-tabs__link">
+        <a href="../../reference/" class="md-tabs__link">
           
   
   
@@ -383,7 +396,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ct-toolkit/examples/" class="md-tabs__link">
+        <a href="../../examples/" class="md-tabs__link">
           
   
   
@@ -425,9 +438,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/ct-toolkit/." title="CT Toolkit" class="md-nav__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
+    <a href="../.." title="CT Toolkit" class="md-nav__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
       
-  <img src="/ct-toolkit/assets/logo.svg" alt="logo">
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     CT Toolkit
@@ -454,7 +467,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -514,7 +527,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="/ct-toolkit/get-started/" class="md-nav__link ">
+            <a href="../../get-started/" class="md-nav__link ">
               
   
   
@@ -558,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/get-started/quickstart/" class="md-nav__link">
+      <a href="../../get-started/quickstart/" class="md-nav__link">
         
   
   
@@ -586,7 +599,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/get-started/installation/" class="md-nav__link">
+      <a href="../../get-started/installation/" class="md-nav__link">
         
   
   
@@ -614,7 +627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/get-started/local-models/" class="md-nav__link">
+      <a href="../../get-started/local-models/" class="md-nav__link">
         
   
   
@@ -642,7 +655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/get-started/first-guardrail/" class="md-nav__link">
+      <a href="../../get-started/first-guardrail/" class="md-nav__link">
         
   
   
@@ -718,7 +731,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="/ct-toolkit/concepts/" class="md-nav__link ">
+            <a href="../../concepts/" class="md-nav__link ">
               
   
   
@@ -762,7 +775,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/why-ct-toolkit/" class="md-nav__link">
+      <a href="../../concepts/why-ct-toolkit/" class="md-nav__link">
         
   
   
@@ -790,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/identity-continuity/" class="md-nav__link">
+      <a href="../../concepts/identity-continuity/" class="md-nav__link">
         
   
   
@@ -818,7 +831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/kernels/" class="md-nav__link">
+      <a href="../../concepts/kernels/" class="md-nav__link">
         
   
   
@@ -846,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/divergence/" class="md-nav__link">
+      <a href="../../concepts/divergence/" class="md-nav__link">
         
   
   
@@ -874,7 +887,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/tiered-guardrails/" class="md-nav__link">
+      <a href="../../concepts/tiered-guardrails/" class="md-nav__link">
         
   
   
@@ -902,7 +915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/multi-agent/" class="md-nav__link">
+      <a href="../../concepts/multi-agent/" class="md-nav__link">
         
   
   
@@ -930,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/provenance/" class="md-nav__link">
+      <a href="../../concepts/provenance/" class="md-nav__link">
         
   
   
@@ -958,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/concepts/reflective-endorsement/" class="md-nav__link">
+      <a href="../../concepts/reflective-endorsement/" class="md-nav__link">
         
   
   
@@ -1026,7 +1039,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="/ct-toolkit/integrations/" class="md-nav__link ">
+            <a href="../../integrations/" class="md-nav__link ">
               
   
   
@@ -1070,7 +1083,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/integrations/langchain/" class="md-nav__link">
+      <a href="../../integrations/langchain/" class="md-nav__link">
         
   
   
@@ -1098,7 +1111,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/integrations/crewai/" class="md-nav__link">
+      <a href="../../integrations/crewai/" class="md-nav__link">
         
   
   
@@ -1126,7 +1139,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/integrations/autogen/" class="md-nav__link">
+      <a href="../../integrations/autogen/" class="md-nav__link">
         
   
   
@@ -1154,7 +1167,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/integrations/deepagents/" class="md-nav__link">
+      <a href="../../integrations/deepagents/" class="md-nav__link">
         
   
   
@@ -1186,6 +1199,8 @@
       
   
   
+    
+  
   
   
     
@@ -1213,22 +1228,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="/ct-toolkit/guides/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -1246,13 +1262,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1272,7 +1288,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/guides/custom-kernels/" class="md-nav__link">
+      <a href="../custom-kernels/" class="md-nav__link">
         
   
   
@@ -1300,7 +1316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/guides/custom-templates/" class="md-nav__link">
+      <a href="../custom-templates/" class="md-nav__link">
         
   
   
@@ -1325,10 +1341,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/ct-toolkit/guides/cli-auditor/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Auditor
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1344,6 +1387,137 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list-kernels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list-templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ascii-banner-versioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASCII Banner &amp; Versioning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Output
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interpreting-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interpreting Results:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1356,7 +1530,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/guides/passive-compression/" class="md-nav__link">
+      <a href="../passive-compression/" class="md-nav__link">
         
   
   
@@ -1384,7 +1558,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/guides/enterprise/" class="md-nav__link">
+      <a href="../enterprise/" class="md-nav__link">
         
   
   
@@ -1412,7 +1586,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/guides/fine-tuning/" class="md-nav__link">
+      <a href="../fine-tuning/" class="md-nav__link">
         
   
   
@@ -1440,7 +1614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/guides/compliance/" class="md-nav__link">
+      <a href="../compliance/" class="md-nav__link">
         
   
   
@@ -1518,7 +1692,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="/ct-toolkit/reference/" class="md-nav__link ">
+            <a href="../../reference/" class="md-nav__link ">
               
   
   
@@ -1562,7 +1736,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/theseus-wrapper/" class="md-nav__link">
+      <a href="../../reference/theseus-wrapper/" class="md-nav__link">
         
   
   
@@ -1590,7 +1764,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/wrapper-config/" class="md-nav__link">
+      <a href="../../reference/wrapper-config/" class="md-nav__link">
         
   
   
@@ -1618,7 +1792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/constitutional-kernel/" class="md-nav__link">
+      <a href="../../reference/constitutional-kernel/" class="md-nav__link">
         
   
   
@@ -1646,7 +1820,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/divergence-engine/" class="md-nav__link">
+      <a href="../../reference/divergence-engine/" class="md-nav__link">
         
   
   
@@ -1674,7 +1848,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/provenance-log/" class="md-nav__link">
+      <a href="../../reference/provenance-log/" class="md-nav__link">
         
   
   
@@ -1702,7 +1876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/compatibility/" class="md-nav__link">
+      <a href="../../reference/compatibility/" class="md-nav__link">
         
   
   
@@ -1730,7 +1904,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/kernels-templates/" class="md-nav__link">
+      <a href="../../reference/kernels-templates/" class="md-nav__link">
         
   
   
@@ -1758,7 +1932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/exceptions/" class="md-nav__link">
+      <a href="../../reference/exceptions/" class="md-nav__link">
         
   
   
@@ -1786,7 +1960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/reference/project-status/" class="md-nav__link">
+      <a href="../../reference/project-status/" class="md-nav__link">
         
   
   
@@ -1854,7 +2028,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="/ct-toolkit/examples/" class="md-nav__link ">
+            <a href="../../examples/" class="md-nav__link ">
               
   
   
@@ -1898,7 +2072,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/examples/ssc-financial-auditor/" class="md-nav__link">
+      <a href="../../examples/ssc-financial-auditor/" class="md-nav__link">
         
   
   
@@ -1926,7 +2100,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/examples/hierarchical-safety/" class="md-nav__link">
+      <a href="../../examples/hierarchical-safety/" class="md-nav__link">
         
   
   
@@ -1954,7 +2128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/examples/standalone-auditor/" class="md-nav__link">
+      <a href="../../examples/standalone-auditor/" class="md-nav__link">
         
   
   
@@ -1982,7 +2156,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ct-toolkit/examples/military-medical/" class="md-nav__link">
+      <a href="../../examples/military-medical/" class="md-nav__link">
         
   
   
@@ -2027,6 +2201,127 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list-kernels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list-templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ascii-banner-versioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASCII Banner &amp; Versioning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Output
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interpreting-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interpreting Results:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -2044,11 +2339,133 @@
   
 
 
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Guides
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  
+  
+
+
+<h1 id="standalone-auditor-cli">Standalone Auditor CLI<a class="headerlink" href="#standalone-auditor-cli" title="Permanent link">&para;</a></h1>
+<p>The <strong>CT Toolkit CLI</strong> provides a powerful way to audit LLM endpoints for identity continuity without writing any Python code. It's designed for security researchers, auditors, and developers who need to stress-test a model's alignment with a specific <a href="../../concepts/kernels/">Constitutional Kernel</a>.</p>
+<hr />
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<p>The CLI is included automatically when you install the toolkit:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>ct-toolkit
+</span></code></pre></div>
+<p>Verify the installation:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ct-toolkit<span class="w"> </span>--help
+</span></code></pre></div>
+<hr />
+<h2 id="core-commands">Core Commands<a class="headerlink" href="#core-commands" title="Permanent link">&para;</a></h2>
+<h3 id="audit"><code>audit</code><a class="headerlink" href="#audit" title="Permanent link">&para;</a></h3>
+<p>Run an L3 Identity Consistency Metric (ICM) audit against an LLM provider.</p>
+<p><strong>Usage:</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ct-toolkit<span class="w"> </span>audit<span class="w"> </span>--url<span class="w"> </span>&lt;PROVIDER_URL&gt;<span class="w"> </span>--kernel<span class="w"> </span>&lt;KERNEL_NAME&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></code></pre></div></p>
+<p><strong>Options:</strong>
+- <code>--url</code>: The base URL of the LLM provider (e.g., <code>http://localhost:11434/v1</code> for Ollama).
+- <code>--kernel</code>: Name of the Constitutional Kernel to use (default: <code>default</code>).
+- <code>--template</code>: Identity template for embedding comparison (default: <code>general</code>).
+- <code>--model</code>: Specific model name to request (default: <code>l3-auditor</code>).</p>
+<p><strong>Example: Auditing a local Ollama model</strong>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ct-toolkit<span class="w"> </span>audit<span class="w"> </span>--url<span class="w"> </span>http://localhost:11434/v1<span class="w"> </span>--kernel<span class="w"> </span>defense
+</span></code></pre></div></p>
+<h3 id="list-kernels"><code>list-kernels</code><a class="headerlink" href="#list-kernels" title="Permanent link">&para;</a></h3>
+<p>List all available Constitutional Kernels installed in the toolkit or your local project.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ct-toolkit<span class="w"> </span>list-kernels
+</span></code></pre></div>
+<h3 id="list-templates"><code>list-templates</code><a class="headerlink" href="#list-templates" title="Permanent link">&para;</a></h3>
+<p>List all available Identity Templates (categories for behavioral probes).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ct-toolkit<span class="w"> </span>list-templates
+</span></code></pre></div>
+<hr />
+<h2 id="ascii-banner-versioning">ASCII Banner &amp; Versioning<a class="headerlink" href="#ascii-banner-versioning" title="Permanent link">&para;</a></h2>
+<p>Upon startup, the CLI greets you with the <strong>Theseus Guard</strong> banner, ensuring you are operating within the CT Toolkit environment:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>  _______ _    _ ______  _____ ______ _    _  _____    _____ _    _          
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a> |__   __| |  | |  ____|/ ____|  ____| |  | |/ ____|  / ____| |  | |   /\    
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    | |  | |__| | |__  | (___ | |__  | |  | | (___   | |  __| |  | |  /  \   
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    | |  |  __  |  __|  \___ \|  __| | |  | |\___ \  | | |_ | |  | | / /\ \  
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    | |  | |  | | |____ ____) | |____| |__| |____) | | |__| | |__| |/ ____ \ 
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    |_|  |_|  |_|______|_____/|______|_____/|_____/   \_____|\____//_/    \_\
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>  computational theseus toolkit (ct toolkit) v0.3.5
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>  identity continuity guardrails for agentic systems
+</span></code></pre></div>
+<hr />
+<h2 id="example-output">Example Output<a class="headerlink" href="#example-output" title="Permanent link">&para;</a></h2>
+<p>When an audit runs, the CLI provides a detailed table of results and a final <strong>Identity Health Score</strong>:</p>
+<p><img alt="CLI Audit Output" src="../assets/cli_audit_demo.png" /></p>
+<p><em>(Note: The above image represents the terminal output. An actual audit will show PASSED/FAILED status for each probe category.)</em></p>
+<h3 id="interpreting-results">Interpreting Results:<a class="headerlink" href="#interpreting-results" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Health Score</strong>: 0% to 100%. A score below 80% usually indicates significant <a href="../../concepts/identity-continuity/">Identity Drift</a>.</li>
+<li><strong>Risk Level</strong>: Categorized as LOW, MEDIUM, HIGH, or CRITICAL based on the severity of failed probes.</li>
+<li><strong>Critical Violations</strong>: Lists specific probes that violated non-negotiable axiomatic anchors.</li>
+</ul>
+<hr />
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Connection Error</strong>: Ensure your LLM provider (Ollama, LM Studio, etc.) is running and accessible at the provided URL.</li>
+<li><strong>Kernel Not Found</strong>: Use <code>ct-toolkit list-kernels</code> to verify you are using a valid kernel name.</li>
+<li><strong>Empty Probes</strong>: Ensure the <code>ct_toolkit/divergence/probes/</code> directory contains valid <code>.json</code> probe files.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -2068,6 +2485,44 @@
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../custom-templates/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Custom Templates">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Custom Templates
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../passive-compression/" class="md-footer__link md-footer__link--next" aria-label="Next: Passive Compression Guard">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Passive Compression Guard
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
@@ -2124,12 +2579,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/ct-toolkit/", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips", "toc.follow"], "search": "/ct-toolkit/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
     
     
-      <script src="/ct-toolkit/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="/ct-toolkit/javascripts/mathjax.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

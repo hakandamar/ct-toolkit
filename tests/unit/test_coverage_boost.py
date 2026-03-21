@@ -138,11 +138,14 @@ class TestICMCoverage:
         # Empty reasoning
         assert BehaviorClassifier.evaluate_reasoning("", None) == (True, "No reasoning provided.")
 
-    @patch("ct_toolkit.divergence.l3_icm.any_llm.completion")
+    @patch("litellm.completion")
     def test_call_model_dict_response(self, mock_completion):
-        mock_completion.return_value = {"choices": [{"message": {"content": "model says hi"}}]}
+        mock_completion.return_value = MagicMock(
+            choices=[MagicMock(message=MagicMock(content="model says hi"))]
+        )
         runner = ICMRunner(client=MagicMock(), provider="openai", kernel=MagicMock())
         assert runner._call_model("prompt") == "model says hi"
+
 
     def test_load_probes_empty_battery(self):
         with patch("ct_toolkit.divergence.l3_icm.Path.exists", return_value=False):

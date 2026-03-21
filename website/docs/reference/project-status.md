@@ -8,8 +8,8 @@
 
 | Metric | Status |
 |:---|:---|
-| Tests | ✅ 231/232 passing |
-| Coverage | ✅ 90% |
+| Tests | ✅ 281/292 passing |
+| Coverage | ✅ 95% |
 | PyPI | ✅ `pip install ct-toolkit` |
 
 ## Roadmap phases

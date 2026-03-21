@@ -22,8 +22,8 @@ def test_missing_client_passes_with_env_key():
     with patch.dict(os.environ, {"OPENAI_API_KEY": "sk-dummy"}):
         wrapper = TheseusWrapper(provider="openai")
         
-        # Mock any_llm.completion to avoid real API call
-        with patch("any_llm.completion") as mock_comp:
+        # Mock litellm.completion to avoid real API call
+        with patch("litellm.completion") as mock_comp:
             mock_response = MagicMock()
             mock_response.choices = [MagicMock()]
             mock_response.choices[0].message.content = "Environment key works!"
@@ -38,11 +38,12 @@ def test_ollama_does_not_need_env_key():
     with patch.dict(os.environ, {}, clear=True):
         wrapper = TheseusWrapper(provider="ollama")
         
-        with patch("any_llm.completion") as mock_comp:
+        with patch("litellm.completion") as mock_comp:
             mock_response = MagicMock()
             mock_response.model = "llama3"
-            mock_response.message.content = "Ollama works!"
-            del mock_response.choices # Ensure it follows Ollama's path
+            # LiteLLM standardised response for Ollama goes through .choices
+            mock_response.choices = [MagicMock()]
+            mock_response.choices[0].message.content = "Ollama works!"
             mock_comp.return_value = mock_response
             
             response = wrapper.chat("Hello")

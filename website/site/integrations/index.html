@@ -1221,6 +1221,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1320,6 +1324,62 @@
     
   
     Custom Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/cli-auditor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Auditor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/passive-compression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passive Compression Guard
   
 
     
@@ -2086,30 +2146,29 @@
 <li>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.5 15.5c0 1.11-.89 2-2 2s-2-.89-2-2 .9-2 2-2 2 .9 2 2m-9-2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.89 2-2-.89-2-2-2M23 15v3c0 .55-.45 1-1 1h-1v1c0 1.11-.89 2-2 2H5a2 2 0 0 1-2-2v-1H2c-.55 0-1-.45-1-1v-3c0-.55.45-1 1-1h1c0-3.87 3.13-7 7-7h1V5.73c-.6-.34-1-.99-1-1.73 0-1.1.9-2 2-2s2 .9 2 2c0 .74-.4 1.39-1 1.73V7h1c3.87 0 7 3.13 7 7h1c.55 0 1 .45 1 1m-2 1h-2v-2c0-2.76-2.24-5-5-5h-4c-2.76 0-5 2.24-5 5v2H3v1h2v3h14v-3h2z"/></svg></span> <strong>CrewAI</strong></p>
 <hr />
-<p><code>TheseusCrewMiddleware.apply_to_crew()</code> wraps every agent in your crew in a single call. Parent kernel constraints propagate automatically.</p>
-<p><strong>Supported:</strong> CrewAI v1.10+<br />
-<strong>Install:</strong> <code>pip install "ct-toolkit[crewai]"</code></p>
-<p><a href="crewai/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> CrewAI guide</a></p>
+<p><code>TheseusCrewMiddleware.apply_to_crew()</code> wraps every agent in your crew in a single call. Parent kernel constraints and <strong>compression settings</strong> propagate automatically.</p>
 </li>
 <li>
-<p>:simple-microsoft: <strong>AutoGen</strong></p>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 3h9v9H2zm9 19H2v-9h9zM21 3v9h-9V3zm0 19h-9v-9h9z"/></svg></span> <strong>AutoGen</strong></p>
 <hr />
-<p><code>TheseusAutoGenMiddleware.apply_to_agent()</code> hooks into AutoGen's reply system to validate incoming messages and log outgoing ones.</p>
-<p><strong>Supported:</strong> AutoGen v0.4+<br />
-<strong>Install:</strong> <code>pip install "ct-toolkit[autogen]"</code></p>
-<p><a href="autogen/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> AutoGen guide</a></p>
+<p><code>TheseusAutoGenMiddleware</code> hooks into AutoGen's reply system to validate incoming messages and log outgoing ones. Includes <strong>Passive Compression Guard</strong> for conversation history.</p>
 </li>
 <li>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 17c-.13 0-.26 0-.39.04l-1.61-3.25a2.5 2.5 0 0 0-1.75-4.29c-.13 0-.25 0-.39.04l-1.63-3.25c.48-.45.77-1.08.77-1.79a2.5 2.5 0 0 0-5 0c0 .71.29 1.34.76 1.79L8.64 9.54c-.14-.04-.26-.04-.39-.04a2.5 2.5 0 0 0-1.75 4.29l-1.61 3.25C4.76 17 4.63 17 4.5 17a2.5 2.5 0 0 0 0 5A2.5 2.5 0 0 0 7 19.5c0-.7-.29-1.34-.76-1.79l1.62-3.25c.14.04.26.04.39.04s.25 0 .39-.04l1.63 3.25c-.47.45-.77 1.09-.77 1.79a2.5 2.5 0 0 0 5 0A2.5 2.5 0 0 0 12 17c-.13 0-.26 0-.39.04L10 13.79c.46-.45.75-1.08.75-1.79s-.29-1.34-.75-1.79l1.61-3.25c.13.04.26.04.39.04s.26 0 .39-.04L14 10.21c-.45.45-.75 1.09-.75 1.79a2.5 2.5 0 0 0 2.5 2.5c.13 0 .25 0 .39-.04l1.63 3.25c-.47.45-.77 1.09-.77 1.79a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0-2.5-2.5"/></svg></span> <strong>Deep Agents (LangChain)</strong></p>
 <hr />
-<p><code>wrap_deep_agent_factory</code> adds identity protection and context compression monitoring to long-running deep agents.</p>
-<p><a href="deepagents/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Deep Agents guide</a></p>
+<p><code>wrap_deep_agent_factory</code> adds identity protection and <strong>v0.3.6 core passive detection</strong> to long-running deep agents.</p>
+</li>
+<li>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 12a6.4 6.4 0 0 1 2.87.67A12 12 0 0 0 21 11V5l-9-4-9 4v6c0 5.55 3.84 10.74 9 12 .35-.09.7-.2 1-.32a6.42 6.42 0 0 1-1.5-4.18A6.5 6.5 0 0 1 18 12m0 2.5V13l-2.25 2.25L18 17.5V16a2.5 2.5 0 0 1 2.24 3.62l1.09 1.09A4 4 0 0 0 18 14.5m0 6.5a2.5 2.5 0 0 1-2.24-3.62l-1.09-1.09A4 4 0 0 0 18 22.5V24l2.25-2.25L18 19.5Z"/></svg></span> <strong>Passive Compression Guard</strong></p>
+<hr />
+<p>Universal, provider-agnostic monitoring of silent context summarization (OpenAI/Anthropic). Now integrated directly into the <code>TheseusWrapper</code> core.</p>
+<p><a href="../guides/passive-compression/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Guard guide</a></p>
 </li>
 </ul>
 </div>
 <hr />
 <h2 id="provider-support">Provider support<a class="headerlink" href="#provider-support" title="Permanent link">&para;</a></h2>
-<p>CT Toolkit works with any provider supported by <code>any-llm-sdk</code>:</p>
+<p>CT Toolkit works with any provider supported by <code>LiteLLM</code>:</p>
 <table>
 <thead>
 <tr>
@@ -2291,6 +2350,12 @@
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

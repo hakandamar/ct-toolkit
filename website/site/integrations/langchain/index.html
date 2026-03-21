@@ -1218,6 +1218,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#passive-compression-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passive Compression Guard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Passive Compression Guard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-guard-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Guard access
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parent-kernel-propagation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1373,6 +1401,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1472,6 +1504,62 @@
     
   
     Custom Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/cli-auditor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Auditor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/passive-compression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passive Compression Guard
   
 
     
@@ -2217,6 +2305,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#passive-compression-guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passive Compression Guard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Passive Compression Guard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-guard-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Guard access
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parent-kernel-propagation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2404,34 +2520,49 @@
 </span></code></pre></div>
 <p>The callback validates prompts <strong>before</strong> the LLM call and runs divergence analysis <strong>after</strong> it, without modifying your existing code.</p>
 <hr />
+<h2 id="passive-compression-guard">Passive Compression Guard<a class="headerlink" href="#passive-compression-guard" title="Permanent link">&para;</a></h2>
+<p>One of the key features of <code>v0.3.6</code> is the core integration of the <strong>Passive Compression Guard</strong>. This automatically protects your LangChain agents against silent context summarization performed by LLM providers (e.g., OpenAI, Anthropic).</p>
+<h3 id="manual-guard-access">Manual Guard access<a class="headerlink" href="#manual-guard-access" title="Permanent link">&para;</a></h3>
+<p>You can access the underlying guard from <code>TheseusChatModel</code> to perform manual audits of any compressed history or summary:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.middleware.langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">TheseusChatModel</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">llm</span> <span class="o">=</span> <span class="n">TheseusChatModel</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># Access the guard</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">audit_result</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">compression_guard</span><span class="o">.</span><span class="n">analyze_summary_drift</span><span class="p">(</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">original_messages</span><span class="p">,</span> 
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">new_summary</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">)</span>
+</span></code></pre></div>
+<hr />
 <h2 id="parent-kernel-propagation">Parent kernel propagation<a class="headerlink" href="#parent-kernel-propagation" title="Permanent link">&para;</a></h2>
 <p>To enforce a parent agent's constraints on a LangChain sub-agent:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TheseusWrapper</span><span class="p">,</span> <span class="n">WrapperConfig</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.middleware.langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">TheseusChatModel</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Manager agent with strict defense kernel</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">manager</span> <span class="o">=</span> <span class="n">TheseusWrapper</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span> <span class="n">kernel_name</span><span class="o">=</span><span class="s2">&quot;defense&quot;</span><span class="p">)</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Sub-agent inherits manager&#39;s constraints as read-only axioms</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="n">sub_config</span> <span class="o">=</span> <span class="n">WrapperConfig</span><span class="p">(</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">parent_kernel</span><span class="o">=</span><span class="n">manager</span><span class="o">.</span><span class="n">kernel</span><span class="p">,</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">template</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="n">sub_llm</span> <span class="o">=</span> <span class="n">TheseusChatModel</span><span class="p">(</span>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="n">wrapper_config</span><span class="o">=</span><span class="n">sub_config</span><span class="p">,</span>
-</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TheseusWrapper</span><span class="p">,</span> <span class="n">WrapperConfig</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.middleware.langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">TheseusChatModel</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Manager agent with strict defense kernel</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">manager</span> <span class="o">=</span> <span class="n">TheseusWrapper</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span> <span class="n">kernel_name</span><span class="o">=</span><span class="s2">&quot;defense&quot;</span><span class="p">)</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Sub-agent inherits manager&#39;s constraints as read-only axioms</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="n">sub_config</span> <span class="o">=</span> <span class="n">WrapperConfig</span><span class="p">(</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">parent_kernel</span><span class="o">=</span><span class="n">manager</span><span class="o">.</span><span class="n">kernel</span><span class="p">,</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">template</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">)</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="n">sub_llm</span> <span class="o">=</span> <span class="n">TheseusChatModel</span><span class="p">(</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>    <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="n">wrapper_config</span><span class="o">=</span><span class="n">sub_config</span><span class="p">,</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="p">)</span>
 </span></code></pre></div>
 <hr />
 <h2 id="cascade-blocking">Cascade blocking<a class="headerlink" href="#cascade-blocking" title="Permanent link">&para;</a></h2>
 <p>When <code>cascade_blocked=True</code> is returned by the divergence engine, the callback logs a warning. In your application, check for this and halt downstream sub-agent calls:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">DivergenceResult</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCallback</span><span class="p">(</span><span class="n">TheseusLangChainCallback</span><span class="p">):</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">on_llm_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">run_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_llm_end</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="n">run_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="c1"># Check latest divergence result and halt pipeline if needed</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">DivergenceResult</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCallback</span><span class="p">(</span><span class="n">TheseusLangChainCallback</span><span class="p">):</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">on_llm_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">run_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_llm_end</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="n">run_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="c1"># Check latest divergence result and halt pipeline if needed</span>
 </span></code></pre></div>
 <hr />
 <h2 id="compatibility">Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">&para;</a></h2>
@@ -2587,6 +2718,12 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

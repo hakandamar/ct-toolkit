@@ -32,7 +32,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Template + Kernel compatibility matrix | ✅ Complete                                                                            |
 | Context-Compression Passive Guard      | ✅ **v0.3.6 New: Core Integrated**                                                     |
 | Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/))|
-| Test coverage                          | ✅ 269/272 tests passing (92% code coverage)                                           |
+| Test coverage                          | ✅ 281/292 tests passing (95% code coverage)                                           |
 
 ---
 
@@ -169,8 +169,8 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 269 (3 skipped, 272 total)
-- **Overall Code Coverage:** 92%
+- **Total Passing Tests:** 281 (11 skipped, 292 total)
+- **Overall Code Coverage:** 95%
 - **Key Coverage Highlights:**
   - `middleware/langchain.py`: **100%**
   - `middleware/autogen.py`: **98%**
@@ -191,7 +191,7 @@ All backend refactorings were verified using the extended test suite.
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
-# Result: 269 passed, 0 failures | Coverage: 92%
+# Result: 281 passed, 0 failures | Coverage: 95%
 ```
 
 ---

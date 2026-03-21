@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
 
 class TestIdentityEmbeddingLayer:
@@ -51,53 +51,50 @@ class TestIdentityEmbeddingLayer:
 
     def test_uses_embedding_client_when_provided(self):
         mock_client = MagicMock()
-        mock_response = MagicMock()
-        mock_response.data = [MagicMock(embedding=[0.5, -0.5, 0.5])]
-        mock_client.embeddings.create.return_value = mock_response
 
-        layer = IdentityEmbeddingLayer(template="general", embedding_client=mock_client)
-        
-        # Reset mock to clear the call made during __init__
-        mock_client.embeddings.create.reset_mock()
-        
-        vector = layer._compute_vector("dummy text")
-        
-        mock_client.embeddings.create.assert_called_once_with(
-            input=["dummy text"],
-            model="text-embedding-3-small"
-        )
+        with patch("litellm.embedding") as mock_litellm_embed:
+            mock_litellm_embed.return_value = MagicMock(
+                data=[{"embedding": [0.5, -0.5, 0.5]}]
+            )
+
+            layer = IdentityEmbeddingLayer(template="general", embedding_client=mock_client)
+            vector = layer._compute_vector("dummy text")
+
+        mock_litellm_embed.assert_called_once()
+        call_kwargs = mock_litellm_embed.call_args[1]
+        assert call_kwargs["model"] == "text-embedding-3-small"
+        assert call_kwargs["input"] == ["dummy text"]
         assert len(vector) == 3
 
     def test_falls_back_to_local_method_when_api_fails(self):
         mock_client = MagicMock()
-        mock_client.embeddings.create.side_effect = Exception("API Provider Error")
 
-        layer = IdentityEmbeddingLayer(template="general", embedding_client=mock_client)
-        vector = layer._compute_vector("dummy text")
-        
+        with patch("litellm.embedding", side_effect=Exception("API Provider Error")):
+            layer = IdentityEmbeddingLayer(template="general", embedding_client=mock_client)
+            vector = layer._compute_vector("dummy text")
+
         # Fallback local method creates a vector the size of template_keywords
         assert len(vector) == len(layer._template_keywords)
 
     def test_layer_uses_custom_embedding_model(self):
         mock_client = MagicMock()
-        mock_response = MagicMock()
-        mock_response.data = [MagicMock(embedding=[0.1, 0.2])]
-        mock_client.embeddings.create.return_value = mock_response
 
-        layer = IdentityEmbeddingLayer(
-            template="general", 
-            embedding_client=mock_client,
-            embedding_model="custom-model-v2"
-        )
-        
-        # Reset mock to clear the call made during __init__
-        mock_client.embeddings.create.reset_mock()
-        
-        layer._compute_vector("text")
-        mock_client.embeddings.create.assert_called_once_with(
-            input=["text"],
-            model="custom-model-v2"
-        )
+        with patch("litellm.embedding") as mock_litellm_embed:
+            mock_litellm_embed.return_value = MagicMock(
+                data=[{"embedding": [0.1, 0.2]}]
+            )
+
+            layer = IdentityEmbeddingLayer(
+                template="general",
+                embedding_client=mock_client,
+                embedding_model="custom-model-v2"
+            )
+            layer._compute_vector("text")
+
+        mock_litellm_embed.assert_called_once()
+        call_kwargs = mock_litellm_embed.call_args[1]
+        assert call_kwargs["model"] == "custom-model-v2"
+        assert call_kwargs["input"] == ["text"]
 
     def test_ngram_fallback_on_empty_overlap(self):
         """When text has no keyword overlap, it should use trigram hashing."""

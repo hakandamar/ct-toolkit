@@ -1301,6 +1301,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1400,6 +1404,62 @@
     
   
     Custom Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/cli-auditor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Auditor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/passive-compression/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Passive Compression Guard
   
 
     
@@ -2191,7 +2251,7 @@
 <h2 id="what-it-does">What it does<a class="headerlink" href="#what-it-does" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Incoming:</strong> Validates every message against the kernel before the agent processes it. Axiomatic violations return a <code>[CT Toolkit BLOCKED]</code> response.</li>
-<li><strong>Outgoing:</strong> Runs divergence analysis on every generated reply and records it in the Provenance Log.</li>
+<li><strong>Outgoing:</strong> Runs divergence analysis on every generated reply and records it in the Provenance Log. Also supports <strong>Passive Compression Guard</strong> to monitor if the conversation history is silently summarized by the LLM provider.</li>
 </ul>
 <h2 id="inject-headers-for-http-sub-agents">Inject headers for HTTP sub-agents<a class="headerlink" href="#inject-headers-for-http-sub-agents" title="Permanent link">&para;</a></h2>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">config_list</span> <span class="o">=</span> <span class="n">TheseusAutoGenMiddleware</span><span class="o">.</span><span class="n">wrap_config_list</span><span class="p">(</span><span class="n">config_list</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">)</span>
@@ -2327,6 +2387,12 @@
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>

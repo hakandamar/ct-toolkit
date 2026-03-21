@@ -47,7 +47,7 @@ CT Toolkit provides first-class middleware for the most popular agentic framewor
 
 ## Provider support
 
-CT Toolkit works with any provider supported by `any-llm-sdk`:
+CT Toolkit works with any provider supported by LiteLLM:
 
 | Provider | Status | Notes |
 |:---|:---|:---|

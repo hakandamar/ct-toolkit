@@ -25,9 +25,7 @@ import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterator, Optional, Callable, Dict
-import any_llm
-from any_llm import AnyLLM
-import glob
+import litellm
 
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResult
@@ -97,7 +95,7 @@ class TheseusWrapper:
     Identity-continuity proxy wrapping the LLM API client.
 
     Supported providers: openai (default), anthropic, ollama, google, etc.
-    (Any provider supported by any-llm-sdk)
+    (Any provider supported by LiteLLM)
 
     Usage:
         from ct_toolkit import TheseusWrapper
@@ -133,7 +131,7 @@ class TheseusWrapper:
                     Optional if 'provider' is specified.
             config:  Optional WrapperConfig instance.
             provider: Provider name (e.g. "openai", "anthropic", "ollama", "google", "cohere").
-                      If provided, 'any-llm' will be used to initialize the client internally.
+                      If provided, LiteLLM will be used to initialize the client internally.
             project_root: Path to the user's project root directory. Used to find a custom 'config/' folder.
                           Defaults to the current working directory.
         """
@@ -243,7 +241,7 @@ class TheseusWrapper:
             return client.lower()
 
         try:
-            # Check for any_llm wrapper
+            # Check for LiteLLM specific attributes if any
             if hasattr(client, "provider") and isinstance(client.provider, str):
                 return client.provider
 
@@ -501,7 +499,7 @@ class TheseusWrapper:
         model: str | None,
         **kwargs: Any,
     ) -> Any:
-        """Uses any_llm for unified provider calling."""
+        """Uses LiteLLM for unified provider calling."""
         # --- Passive Context Compression Detection ---
         if self._config.compression_passive_detection and self._shadow_history:
             # Simple heuristic: message count dropped significantly
@@ -514,8 +512,8 @@ class TheseusWrapper:
 
         # Update shadow history for next call
         self._shadow_history = list(messages)
-        # Convert messages to any_llm format if necessary
-        # any_llm.completion handles different formats internally
+        
+        # LiteLLM handles different message formats internally
         
         # Set default models per provider if not specified
         if not model:
@@ -524,32 +522,29 @@ class TheseusWrapper:
             elif self._provider == "ollama": model = "llama3"
             else: model = "gpt-4o-mini"
 
-        # any_llm expects "provider:model" format
+        # LiteLLM expects "provider/model" format for non-default providers
+        # Usually OpenAI models don't need a prefix.
         full_model = model
-        if ":" not in model:
-            full_model = f"{self._provider}:{model}"
-
-        # Prepare any_llm call
-        any_llm_kwargs = {
-            "model": full_model,
-            "messages": messages,
-            **kwargs
-        }
+        if ":" in model:
+             # If it has the legacy format "provider:model", convert it
+             full_model = model.replace(":", "/", 1)
+        elif self._provider not in ("openai", "unknown"):
+             full_model = f"{self._provider}/{model}"
 
         # Extract connection info from client if possible
         if hasattr(self._client, "base_url") and self._client.base_url:
-            any_llm_kwargs["api_base"] = str(self._client.base_url)
+            kwargs["api_base"] = str(self._client.base_url)
         if hasattr(self._client, "api_key") and self._client.api_key:
-            any_llm_kwargs["api_key"] = self._client.api_key
+            kwargs["api_key"] = self._client.api_key
 
         # Transfer common client configurations if available
-        if hasattr(self._client, "timeout") and "timeout" not in any_llm_kwargs:
-            any_llm_kwargs["timeout"] = self._client.timeout
+        if hasattr(self._client, "timeout") and "timeout" not in kwargs:
+            kwargs["timeout"] = self._client.timeout
 
         try:
-            return any_llm.completion(**any_llm_kwargs)
+            return litellm.completion(model=full_model, messages=messages, **kwargs)
         except Exception as e:
-            logger.error(f"any_llm call failed: {e}")
+            logger.error(f"litellm call failed: {e}")
             raise
 
     # ── Helper Methods ──────────────────────────────────────────────────────
@@ -603,25 +598,33 @@ class TheseusWrapper:
         return messages
 
     def _extract_content(self, raw: Any) -> str:
-        # Handle dict responses (e.g. from some mockers or raw APIs)
+        # Handle dict responses
         if isinstance(raw, dict):
             if "choices" in raw and isinstance(raw["choices"], list) and raw["choices"]:
-                # OpenAI dict format
                 return raw["choices"][0].get("message", {}).get("content", "") or ""
             if "message" in raw:
-                # Ollama dict format
+                # Ollama dictate format
                 return raw["message"].get("content", "") or ""
             return str(raw)
 
-        # OpenAI
-        if hasattr(raw, "choices"):
-            return raw.choices[0].message.content or ""
-        # Anthropic
-        if hasattr(raw, "content") and isinstance(raw.content, list):
-            return raw.content[0].text if raw.content else ""
-        # Ollama
-        if hasattr(raw, "message"):
-            return raw.message.content or ""
+        # LiteLLM ModelResponse (Standardized for all providers)
+        try:
+            if hasattr(raw, "choices") and raw.choices:
+                choice = raw.choices[0]
+                if hasattr(choice, "message") and choice.message:
+                    return choice.message.content or ""
+                # Some older/alternative formats
+                if hasattr(choice, "text"):
+                    return choice.text or ""
+        except Exception:
+            pass
+            
+        # Fallback raw extraction for edge cases
+        if hasattr(raw, "content") and isinstance(raw.content, list): # Anthropic style
+             return raw.content[0].text if raw.content else ""
+        if hasattr(raw, "message"): # Ollama generic style
+             return getattr(raw.message, "content", "") or ""
+             
         return str(raw)
 
     def _extract_model(self, raw: Any, fallback: str | None) -> str:

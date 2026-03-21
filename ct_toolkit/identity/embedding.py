@@ -9,9 +9,7 @@ Step 3 MVP implementation:
   - Each response embedding is calculated
   - Cosine distance = 1 - cosine_similarity → divergence score
 """
-from __future__ import annotations
-
-import json
+import litellm
 import hashlib
 from pathlib import Path
 from typing import Any
@@ -155,17 +153,21 @@ class IdentityEmbeddingLayer:
         """
         if self._embedding_client is not None:
             try:
-                # Robust attribute check for OpenAI-compatible clients
-                embeddings_api = getattr(self._embedding_client, "embeddings", None)
-                if embeddings_api:
-                    response = embeddings_api.create(
-                        input=[text],
-                        model=self._embedding_model
-                    )
-                    embedding = response.data[0].embedding
-                    return np.array(embedding, dtype=np.float32)
-                else:
-                    logger.debug("Embedding client does not support .embeddings API. Falling back.")
+                # Prepare arguments for litellm.embedding
+                kwargs: dict[str, Any] = {
+                    "model": self._embedding_model,
+                    "input": [text]
+                }
+                
+                # Transfer client configuration if available
+                if hasattr(self._embedding_client, "base_url") and self._embedding_client.base_url:
+                    kwargs["api_base"] = str(self._embedding_client.base_url)
+                if hasattr(self._embedding_client, "api_key") and self._embedding_client.api_key:
+                    kwargs["api_key"] = self._embedding_client.api_key
+                    
+                response = litellm.embedding(**kwargs)
+                embedding = response.data[0]["embedding"]
+                return np.array(embedding, dtype=np.float32)
             except Exception as e:
                 if self._strict_embedding:
                     raise RuntimeError(f"Embedding API failed: {e}") from e

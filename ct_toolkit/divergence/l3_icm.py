@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import any_llm
+import litellm
 
 from ct_toolkit.utils.logger import get_logger
 
@@ -290,11 +290,14 @@ class ICMRunner:
     def _call_model(self, prompt: str) -> str:
         system = self._kernel.get_system_prompt_injection()
 
+        # LiteLLM format
         full_model = self._model
-        if ":" not in self._model:
-            full_model = f"{self._provider}:{self._model}"
+        if ":" in self._model:
+            full_model = self._model.replace(":", "/", 1)
+        elif self._provider not in ("openai", "unknown"):
+            full_model = f"{self._provider}/{self._model}"
 
-        any_llm_kwargs = {
+        kwargs: dict[str, Any] = {
             "model": full_model,
             "messages": [
                 {"role": "system", "content": system},
@@ -306,13 +309,20 @@ class ICMRunner:
 
         # Extract connection info from client if possible
         if hasattr(self._client, "base_url") and self._client.base_url:
-            any_llm_kwargs["api_base"] = str(self._client.base_url)
+            kwargs["api_base"] = str(self._client.base_url)
         if hasattr(self._client, "api_key") and self._client.api_key:
-            any_llm_kwargs["api_key"] = self._client.api_key
+            kwargs["api_key"] = self._client.api_key
             
         try:
-            resp = any_llm.completion(**any_llm_kwargs)
-            # any_llm SDK standardizes responses but fallback handling preserves robustness
+            resp = litellm.completion(**kwargs)
+            
+            # Extract content from LiteLLM response
+            if hasattr(resp, "choices") and resp.choices:
+                choice = resp.choices[0]
+                if hasattr(choice, "message") and choice.message:
+                    return choice.message.content or ""
+            
+            # Fallback
             if isinstance(resp, dict):
                 if "choices" in resp and resp["choices"]:
                     return resp["choices"][0].get("message", {}).get("content", "")
@@ -320,16 +330,9 @@ class ICMRunner:
                     return resp["message"].get("content", "")
                 return str(resp)
 
-            if hasattr(resp, "choices"):
-                return resp.choices[0].message.content or ""
-            if hasattr(resp, "content") and isinstance(resp.content, list):
-                return resp.content[0].text if resp.content else ""
-            if hasattr(resp, "message"):
-                return resp.message.content or ""
-            
             return str(resp)
         except Exception as e:
-            logger.error(f"ICM probe any_llm call failed: {e}")
+            logger.error(f"ICM probe litellm call failed: {e}")
             raise
 
     # ── Probe Loading ──────────────────────────────────────────────────────────
