@@ -162,6 +162,7 @@ nav:
     - Provenance Log: reference/provenance-log.md
     - Compatibility Matrix: reference/compatibility.md
     - Kernels & Templates: reference/kernels-templates.md
+    - CLI Reference: reference/cli.md
     - Exceptions: reference/exceptions.md
     - Project Status: reference/project-status.md
 
@@ -170,4 +171,5 @@ nav:
     - Financial Auditor (SSC): examples/ssc-financial-auditor.md
     - Hierarchical Agent Safety: examples/hierarchical-safety.md
     - Standalone Auditor (Qwen3): examples/standalone-auditor.md
+    - LiteLLM Guardrails (API): examples/litellm-guardrails.md
     - Military Medical Use Case: examples/military-medical.md

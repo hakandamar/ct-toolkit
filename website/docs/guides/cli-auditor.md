@@ -23,32 +23,46 @@ ct-toolkit --help
 ## Core Commands
 
 ### `audit`
+
 Run an L3 Identity Consistency Metric (ICM) audit against an LLM provider.
 
 **Usage:**
+
 ```bash
 ct-toolkit audit --url <PROVIDER_URL> --kernel <KERNEL_NAME> [OPTIONS]
 ```
 
 **Options:**
+
 - `--url`: The base URL of the LLM provider (e.g., `http://localhost:11434/v1` for Ollama).
 - `--kernel`: Name of the Constitutional Kernel to use (default: `default`).
 - `--template`: Identity template for embedding comparison (default: `general`).
 - `--model`: Specific model name to request (default: `l3-auditor`).
 
 **Example: Auditing a local Ollama model**
+
 ```bash
 ct-toolkit audit --url http://localhost:11434/v1 --kernel defense
 ```
 
 ### `list-kernels`
+
 List all available Constitutional Kernels installed in the toolkit or your local project.
 
 ```bash
 ct-toolkit list-kernels
 ```
 
+### `serve`
+
+Start a FastAPI server for LiteLLM [Generic Guardrail API](https://docs.litellm.ai/docs/adding_provider/generic_guardrail_api).
+
+```bash
+ct-toolkit serve --kernel <KERNEL_NAME> --port <PORT>
+```
+
 ### `list-templates`
+
 List all available Identity Templates (categories for behavioral probes).
 
 ```bash
@@ -62,11 +76,11 @@ ct-toolkit list-templates
 Upon startup, the CLI greets you with the **Theseus Guard** banner, ensuring you are operating within the CT Toolkit environment:
 
 ```text
-  _______ _    _ ______  _____ ______ _    _  _____    _____ _    _          
- |__   __| |  | |  ____|/ ____|  ____| |  | |/ ____|  / ____| |  | |   /\    
-    | |  | |__| | |__  | (___ | |__  | |  | | (___   | |  __| |  | |  /  \   
-    | |  |  __  |  __|  \___ \|  __| | |  | |\___ \  | | |_ | |  | | / /\ \  
-    | |  | |  | | |____ ____) | |____| |__| |____) | | |__| | |__| |/ ____ \ 
+  _______ _    _ ______  _____ ______ _    _  _____    _____ _    _
+ |__   __| |  | |  ____|/ ____|  ____| |  | |/ ____|  / ____| |  | |   /\
+    | |  | |__| | |__  | (___ | |__  | |  | | (___   | |  __| |  | |  /  \
+    | |  |  __  |  __|  \___ \|  __| | |  | |\___ \  | | |_ | |  | | / /\ \
+    | |  | |  | | |____ ____) | |____| |__| |____) | | |__| | |__| |/ ____ \
     |_|  |_|  |_|______|_____/|______|_____/|_____/   \_____|\____//_/    \_\
 
   computational theseus toolkit (ct toolkit) v0.3.5
@@ -81,9 +95,10 @@ When an audit runs, the CLI provides a detailed table of results and a final **I
 
 ![CLI Audit Output](../assets/cli_audit_demo.png)
 
-*(Note: The above image represents the terminal output. An actual audit will show PASSED/FAILED status for each probe category.)*
+_(Note: The above image represents the terminal output. An actual audit will show PASSED/FAILED status for each probe category.)_
 
 ### Interpreting Results:
+
 - **Health Score**: 0% to 100%. A score below 80% usually indicates significant [Identity Drift](../concepts/identity-continuity.md).
 - **Risk Level**: Categorized as LOW, MEDIUM, HIGH, or CRITICAL based on the severity of failed probes.
 - **Critical Violations**: Lists specific probes that violated non-negotiable axiomatic anchors.

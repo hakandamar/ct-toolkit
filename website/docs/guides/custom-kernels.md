@@ -1,5 +1,9 @@
 # Custom Kernels
 
+**Constitutional Kernels** are the "Axiomatic Identity Anchors" of your system. They define the absolute rules (Legal Code) that the agent must adhere to. 
+
+While **Identity Templates** focus on *expression* and *style*, **Kernels** focus on *constraints* and *oversight*.
+
 Create domain-specific kernels to enforce identity rules beyond the built-in defaults.
 
 ## Kernel YAML structure

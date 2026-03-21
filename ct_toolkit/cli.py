@@ -17,6 +17,7 @@ from rich.table import Table
 from ct_toolkit import TheseusWrapper, WrapperConfig, __version__
 from ct_toolkit.divergence.l3_icm import ICMRunner
 from ct_toolkit.core.kernel import ConstitutionalKernel
+from ct_toolkit.server import start_server
 
 app = typer.Typer(
     help="Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems.",
@@ -133,6 +134,37 @@ def audit(
     console.print(Panel(summary_text, title="Summary", border_style=color, expand=False))
 
     if not report.is_healthy:
+        raise typer.Exit(code=1)
+
+@app.command()
+def serve(
+    host: str = typer.Option("127.0.0.1", "--host", help="Host to bind the server to."),
+    port: int = typer.Option(8001, "--port", help="Port to bind the server to."),
+    kernel: str = typer.Option("general", "--kernel", help="Name of the Constitutional Kernel to use."),
+    template: str = typer.Option("general", "--template", help="Name of the Identity Template to use."),
+    vault_path: str = typer.Option("./ct_provenance.db", "--vault", help="Path to the provenance log database."),
+    judge_provider: str = typer.Option("openai", "--judge-provider", help="LLM provider for the L2 judge."),
+    judge_model: Optional[str] = typer.Option(None, "--judge-model", help="Model ID for the L2 judge."),
+):
+    """Start the CT-Toolkit Guardrail Server for LiteLLM integration."""
+    console.print(f"Starting Guardrail Server...")
+    console.print(f"  - Kernel: [bold yellow]{kernel}[/bold yellow]")
+    console.print(f"  - Template: [bold green]{template}[/bold green]")
+    console.print(f"  - Bind: [bold cyan]{host}:{port}[/bold cyan]")
+    
+    try:
+        config = WrapperConfig(
+            kernel_name=kernel,
+            template=template,
+            vault_path=vault_path,
+            project_root=Path.cwd()
+        )
+        wrapper = TheseusWrapper(provider=judge_provider, config=config)
+        
+        # Start the uvicorn server
+        start_server(wrapper=wrapper, host=host, port=port)
+    except Exception as e:
+        console.print(f"[bold red]Failed to start server:[/bold red] {e}")
         raise typer.Exit(code=1)
 
 @app.command()

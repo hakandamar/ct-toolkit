@@ -103,6 +103,20 @@ record = client.endorse_rule(
 
 ---
 
+## Listing available Kernels and Templates (CLI)
+
+You can use the CLI to see which Kernels and Identity Templates are currently available in the system:
+
+```bash
+# List all Constitutional Kernels
+ct-toolkit list-kernels
+
+# List all Identity Templates
+ct-toolkit list-templates
+```
+
+---
+
 ## Default kernel anchors
 
 The `default` kernel ships with these **axiomatic anchors** (unbreakable):

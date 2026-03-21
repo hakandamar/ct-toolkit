@@ -1,8 +1,13 @@
 # Custom Templates
 
+**Constitutional Kernels** define the "Legal Code" (Axiomatic rules). 
+**Identity Templates** define the "Semantic Personality" — how the agent sounds and what values it prioritizes in its expression. 
+
+Think of the **Kernel** as the *What* (what is allowed?) and the **Template** as the *How* (how should it be communicated?).
+
 Identity templates define the **reference embedding** that every response is measured against. A good template captures the essence of your agent's domain and values.
 
-## Template YAML structure
+## YAML Structure
 
 ```yaml
 name: my_template
@@ -50,7 +55,18 @@ identity_keywords:
 
 Keep to **15–30 keywords**. More keywords dilute the embedding vector.
 
-## Step-by-step: Legal template
+## Step-by-step example: Legal template
+
+### 1. Create the YAML file
+
+Place it in your project's `config/` directory for automatic detection:
+
+```
+my_project/
+  config/
+    legal.yaml
+  main.py
+```
 
 ```yaml
 # config/legal.yaml
@@ -80,12 +96,17 @@ identity_keywords:
   - fiduciary
 ```
 
-Load it:
+### 2. Load it in TheseusWrapper
 
 ```python
+from ct_toolkit import TheseusWrapper, WrapperConfig
+from pathlib import Path
+
 config = WrapperConfig(
     template="legal",
     kernel_name="default",
     project_root=Path(__file__).parent,
 )
+
+wrapper = TheseusWrapper(openai.OpenAI(), config=config)
 ```
