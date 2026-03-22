@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.9] - 2026-03-22
+
+### Security
+- **Documentation Safety**: Removed untrusted `polyfill.io` scripts from the generated documentation site to mitigate potential supply-chain risks.
+
+### Changed
+- **Metrics Update**: Updated project health metrics to reflect current test suite status (293/296 passing, 89% coverage).
+- **Project Status**: Bumped stable version across all documentation reference points.
+
 ## [0.3.8] - 2026-03-21
 
 ### Added

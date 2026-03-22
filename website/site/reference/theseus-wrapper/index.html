@@ -1514,6 +1514,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1842,6 +1846,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../compression-guard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ContextCompressionGuard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../provenance-log/" class="md-nav__link">
         
   
@@ -1906,6 +1938,34 @@
     
   
     Kernels & Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
   
 
     
@@ -2003,6 +2063,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -2057,6 +2121,34 @@
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/staged-approval/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Staged Approval (Cooldown)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
               
             
               
@@ -2130,6 +2222,34 @@
     
   
     Standalone Auditor (Qwen3)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/litellm-guardrails/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LiteLLM Guardrails (API)
   
 
     
@@ -2440,6 +2560,16 @@
 <td style="text-align: left;"><code>DivergenceEngine</code></td>
 <td style="text-align: left;">The active divergence engine</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>compression_guard</code></td>
+<td style="text-align: left;"><code>ContextCompressionGuard</code></td>
+<td style="text-align: left;">The active context compression guard</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>staged_manager</code></td>
+<td style="text-align: left;"><code>StagedUpdateManager</code></td>
+<td style="text-align: left;">Tracks staged (cooldown) endorsements</td>
+</tr>
 </tbody>
 </table>
 <h2 id="ctresponse-fields">CTResponse fields<a class="headerlink" href="#ctresponse-fields" title="Permanent link">&para;</a></h2>
@@ -2486,6 +2616,11 @@
 <td style="text-align: left;"><code>raw_response</code></td>
 <td style="text-align: left;"><code>Any</code></td>
 <td style="text-align: left;">Raw SDK response object</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sandbox_divergence</code></td>
+<td style="text-align: left;"><code>float \| None</code></td>
+<td style="text-align: left;">Divergence score of the shadow/sandbox agent (if staged)</td>
 </tr>
 </tbody>
 </table>
@@ -2621,8 +2756,6 @@
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../../javascripts/mathjax.js"></script>
-      
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       

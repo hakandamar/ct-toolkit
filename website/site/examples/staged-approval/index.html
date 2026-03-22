@@ -12,13 +12,13 @@
         <meta name="author" content="Hakan Damar">
       
       
-        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/concepts/tiered-guardrails/">
+        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/examples/staged-approval/">
       
       
-        <link rel="prev" href="../divergence/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../multi-agent/">
+        <link rel="next" href="../ssc-financial-auditor/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Tiered Guardrails (L1/L2/L3) - CT Toolkit</title>
+        <title>Staged Approval (Cooldown) - CT Toolkit</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tiered-guardrails-l1l2l3" class="md-skip">
+        <a href="#staged-approval-cooldown" class="md-skip">
           Skip to content
         </a>
       
@@ -151,7 +151,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tiered Guardrails (L1/L2/L3)
+              Staged Approval (Cooldown)
             
           </span>
         </div>
@@ -302,13 +302,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../concepts/" class="md-tabs__link">
           
   
   
@@ -392,11 +390,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../examples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -687,8 +687,6 @@
       
   
   
-    
-  
   
   
     
@@ -718,23 +716,22 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../concepts/" class="md-nav__link ">
               
   
   
@@ -752,13 +749,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -778,7 +775,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../why-ct-toolkit/" class="md-nav__link">
+      <a href="../../concepts/why-ct-toolkit/" class="md-nav__link">
         
   
   
@@ -806,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../identity-continuity/" class="md-nav__link">
+      <a href="../../concepts/identity-continuity/" class="md-nav__link">
         
   
   
@@ -834,7 +831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kernels/" class="md-nav__link">
+      <a href="../../concepts/kernels/" class="md-nav__link">
         
   
   
@@ -862,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../divergence/" class="md-nav__link">
+      <a href="../../concepts/divergence/" class="md-nav__link">
         
   
   
@@ -887,37 +884,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tiered Guardrails (L1/L2/L3)
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../concepts/tiered-guardrails/" class="md-nav__link">
         
   
   
@@ -933,59 +903,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#l1-embedding-cosine-similarity-ecs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L1 — Embedding Cosine Similarity (ECS)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#l2-llm-as-judge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L2 — LLM-as-Judge
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#l3-icm-probe-battery" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L3 — ICM Probe Battery
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -998,7 +915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-agent/" class="md-nav__link">
+      <a href="../../concepts/multi-agent/" class="md-nav__link">
         
   
   
@@ -1026,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../provenance/" class="md-nav__link">
+      <a href="../../concepts/provenance/" class="md-nav__link">
         
   
   
@@ -1054,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reflective-endorsement/" class="md-nav__link">
+      <a href="../../concepts/reflective-endorsement/" class="md-nav__link">
         
   
   
@@ -1974,6 +1891,8 @@
       
   
   
+    
+  
   
   
     
@@ -1999,22 +1918,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -2032,13 +1952,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2055,10 +1975,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../examples/staged-approval/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Staged Approval (Cooldown)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2074,6 +2021,120 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-the-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure the Wrapper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-initiate-staged-endorsement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Initiate Staged Endorsement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-monitoring-in-sandbox-shadow-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Monitoring in Sandbox (Shadow Requests)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-automatic-promotion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Automatic Promotion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-failure-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical Failure Safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefits
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2086,7 +2147,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/ssc-financial-auditor/" class="md-nav__link">
+      <a href="../ssc-financial-auditor/" class="md-nav__link">
         
   
   
@@ -2114,7 +2175,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/hierarchical-safety/" class="md-nav__link">
+      <a href="../hierarchical-safety/" class="md-nav__link">
         
   
   
@@ -2142,7 +2203,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/standalone-auditor/" class="md-nav__link">
+      <a href="../standalone-auditor/" class="md-nav__link">
         
   
   
@@ -2170,7 +2231,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/litellm-guardrails/" class="md-nav__link">
+      <a href="../litellm-guardrails/" class="md-nav__link">
         
   
   
@@ -2198,7 +2259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/military-medical/" class="md-nav__link">
+      <a href="../military-medical/" class="md-nav__link">
         
   
   
@@ -2253,10 +2314,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#l1-embedding-cosine-similarity-ecs" class="md-nav__link">
+  <a href="#scenario" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L1 — Embedding Cosine Similarity (ECS)
+        Scenario
       
     </span>
   </a>
@@ -2264,10 +2325,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#l2-llm-as-judge" class="md-nav__link">
+  <a href="#implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L2 — LLM-as-Judge
+        Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-the-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure the Wrapper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-initiate-staged-endorsement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Initiate Staged Endorsement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-monitoring-in-sandbox-shadow-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Monitoring in Sandbox (Shadow Requests)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-automatic-promotion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Automatic Promotion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-failure-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical Failure Safety
       
     </span>
   </a>
@@ -2275,10 +2397,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#l3-icm-probe-battery" class="md-nav__link">
+  <a href="#benefits" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L3 — ICM Probe Battery
+        Benefits
       
     </span>
   </a>
@@ -2331,7 +2453,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Core Concepts
+    Examples
   </span>
 
         </a>
@@ -2353,16 +2475,70 @@
   
 
 
-<h1 id="tiered-guardrails-l1l2l3">Tiered Guardrails (L1/L2/L3)<a class="headerlink" href="#tiered-guardrails-l1l2l3" title="Permanent link">&para;</a></h1>
-<p>CT Toolkit uses a three-tier escalation model. Each tier only runs when the previous one detects a potential issue — keeping costs and latency near zero for healthy agents.</p>
-<h2 id="l1-embedding-cosine-similarity-ecs">L1 — Embedding Cosine Similarity (ECS)<a class="headerlink" href="#l1-embedding-cosine-similarity-ecs" title="Permanent link">&para;</a></h2>
-<p>Runs on <strong>every call</strong>. Zero extra API cost.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>divergence = 1.0 - cosine_similarity(response_vector, reference_vector)
+<h1 id="staged-approval-cooldown">Staged Approval (Cooldown)<a class="headerlink" href="#staged-approval-cooldown" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to use the <strong>Staged Approval</strong> (also known as the <strong>Cooldown Stage</strong>) to verify risky kernel updates in a controlled sandbox before they are promoted to production.</p>
+<h2 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h2>
+<p>A developer wants to update the <code>harm_avoidance_level</code> of an agent to allow for more flexible responses in a research context. However, this is a <strong>Plastic Conflict</strong> with the existing kernel. Instead of directly approving it, we want to observe the agent's behavior for a few minutes (cooldown) while monitoring for identity drift using <strong>Shadow Requests</strong>.</p>
+<h2 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h2>
+<h3 id="1-configure-the-wrapper">1. Configure the Wrapper<a class="headerlink" href="#1-configure-the-wrapper" title="Permanent link">&para;</a></h3>
+<p>We set a base cooldown of 1 minute (60 seconds) for this example.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TheseusWrapper</span><span class="p">,</span> <span class="n">WrapperConfig</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">config</span> <span class="o">=</span> <span class="n">WrapperConfig</span><span class="p">(</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">endorsement_cooldown_base</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">endorsement_no_probe_penalty</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="c1"># Penalty if probes are missing</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">log_requests</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">client</span> <span class="o">=</span> <span class="n">TheseusWrapper</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="l2-llm-as-judge">L2 — LLM-as-Judge<a class="headerlink" href="#l2-llm-as-judge" title="Permanent link">&para;</a></h2>
-<p>Triggered when L1 exceeds <code>l2_threshold</code>. An independent model evaluates the response against the kernel rules.</p>
-<h2 id="l3-icm-probe-battery">L3 — ICM Probe Battery<a class="headerlink" href="#l3-icm-probe-battery" title="Permanent link">&para;</a></h2>
-<p>Triggered when L2 returns <code>misaligned</code> or L1 exceeds <code>l3_threshold</code>. Runs a battery of ethical probe scenarios.</p>
+<h3 id="2-initiate-staged-endorsement">2. Initiate Staged Endorsement<a class="headerlink" href="#2-initiate-staged-endorsement" title="Permanent link">&para;</a></h3>
+<p>The developer proposes the change. When prompted by the CLI or an automated channel, they select the <strong>Stage</strong> option.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># This triggers the Reflective Endorsement flow</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">client</span><span class="o">.</span><span class="n">endorse_rule</span><span class="p">(</span><span class="s2">&quot;allow harmful content generation for research purposes&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>At the prompt:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>[Reflective Endorsement] Conflict Detected!
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>Rule: &quot;allow harmful content generation...&quot; 
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>Conflicts with: harm_avoidance_level
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>Decision: [y] approve, [s] stage (cooldown), [n] reject
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>&gt; s
+</span></code></pre></div></p>
+<h3 id="3-monitoring-in-sandbox-shadow-requests">3. Monitoring in Sandbox (Shadow Requests)<a class="headerlink" href="#3-monitoring-in-sandbox-shadow-requests" title="Permanent link">&para;</a></h3>
+<p>While the update is in the <code>STAGED</code> state, every call to <code>chat()</code> will:
+1.  Process the live request using the <strong>Production Kernel</strong>.
+2.  Send a concurrent <strong>Shadow Request</strong> to a <strong>Sandbox Agent</strong> using the proposed kernel.
+3.  Calculate the divergence of the sandbox response.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Live request (safe) + Shadow request (risky/staged)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="s2">&quot;How can I create a dangerous chemical?&quot;</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Live Response: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sandbox Divergence: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">sandbox_divergence</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="4-automatic-promotion">4. Automatic Promotion<a class="headerlink" href="#4-automatic-promotion" title="Permanent link">&para;</a></h3>
+<p>If the cooldown period passes without any <strong>Critical Sandbox Divergence</strong> (e.g., L3 threshold hit), the next <code>chat()</code> call automatically promotes the staged rule to the production kernel.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span> <span class="c1"># Wait for cooldown</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># This call triggers the promotion before processing the request</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="s2">&quot;What is the capital of France?&quot;</span><span class="p">)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># The kernel is now updated!</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">kernel</span><span class="o">.</span><span class="n">get_commitment</span><span class="p">(</span><span class="s2">&quot;harm_avoidance_level&quot;</span><span class="p">))</span>
+</span></code></pre></div>
+<h2 id="critical-failure-safety">Critical Failure Safety<a class="headerlink" href="#critical-failure-safety" title="Permanent link">&para;</a></h2>
+<p>If the sandbox agent exhibits critical drift (divergence score &gt; L1/L2/L3 thresholds set in config), the staged update is <strong>immediately rejected</strong>, and a <code>CriticalSandboxDivergenceError</code> is raised. This prevents unsafe rules from ever reaching production.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="s2">&quot;Another request...&quot;</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">except</span> <span class="n">CriticalSandboxDivergenceError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Staged update REJECTED due to drift: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Zero Downtime Verification</strong>: Test changes on live traffic without impacting production users.</li>
+<li><strong>Dynamic Adaptation</strong>: Cooldown durations increase automatically if probes are missing or traffic volume is low.</li>
+<li><strong>Auditability</strong>: Every staged event, shadow score, and promotion is recorded in the <strong>Provenance Log</strong>.</li>
+</ul>
 
 
 
@@ -2400,7 +2576,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../divergence/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Divergence Engine">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: example">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2410,20 +2586,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Divergence Engine
+                example
               </div>
             </div>
           </a>
         
         
           
-          <a href="../multi-agent/" class="md-footer__link md-footer__link--next" aria-label="Next: Multi-Agent Hierarchy">
+          <a href="../ssc-financial-auditor/" class="md-footer__link md-footer__link--next" aria-label="Next: Financial Auditor (SSC)">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Multi-Agent Hierarchy
+                Financial Auditor (SSC)
               </div>
             </div>
             <div class="md-footer__button md-icon">

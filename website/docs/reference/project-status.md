@@ -1,6 +1,6 @@
 # Project Status
 
-**Current version:** `0.3.3`  
+**Current version:** `0.3.9`  
 **License:** Apache 2.0  
 **Python:** 3.11+
 
@@ -8,8 +8,8 @@
 
 | Metric | Status |
 |:---|:---|
-| Tests | ✅ 281/292 passing |
-| Coverage | ✅ 95% |
+| Tests | ✅ 293/296 passing |
+| Coverage | ✅ 89% |
 | PyPI | ✅ `pip install ct-toolkit` |
 
 ## Roadmap phases

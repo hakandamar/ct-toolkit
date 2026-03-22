@@ -12,13 +12,13 @@
         <meta name="author" content="Hakan Damar">
       
       
-        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/concepts/tiered-guardrails/">
+        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/reference/compression-guard/">
       
       
-        <link rel="prev" href="../divergence/">
+        <link rel="prev" href="../divergence-engine/">
       
       
-        <link rel="next" href="../multi-agent/">
+        <link rel="next" href="../provenance-log/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Tiered Guardrails (L1/L2/L3) - CT Toolkit</title>
+        <title>ContextCompressionGuard - CT Toolkit</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tiered-guardrails-l1l2l3" class="md-skip">
+        <a href="#contextcompressionguard-reference" class="md-skip">
           Skip to content
         </a>
       
@@ -151,7 +151,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tiered Guardrails (L1/L2/L3)
+              ContextCompressionGuard
             
           </span>
         </div>
@@ -302,13 +302,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../concepts/" class="md-tabs__link">
           
   
   
@@ -370,11 +368,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../reference/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -687,8 +687,6 @@
       
   
   
-    
-  
   
   
     
@@ -718,23 +716,22 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../concepts/" class="md-nav__link ">
               
   
   
@@ -752,13 +749,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -778,7 +775,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../why-ct-toolkit/" class="md-nav__link">
+      <a href="../../concepts/why-ct-toolkit/" class="md-nav__link">
         
   
   
@@ -806,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../identity-continuity/" class="md-nav__link">
+      <a href="../../concepts/identity-continuity/" class="md-nav__link">
         
   
   
@@ -834,7 +831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kernels/" class="md-nav__link">
+      <a href="../../concepts/kernels/" class="md-nav__link">
         
   
   
@@ -862,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../divergence/" class="md-nav__link">
+      <a href="../../concepts/divergence/" class="md-nav__link">
         
   
   
@@ -887,37 +884,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tiered Guardrails (L1/L2/L3)
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../concepts/tiered-guardrails/" class="md-nav__link">
         
   
   
@@ -933,59 +903,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#l1-embedding-cosine-similarity-ecs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L1 — Embedding Cosine Similarity (ECS)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#l2-llm-as-judge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L2 — LLM-as-Judge
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#l3-icm-probe-battery" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L3 — ICM Probe Battery
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -998,7 +915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-agent/" class="md-nav__link">
+      <a href="../../concepts/multi-agent/" class="md-nav__link">
         
   
   
@@ -1026,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../provenance/" class="md-nav__link">
+      <a href="../../concepts/provenance/" class="md-nav__link">
         
   
   
@@ -1054,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reflective-endorsement/" class="md-nav__link">
+      <a href="../../concepts/reflective-endorsement/" class="md-nav__link">
         
   
   
@@ -1568,6 +1485,8 @@
       
   
   
+    
+  
   
   
     
@@ -1603,22 +1522,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -1636,13 +1556,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1662,7 +1582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/theseus-wrapper/" class="md-nav__link">
+      <a href="../theseus-wrapper/" class="md-nav__link">
         
   
   
@@ -1690,7 +1610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/wrapper-config/" class="md-nav__link">
+      <a href="../wrapper-config/" class="md-nav__link">
         
   
   
@@ -1718,7 +1638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/constitutional-kernel/" class="md-nav__link">
+      <a href="../constitutional-kernel/" class="md-nav__link">
         
   
   
@@ -1746,7 +1666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/divergence-engine/" class="md-nav__link">
+      <a href="../divergence-engine/" class="md-nav__link">
         
   
   
@@ -1771,10 +1691,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../reference/compression-guard/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ContextCompressionGuard
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1790,6 +1737,115 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#analyze_summary_driftoriginal_messages-new_summary-dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        analyze_summary_drift(original_messages, new_summary) → dict
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#record_auditaudit_data-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        record_audit(audit_data) → None
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-middlewares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with Middlewares
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with Middlewares">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#langchain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LangChain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crewai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CrewAI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1802,7 +1858,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/provenance-log/" class="md-nav__link">
+      <a href="../provenance-log/" class="md-nav__link">
         
   
   
@@ -1830,7 +1886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/compatibility/" class="md-nav__link">
+      <a href="../compatibility/" class="md-nav__link">
         
   
   
@@ -1858,7 +1914,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/kernels-templates/" class="md-nav__link">
+      <a href="../kernels-templates/" class="md-nav__link">
         
   
   
@@ -1886,7 +1942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/cli/" class="md-nav__link">
+      <a href="../cli/" class="md-nav__link">
         
   
   
@@ -1914,7 +1970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/exceptions/" class="md-nav__link">
+      <a href="../exceptions/" class="md-nav__link">
         
   
   
@@ -1942,7 +1998,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/project-status/" class="md-nav__link">
+      <a href="../project-status/" class="md-nav__link">
         
   
   
@@ -2253,10 +2309,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#l1-embedding-cosine-similarity-ecs" class="md-nav__link">
+  <a href="#initialization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L1 — Embedding Cosine Similarity (ECS)
+        Initialization
       
     </span>
   </a>
@@ -2264,24 +2320,80 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#l2-llm-as-judge" class="md-nav__link">
+  <a href="#methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L2 — LLM-as-Judge
+        Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#analyze_summary_driftoriginal_messages-new_summary-dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        analyze_summary_drift(original_messages, new_summary) → dict
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#l3-icm-probe-battery" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#record_auditaudit_data-none" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L3 — ICM Probe Battery
+        record_audit(audit_data) → None
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-middlewares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with Middlewares
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with Middlewares">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#langchain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LangChain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crewai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CrewAI
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2331,7 +2443,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Core Concepts
+    Reference
   </span>
 
         </a>
@@ -2353,16 +2465,35 @@
   
 
 
-<h1 id="tiered-guardrails-l1l2l3">Tiered Guardrails (L1/L2/L3)<a class="headerlink" href="#tiered-guardrails-l1l2l3" title="Permanent link">&para;</a></h1>
-<p>CT Toolkit uses a three-tier escalation model. Each tier only runs when the previous one detects a potential issue — keeping costs and latency near zero for healthy agents.</p>
-<h2 id="l1-embedding-cosine-similarity-ecs">L1 — Embedding Cosine Similarity (ECS)<a class="headerlink" href="#l1-embedding-cosine-similarity-ecs" title="Permanent link">&para;</a></h2>
-<p>Runs on <strong>every call</strong>. Zero extra API cost.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>divergence = 1.0 - cosine_similarity(response_vector, reference_vector)
+<h1 id="contextcompressionguard-reference">ContextCompressionGuard Reference<a class="headerlink" href="#contextcompressionguard-reference" title="Permanent link">&para;</a></h1>
+<p>The <code>ContextCompressionGuard</code> is responsible for detecting and auditing silent context compression/summarization events performed by LLM providers.</p>
+<h2 id="initialization">Initialization<a class="headerlink" href="#initialization" title="Permanent link">&para;</a></h2>
+<p>The guard is typically initialized automatically by <code>TheseusWrapper</code> based on the <code>WrapperConfig</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.core.compression_guard</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextCompressionGuard</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Manual initialization</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">ContextCompressionGuard</span><span class="p">(</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">embedding_client</span><span class="o">=</span><span class="n">my_client</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="l2-llm-as-judge">L2 — LLM-as-Judge<a class="headerlink" href="#l2-llm-as-judge" title="Permanent link">&para;</a></h2>
-<p>Triggered when L1 exceeds <code>l2_threshold</code>. An independent model evaluates the response against the kernel rules.</p>
-<h2 id="l3-icm-probe-battery">L3 — ICM Probe Battery<a class="headerlink" href="#l3-icm-probe-battery" title="Permanent link">&para;</a></h2>
-<p>Triggered when L2 returns <code>misaligned</code> or L1 exceeds <code>l3_threshold</code>. Runs a battery of ethical probe scenarios.</p>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<h3 id="analyze_summary_driftoriginal_messages-new_summary-dict"><code>analyze_summary_drift(original_messages, new_summary) → dict</code><a class="headerlink" href="#analyze_summary_driftoriginal_messages-new_summary-dict" title="Permanent link">&para;</a></h3>
+<p>Compares the original message history with a new summary/compacted version to detect semantic drift.</p>
+<p><strong>Parameters:</strong>
+- <code>original_messages</code>: List of message dictionaries representing the uncompressed history.
+- <code>new_summary</code>: The new summary string or list of compressed messages.</p>
+<p><strong>Returns:</strong>
+- <code>similarity</code>: Cosine similarity score (0.0–1.0).
+- <code>drift_detected</code>: <code>True</code> if similarity &lt; threshold.
+- <code>critical_drift</code>: <code>True</code> if similarity is significantly below threshold (risk of identity loss).</p>
+<h3 id="record_auditaudit_data-none"><code>record_audit(audit_data) → None</code><a class="headerlink" href="#record_auditaudit_data-none" title="Permanent link">&para;</a></h3>
+<p>Records the results of a compression audit in the provenance log.</p>
+<h2 id="integration-with-middlewares">Integration with Middlewares<a class="headerlink" href="#integration-with-middlewares" title="Permanent link">&para;</a></h2>
+<h3 id="langchain">LangChain<a class="headerlink" href="#langchain" title="Permanent link">&para;</a></h3>
+<p>Exposed via the <code>compression_guard</code> property on <code>TheseusChatModel</code>.</p>
+<h3 id="crewai">CrewAI<a class="headerlink" href="#crewai" title="Permanent link">&para;</a></h3>
+<p>Settings are propagated to all agents; the guard handles internal audits for each agent's LLM calls.</p>
 
 
 
@@ -2400,7 +2531,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../divergence/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Divergence Engine">
+          <a href="../divergence-engine/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Divergence Engine">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2417,13 +2548,13 @@
         
         
           
-          <a href="../multi-agent/" class="md-footer__link md-footer__link--next" aria-label="Next: Multi-Agent Hierarchy">
+          <a href="../provenance-log/" class="md-footer__link md-footer__link--next" aria-label="Next: Provenance Log">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Multi-Agent Hierarchy
+                Provenance Log
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -76,8 +76,8 @@ ct-toolkit list-templates
 
 | Metric           | Status                                                  |
 | :--------------- | :------------------------------------------------------ |
-| **Tests**        | ✅ 285/296 passing (95% coverage)                       |
-| **Last Phase**   | ✅ Phase 6: Auditor Mode (v0.3.8: Cooldown Integrated)  |
+| **Tests**        | ✅ 293/296 passing (89% coverage)                       |
+| **Last Phase**   | ✅ Phase 6: Auditor Mode (v0.3.9: Cooldown Integrated)  |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 
 For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).

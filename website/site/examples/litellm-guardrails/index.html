@@ -12,13 +12,13 @@
         <meta name="author" content="Hakan Damar">
       
       
-        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/concepts/tiered-guardrails/">
+        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/examples/litellm-guardrails/">
       
       
-        <link rel="prev" href="../divergence/">
+        <link rel="prev" href="../standalone-auditor/">
       
       
-        <link rel="next" href="../multi-agent/">
+        <link rel="next" href="../military-medical/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Tiered Guardrails (L1/L2/L3) - CT Toolkit</title>
+        <title>LiteLLM Guardrails (API) - CT Toolkit</title>
       
     
     
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tiered-guardrails-l1l2l3" class="md-skip">
+        <a href="#litellm-generic-guardrail-api" class="md-skip">
           Skip to content
         </a>
       
@@ -151,7 +151,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tiered Guardrails (L1/L2/L3)
+              LiteLLM Guardrails (API)
             
           </span>
         </div>
@@ -302,13 +302,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../concepts/" class="md-tabs__link">
           
   
   
@@ -392,11 +390,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../examples/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -687,8 +687,6 @@
       
   
   
-    
-  
   
   
     
@@ -718,23 +716,22 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../concepts/" class="md-nav__link ">
               
   
   
@@ -752,13 +749,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -778,7 +775,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../why-ct-toolkit/" class="md-nav__link">
+      <a href="../../concepts/why-ct-toolkit/" class="md-nav__link">
         
   
   
@@ -806,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../identity-continuity/" class="md-nav__link">
+      <a href="../../concepts/identity-continuity/" class="md-nav__link">
         
   
   
@@ -834,7 +831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../kernels/" class="md-nav__link">
+      <a href="../../concepts/kernels/" class="md-nav__link">
         
   
   
@@ -862,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../divergence/" class="md-nav__link">
+      <a href="../../concepts/divergence/" class="md-nav__link">
         
   
   
@@ -887,37 +884,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tiered Guardrails (L1/L2/L3)
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../concepts/tiered-guardrails/" class="md-nav__link">
         
   
   
@@ -933,59 +903,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#l1-embedding-cosine-similarity-ecs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L1 — Embedding Cosine Similarity (ECS)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#l2-llm-as-judge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L2 — LLM-as-Judge
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#l3-icm-probe-battery" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        L3 — ICM Probe Battery
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -998,7 +915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../multi-agent/" class="md-nav__link">
+      <a href="../../concepts/multi-agent/" class="md-nav__link">
         
   
   
@@ -1026,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../provenance/" class="md-nav__link">
+      <a href="../../concepts/provenance/" class="md-nav__link">
         
   
   
@@ -1054,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reflective-endorsement/" class="md-nav__link">
+      <a href="../../concepts/reflective-endorsement/" class="md-nav__link">
         
   
   
@@ -1974,6 +1891,8 @@
       
   
   
+    
+  
   
   
     
@@ -1999,22 +1918,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../examples/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -2032,13 +1952,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
@@ -2058,7 +1978,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/staged-approval/" class="md-nav__link">
+      <a href="../staged-approval/" class="md-nav__link">
         
   
   
@@ -2086,7 +2006,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/ssc-financial-auditor/" class="md-nav__link">
+      <a href="../ssc-financial-auditor/" class="md-nav__link">
         
   
   
@@ -2114,7 +2034,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/hierarchical-safety/" class="md-nav__link">
+      <a href="../hierarchical-safety/" class="md-nav__link">
         
   
   
@@ -2142,7 +2062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/standalone-auditor/" class="md-nav__link">
+      <a href="../standalone-auditor/" class="md-nav__link">
         
   
   
@@ -2167,10 +2087,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../examples/litellm-guardrails/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LiteLLM Guardrails (API)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2186,6 +2133,109 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Project Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-start-the-guardrail-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Start the Guardrail Server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-configure-litellm-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configure LiteLLM Proxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. How it Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. How it Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-call-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre-call Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-call-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Post-call Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefits
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2198,7 +2248,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/military-medical/" class="md-nav__link">
+      <a href="../military-medical/" class="md-nav__link">
         
   
   
@@ -2253,10 +2303,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#l1-embedding-cosine-similarity-ecs" class="md-nav__link">
+  <a href="#1-project-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L1 — Embedding Cosine Similarity (ECS)
+        1. Project Structure
       
     </span>
   </a>
@@ -2264,10 +2314,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#l2-llm-as-judge" class="md-nav__link">
+  <a href="#2-start-the-guardrail-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L2 — LLM-as-Judge
+        2. Start the Guardrail Server
       
     </span>
   </a>
@@ -2275,10 +2325,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#l3-icm-probe-battery" class="md-nav__link">
+  <a href="#3-configure-litellm-proxy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        L3 — ICM Probe Battery
+        3. Configure LiteLLM Proxy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. How it Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. How it Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pre-call-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pre-call Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-call-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Post-call Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefits
       
     </span>
   </a>
@@ -2331,7 +2431,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Core Concepts
+    Examples
   </span>
 
         </a>
@@ -2353,16 +2453,74 @@
   
 
 
-<h1 id="tiered-guardrails-l1l2l3">Tiered Guardrails (L1/L2/L3)<a class="headerlink" href="#tiered-guardrails-l1l2l3" title="Permanent link">&para;</a></h1>
-<p>CT Toolkit uses a three-tier escalation model. Each tier only runs when the previous one detects a potential issue — keeping costs and latency near zero for healthy agents.</p>
-<h2 id="l1-embedding-cosine-similarity-ecs">L1 — Embedding Cosine Similarity (ECS)<a class="headerlink" href="#l1-embedding-cosine-similarity-ecs" title="Permanent link">&para;</a></h2>
-<p>Runs on <strong>every call</strong>. Zero extra API cost.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>divergence = 1.0 - cosine_similarity(response_vector, reference_vector)
+<h1 id="litellm-generic-guardrail-api">LiteLLM Generic Guardrail API<a class="headerlink" href="#litellm-generic-guardrail-api" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to use the <strong>CT Toolkit CLI</strong> in <code>serve</code> mode to provide identity-continuity guardrails for a <strong>LiteLLM Proxy</strong> setup.</p>
+<hr />
+<h2 id="1-project-structure">1. Project Structure<a class="headerlink" href="#1-project-structure" title="Permanent link">&para;</a></h2>
+<p>For a clean integration, we recommend the following directory structure in your project root:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>my-secure-agent/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── litellm_config.yaml  # LiteLLM Proxy configuration
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── .env                 # API Keys (OPENAI_API_KEY, etc.)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>└── config/              # (Optional) Custom kernels/templates
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    ├── defense.yaml     # Custom Kernel override
 </span></code></pre></div>
-<h2 id="l2-llm-as-judge">L2 — LLM-as-Judge<a class="headerlink" href="#l2-llm-as-judge" title="Permanent link">&para;</a></h2>
-<p>Triggered when L1 exceeds <code>l2_threshold</code>. An independent model evaluates the response against the kernel rules.</p>
-<h2 id="l3-icm-probe-battery">L3 — ICM Probe Battery<a class="headerlink" href="#l3-icm-probe-battery" title="Permanent link">&para;</a></h2>
-<p>Triggered when L2 returns <code>misaligned</code> or L1 exceeds <code>l3_threshold</code>. Runs a battery of ethical probe scenarios.</p>
+<h2 id="2-start-the-guardrail-server">2. Start the Guardrail Server<a class="headerlink" href="#2-start-the-guardrail-server" title="Permanent link">&para;</a></h2>
+<p>Use the <code>serve</code> command to start a FastAPI-based guardrail provider. This server will expose a <code>/guardrail/check</code> endpoint.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ct-toolkit<span class="w"> </span>serve<span class="w"> </span>--kernel<span class="w"> </span>defense<span class="w"> </span>--port<span class="w"> </span><span class="m">8001</span>
+</span></code></pre></div>
+<hr />
+<h2 id="3-configure-litellm-proxy">3. Configure LiteLLM Proxy<a class="headerlink" href="#3-configure-litellm-proxy" title="Permanent link">&para;</a></h2>
+<p>Update your LiteLLM <code>litellm_config.yaml</code> to include the <code>generic_guardrail_api</code> pointing to the CT Toolkit server.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">guardrails</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">guardrail_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;theseus-guard&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">litellm_params</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nt">guardrail</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generic_guardrail_api</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">pre_call</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">post_call</span><span class="p p-Indicator">]</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="nt">api_base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://localhost:8001</span>
+</span></code></pre></div>
+<hr />
+<h2 id="3-how-it-works">3. How it Works<a class="headerlink" href="#3-how-it-works" title="Permanent link">&para;</a></h2>
+<p>When LiteLLM receives a request, it will call CT Toolkit at two stages:</p>
+<h3 id="pre-call-validation">Pre-call Validation<a class="headerlink" href="#pre-call-validation" title="Permanent link">&para;</a></h3>
+<p>LiteLLM sends the user message to <code>/guardrail/check</code>. CT Toolkit validates it against the <code>defense</code> kernel.</p>
+<p><strong>Mock Request:</strong>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;texts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;I want to bypass command oversight.&quot;</span><span class="p">],</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;input_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;request&quot;</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;structured_messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I want to bypass command oversight.&quot;</span><span class="p">}</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p><strong>CT Toolkit Response (BLOCKED):</strong>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BLOCKED&quot;</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">&quot;blocked_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Identity constraint violation: Hard reject: Rule &#39;...&#39; conflicts with axiomatic anchor &#39;human_oversight&#39;.&quot;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<h3 id="post-call-analysis">Post-call Analysis<a class="headerlink" href="#post-call-analysis" title="Permanent link">&para;</a></h3>
+<p>LiteLLM sends the LLM response to <code>/guardrail/check</code>. CT Toolkit calculate the divergence score and records the interaction to the Provenance Log.</p>
+<p><strong>Mock Request:</strong>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">&quot;texts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;To bypass the firewall...&quot;</span><span class="p">],</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">&quot;input_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;response&quot;</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">&quot;structured_messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<p><strong>CT Toolkit Response:</strong>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NONE&quot;</span><span class="p">,</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">&quot;blocked_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">}</span>
+</span></code></pre></div>
+<em>(Note: If <code>cascade_blocked</code> is triggered due to high drift, the action will be <code>BLOCKED</code>.)</em></p>
+<hr />
+<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Zero Code Changes</strong>: Protect any model supported by LiteLLM without modifying your application logic.</li>
+<li><strong>Centralized Governance</strong>: Use a single CT Toolkit instance to govern multiple downstream agents.</li>
+<li><strong>Immutable Audit Trail</strong>: All interactions processed via the Generic Guardrail API are signed and logged in the CT Toolkit provenance database.</li>
+</ol>
 
 
 
@@ -2400,7 +2558,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../divergence/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Divergence Engine">
+          <a href="../standalone-auditor/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Standalone Auditor (Qwen3)">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2410,20 +2568,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Divergence Engine
+                Standalone Auditor (Qwen3)
               </div>
             </div>
           </a>
         
         
           
-          <a href="../multi-agent/" class="md-footer__link md-footer__link--next" aria-label="Next: Multi-Agent Hierarchy">
+          <a href="../military-medical/" class="md-footer__link md-footer__link--next" aria-label="Next: Military Medical Use Case">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Multi-Agent Hierarchy
+                Military Medical Use Case
               </div>
             </div>
             <div class="md-footer__button md-icon">

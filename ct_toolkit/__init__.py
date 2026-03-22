@@ -23,7 +23,7 @@ from ct_toolkit.core.exceptions import (
     ChainIntegrityError,
 )
 
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 
 __all__ = [
     "TheseusWrapper",

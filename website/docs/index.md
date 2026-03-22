@@ -129,8 +129,8 @@ print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.
 
 | Metric | Status |
 |:---|:---|
-| **Tests** | ✅ 281/292 passing |
-| **Coverage** | ✅ 95% |
+| **Tests** | ✅ 293/296 passing |
+| **Coverage** | ✅ 89% |
 | **PyPI** | ✅ `pip install ct-toolkit` |
 | **License** | Apache 2.0 |
 | **Python** | 3.11+ |
