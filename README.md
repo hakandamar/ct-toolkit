@@ -6,6 +6,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/ct-toolkit.svg)](https://pypi.org/project/ct-toolkit/)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue.svg)](https://hakandamar.github.io/ct-toolkit/)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit)
 
 CT Toolkit is an open-source security layer designed to preserve the **identity continuity** of AI agents over time. It implements the **Nested Agency Architecture (NAA)** framework to prevent **Sequential Self-Compression (SSC)** in multi-agent hierarchies.
 
@@ -77,6 +78,7 @@ ct-toolkit list-templates
 | Metric           | Status                                                  |
 | :--------------- | :------------------------------------------------------ |
 | **Tests**        | ✅ 293/296 passing (89% coverage)                       |
+| **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
 | **Last Phase**   | ✅ Phase 6: Auditor Mode (v0.3.9: Cooldown Integrated)  |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 

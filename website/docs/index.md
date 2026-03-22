@@ -132,6 +132,7 @@ print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.
 | **Tests** | ✅ 293/296 passing |
 | **Coverage** | ✅ 89% |
 | **PyPI** | ✅ `pip install ct-toolkit` |
+| **Downloads** | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
 | **License** | Apache 2.0 |
 | **Python** | 3.11+ |
 
