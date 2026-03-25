@@ -4,36 +4,36 @@ Step-by-step guides for common CT Toolkit use cases.
 
 <div class="grid cards" markdown>
 
--   **Custom Kernels**
+- **Custom Kernels**
 
-    ---
+  ***
 
-    Define your own axiomatic anchors and plastic commitments in YAML.
+  Define your own axiomatic anchors and plastic commitments in YAML.
 
-    [:octicons-arrow-right-24: Custom Kernels](custom-kernels.md)
+  [:octicons-arrow-right-24: Custom Kernels](custom-kernels.md)
 
--   **Custom Templates**
+- **Custom Templates**
 
-    ---
+  ***
 
-    Create domain-specific identity templates with custom reference text and keywords.
+  Create domain-specific identity templates with custom reference text and keywords.
 
-    [:octicons-arrow-right-24: Custom Templates](custom-templates.md)
+  [:octicons-arrow-right-24: Custom Templates](custom-templates.md)
 
--   **Enterprise Setup**
+- **Advanced Setup**
 
-    ---
+  ***
 
-    Multi-agent hierarchies, enterprise mode, and compliance configuration.
+  Multi-agent hierarchies, rigorous analysis mode, and secure audit configuration.
 
-    [:octicons-arrow-right-24: Enterprise](enterprise.md)
+  :octicons-arrow-right-24: Advanced Setup
 
--   **Fine-Tuning with CIK**
+- **Fine-Tuning with CIK**
 
-    ---
+  ***
 
-    Use `DivergencePenaltyLoss` to preserve identity during PyTorch fine-tuning.
+  Use `DivergencePenaltyLoss` to preserve identity during PyTorch fine-tuning.
 
-    [:octicons-arrow-right-24: Fine-Tuning](fine-tuning.md)
+  [:octicons-arrow-right-24: Fine-Tuning](fine-tuning.md)
 
 </div>

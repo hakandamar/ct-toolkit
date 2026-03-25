@@ -9,7 +9,7 @@ Wrapper uses this class. On every API call:
   L3 (ICM)   — triggered when L2 returns a problematic finding
                OR triggered by a periodic schedule
 
-In Enterprise mode, all tiers run all the time and
+In Rigorous mode, all tiers run all the time and
 action is taken based on the total score.
 """
 from __future__ import annotations

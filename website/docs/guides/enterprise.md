@@ -1,12 +1,12 @@
-# Enterprise Setup
+# Advanced Setup
 
-## Enterprise mode
+## Rigorous Analysis Mode
 
-Run all three divergence tiers on every request:
+For high-stakes environments, you can enforce all three divergence tiers on every request:
 
 ```python
 config = WrapperConfig(
-    enterprise_mode=True,
+    rigorous_mode=True,
     judge_client=openai.OpenAI(),
     divergence_l1_threshold=0.10,
     divergence_l2_threshold=0.20,

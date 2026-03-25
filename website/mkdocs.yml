@@ -117,59 +117,59 @@ nav:
   - Home: index.md
 
   - Get Started:
-    - get-started/index.md
-    - Quickstart: get-started/quickstart.md
-    - Installation: get-started/installation.md
-    - Local Models (Ollama / LM Studio): get-started/local-models.md
-    - Your First Guardrail: get-started/first-guardrail.md
+      - get-started/index.md
+      - Quickstart: get-started/quickstart.md
+      - Installation: get-started/installation.md
+      - Local Models (Ollama / LM Studio): get-started/local-models.md
+      - Your First Guardrail: get-started/first-guardrail.md
 
   - Core Concepts:
-    - concepts/index.md
-    - Why CT Toolkit?: concepts/why-ct-toolkit.md
-    - Identity Continuity & SSC: concepts/identity-continuity.md
-    - Constitutional Kernels: concepts/kernels.md
-    - Divergence Engine: concepts/divergence.md
-    - Tiered Guardrails (L1/L2/L3): concepts/tiered-guardrails.md
-    - Multi-Agent Hierarchy: concepts/multi-agent.md
-    - Provenance & Compliance: concepts/provenance.md
-    - Reflective Endorsement: concepts/reflective-endorsement.md
+      - concepts/index.md
+      - Why CT Toolkit?: concepts/why-ct-toolkit.md
+      - Identity Continuity & SSC: concepts/identity-continuity.md
+      - Constitutional Kernels: concepts/kernels.md
+      - Divergence Engine: concepts/divergence.md
+      - Tiered Guardrails (L1/L2/L3): concepts/tiered-guardrails.md
+      - Multi-Agent Hierarchy: concepts/multi-agent.md
+      - Provenance & Compliance: concepts/provenance.md
+      - Reflective Endorsement: concepts/reflective-endorsement.md
 
   - Integrations:
-    - integrations/index.md
-    - LangChain: integrations/langchain.md
-    - CrewAI: integrations/crewai.md
-    - AutoGen: integrations/autogen.md
-    - Deep Agents: integrations/deepagents.md
+      - integrations/index.md
+      - LangChain: integrations/langchain.md
+      - CrewAI: integrations/crewai.md
+      - AutoGen: integrations/autogen.md
+      - Deep Agents: integrations/deepagents.md
 
   - Guides:
-    - guides/index.md
-    - Custom Kernels: guides/custom-kernels.md
-    - Custom Templates: guides/custom-templates.md
-    - CLI Auditor: guides/cli-auditor.md
-    - Passive Compression Guard: guides/passive-compression.md
-    - Enterprise Setup: guides/enterprise.md
-    - Fine-Tuning with CIK: guides/fine-tuning.md
-    - EU AI Act Compliance: guides/compliance.md
+      - guides/index.md
+      - Custom Kernels: guides/custom-kernels.md
+      - Custom Templates: guides/custom-templates.md
+      - CLI Auditor: guides/cli-auditor.md
+      - Passive Compression Guard: guides/passive-compression.md
+      - Advanced Setup: guides/enterprise.md
+      - Fine-Tuning with CIK: guides/fine-tuning.md
+      - EU AI Act Compliance: guides/compliance.md
 
   - Reference:
-    - reference/index.md
-    - TheseusWrapper: reference/theseus-wrapper.md
-    - WrapperConfig: reference/wrapper-config.md
-    - ConstitutionalKernel: reference/constitutional-kernel.md
-    - Divergence Engine: reference/divergence-engine.md
-    - ContextCompressionGuard: reference/compression-guard.md
-    - Provenance Log: reference/provenance-log.md
-    - Compatibility Matrix: reference/compatibility.md
-    - Kernels & Templates: reference/kernels-templates.md
-    - CLI Reference: reference/cli.md
-    - Exceptions: reference/exceptions.md
-    - Project Status: reference/project-status.md
+      - reference/index.md
+      - TheseusWrapper: reference/theseus-wrapper.md
+      - WrapperConfig: reference/wrapper-config.md
+      - ConstitutionalKernel: reference/constitutional-kernel.md
+      - Divergence Engine: reference/divergence-engine.md
+      - ContextCompressionGuard: reference/compression-guard.md
+      - Provenance Log: reference/provenance-log.md
+      - Compatibility Matrix: reference/compatibility.md
+      - Kernels & Templates: reference/kernels-templates.md
+      - CLI Reference: reference/cli.md
+      - Exceptions: reference/exceptions.md
+      - Project Status: reference/project-status.md
 
   - Examples:
-    - example: examples/index.md
-    - Staged Approval (Cooldown): examples/staged-approval.md
-    - Financial Auditor (SSC): examples/ssc-financial-auditor.md
-    - Hierarchical Agent Safety: examples/hierarchical-safety.md
-    - Standalone Auditor (Qwen3): examples/standalone-auditor.md
-    - LiteLLM Guardrails (API): examples/litellm-guardrails.md
-    - Military Medical Use Case: examples/military-medical.md
+      - example: examples/index.md
+      - Staged Approval (Cooldown): examples/staged-approval.md
+      - Financial Auditor (SSC): examples/ssc-financial-auditor.md
+      - Hierarchical Agent Safety: examples/hierarchical-safety.md
+      - Standalone Auditor (Qwen3): examples/standalone-auditor.md
+      - LiteLLM Guardrails (API): examples/litellm-guardrails.md
+      - Military Medical Use Case: examples/military-medical.md

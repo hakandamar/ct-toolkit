@@ -20,20 +20,20 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 
 ### Current State
 
-| Area                                   | Status                                                                                 |
-| -------------------------------------- | -------------------------------------------------------------------------------------- |
-| Python library (pip install)           | ✅ MVP complete                                                                        |
-| OpenAI / Anthropic / Ollama support    | ✅ Complete                                                                            |
-| Constitutional Kernel                  | ✅ Complete                                                                            |
-| Reflective Endorsement                 | ✅ Complete                                                                            |
-| Provenance Log (HMAC hash chain)       | ✅ Complete                                                                            |
-| Divergence Engine (L1+L2+L3)           | ✅ Complete                                                                            |
-| Policy-Drift & SSC Measurement         | ✅ Phase 3 Complete                                                                    |
-| Template + Kernel compatibility matrix | ✅ Complete                                                                            |
-| Context-Compression Passive Guard      | ✅ Core Integrated (v0.3.6)                                                           |
-| Staged Approval (Cooldown)            | ✅ **v0.3.8 New: Sandbox Shadow Requests**                                             |
-| Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/))|
-| Test coverage                          | ✅ 285/296 tests passing (95% code coverage)                                           |
+| Area                                   | Status                                                                                                                                                            |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Python library (pip install)           | ✅ MVP complete                                                                                                                                                   |
+| OpenAI / Anthropic / Ollama support    | ✅ Complete                                                                                                                                                       |
+| Constitutional Kernel                  | ✅ Complete                                                                                                                                                       |
+| Reflective Endorsement                 | ✅ Complete                                                                                                                                                       |
+| Provenance Log (HMAC hash chain)       | ✅ Complete                                                                                                                                                       |
+| Divergence Engine (L1+L2+L3)           | ✅ Complete                                                                                                                                                       |
+| Policy-Drift & SSC Measurement         | ✅ Phase 3 Complete                                                                                                                                               |
+| Template + Kernel compatibility matrix | ✅ Complete                                                                                                                                                       |
+| Context-Compression Passive Guard      | ✅ Core Integrated (v0.3.6)                                                                                                                                       |
+| Staged Approval (Cooldown)             | ✅ **v0.3.8 New: Sandbox Shadow Analysis**                                                                                                                        |
+| Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/)) |
+| Test coverage                          | ✅ 285/296 tests passing (95% code coverage)                                                                                                                      |
 
 ---
 
@@ -65,7 +65,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 - [x] **L1 ECS** — Embedding cosine similarity, real-time on every query
 - [x] **L2 LLM-as-judge** — Independent frozen model, JSON verdict
 - [x] **L3 ICM Probe Battery** — Fixed ethical scenario battery, health score
-- [x] **Divergence Engine** — L1→L2→L3 cascaded orchestration + enterprise mode
+- [x] **Divergence Engine** — L1→L2→L3 cascaded orchestration + rigorous mode
 - [x] **Provenance Log** — HMAC hash chain, SQLite vault, tamper detection
 - [x] **Reflective Endorsement protocol** — Conflict record, signed approval, ICM flag
 - [x] **Staged Approval (Cooldown)** — _(Paper 6)_ Sandbox shadow requests + dynamic penalty/RPM duration. (New in `v0.3.8`)
@@ -123,8 +123,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 - [x] **Local SQLite vault** — For open-source deployments
 - [x] **HMAC key management** — Environment variable or local file
-- [ ] **Cloud vault adapter** — For SaaS version; customer authorization key is never accessible to us
-- [ ] **HashiCorp Vault integration** — Enterprise key management
+- [ ] **External Vault integration** — Generic adapter for secure key management
 - [x] **Read-only external Provenance Log access** — _(Paper 5.2)_ Making the log available in read-only form to an oversight mechanism that is structurally independent of the agent hierarchy
 - [x] **Rollback mechanism** — _(Paper 5.2)_ Reverting to a prior normative state if a deployed update is subsequently found to be misaligned
 - [x] **Anomaly detection and alerting (Groundwork)** — Complete: `drift_alert_callback` support in `TheseusWrapper`.
@@ -158,17 +157,6 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ---
 
-### PHASE 8 — SaaS and Ecosystem
-
-> _Project Desc: Startup / Cloud version_
-
-- [ ] **Cloud vault service** — Inaccessible vault with customer authorization
-- [ ] **Dashboard** — Identity Health Score visualization, log explorer
-- [ ] **Webhook / alert system** — Notifications on critical divergence events
-- [x] **PyPI package** — Official `pip install ct-toolkit` release
-- [x] **GitHub Actions CI** — Automated test pipeline (initial setup)
-- [ ] **Enterprise licensing** — Compliance certification for defense / finance sectors
-
 ## Final Results
 
 - **Total Passing Tests:** 285 (11 skipped, 296 total)
@@ -189,7 +177,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ### Verification Recording
 
-All backend refactorings were verified using the extended test suite. 
+All backend refactorings were verified using the extended test suite.
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
@@ -209,26 +197,24 @@ uv run pytest --cov=ct_toolkit tests/
 | **4** | Open-Source Model Support      | ✅ Complete (Drift Loss + Live Verification) |
 | **6** | Auditor Mode                   | ✅ Complete (CLI & ICM Runner)               |
 | **7** | MAS / Early Warning            | 🔶 In Progress (Active)                      |
-| **8** | SaaS and Ecosystem             | 🔲 Not started                               |
-
 ---
 
 ## Paper → Code Mapping
 
-| Paper Mechanism                    | CT Toolkit Implementation              | Phase |
-| ---------------------------------- | -------------------------------------- | ----- |
-| Constitutional Identity Kernel     | `core/kernel.py`                       | ✅ 0  |
-| Axiomatic Anchors                  | `kernels/*.yaml → axiomatic_anchors`   | ✅ 0  |
-| Plastic Commitments                | `kernels/*.yaml → plastic_commitments` | ✅ 0  |
-| Reflective Endorsement             | `endorsement/reflective.py`            | ✅ 1  |
-| Staged Approval (Cooldown)        | `core/wrapper.py`, `endorsement/reflective.py` | ✅ 1  |
-| Divergence Penalty (API level)     | `divergence/engine.py`                 | ✅ 1  |
-| Divergence Penalty (loss function) | `divergence/loss.py`                   | ✅ 4  |
-| Provenance Log                     | `provenance/log.py`                    | ✅ 1  |
-| Stability-Plasticity Scheduling    | `divergence/scheduler.py`              | ✅ 1  |
-| Hierarchical Propagation           | `core/kernel.py`, `core/wrapper.py`    | ✅ 2  |
-| Identity Consistency Metric        | `divergence/l3_icm.py`                 | ✅ 3  |
-| Policy-Drift Measurement           | `divergence/analysis.py`               | ✅ 3  |
-| SSC Severity Operationalization    | `divergence/analysis.py`               | ✅ 3  |
-| MAS Integration                    | —                                      | 🔲 7  |
-| ValueFlow Integration              | —                                      | 🔲 7  |
+| Paper Mechanism                    | CT Toolkit Implementation                      | Phase |
+| ---------------------------------- | ---------------------------------------------- | ----- |
+| Constitutional Identity Kernel     | `core/kernel.py`                               | ✅ 0  |
+| Axiomatic Anchors                  | `kernels/*.yaml → axiomatic_anchors`           | ✅ 0  |
+| Plastic Commitments                | `kernels/*.yaml → plastic_commitments`         | ✅ 0  |
+| Reflective Endorsement             | `endorsement/reflective.py`                    | ✅ 1  |
+| Staged Approval (Cooldown)         | `core/wrapper.py`, `endorsement/reflective.py` | ✅ 1  |
+| Divergence Penalty (API level)     | `divergence/engine.py`                         | ✅ 1  |
+| Divergence Penalty (loss function) | `divergence/loss.py`                           | ✅ 4  |
+| Provenance Log                     | `provenance/log.py`                            | ✅ 1  |
+| Stability-Plasticity Scheduling    | `divergence/scheduler.py`                      | ✅ 1  |
+| Hierarchical Propagation           | `core/kernel.py`, `core/wrapper.py`            | ✅ 2  |
+| Identity Consistency Metric        | `divergence/l3_icm.py`                         | ✅ 3  |
+| Policy-Drift Measurement           | `divergence/analysis.py`                       | ✅ 3  |
+| SSC Severity Operationalization    | `divergence/analysis.py`                       | ✅ 3  |
+| MAS Integration                    | —                                              | 🔲 7  |
+| ValueFlow Integration              | —                                              | 🔲 7  |

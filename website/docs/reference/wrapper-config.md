@@ -21,56 +21,56 @@ wrapper = TheseusWrapper(openai.OpenAI(), config=config)
 
 ### Identity
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `template` | `str` | `"general"` | Identity template name. Defines the embedding reference vector. |
-| `kernel_name` | `str` | `"default"` | Constitutional Kernel to load. Built-ins: `default`, `defense`, `finance`. |
-| `kernel_path` | `str \| Path \| None` | `None` | Explicit path to a custom kernel YAML. Overrides `kernel_name`. |
-| `project_root` | `str \| Path \| None` | `None` | Path to your project root. CT Toolkit looks for `config/*.yaml` here. |
-| `parent_kernel` | `ConstitutionalKernel \| None` | `None` | Propagated kernel from a parent agent. Its anchors become read-only axioms. |
+| Parameter       | Type                           | Default     | Description                                                                 |
+| :-------------- | :----------------------------- | :---------- | :-------------------------------------------------------------------------- |
+| `template`      | `str`                          | `"general"` | Identity template name. Defines the embedding reference vector.             |
+| `kernel_name`   | `str`                          | `"default"` | Constitutional Kernel to load. Built-ins: `default`, `defense`, `finance`.  |
+| `kernel_path`   | `str \| Path \| None`          | `None`      | Explicit path to a custom kernel YAML. Overrides `kernel_name`.             |
+| `project_root`  | `str \| Path \| None`          | `None`      | Path to your project root. CT Toolkit looks for `config/*.yaml` here.       |
+| `parent_kernel` | `ConstitutionalKernel \| None` | `None`      | Propagated kernel from a parent agent. Its anchors become read-only axioms. |
 
 ### Divergence thresholds
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `divergence_l1_threshold` | `float` | `0.15` | L1 ECS score above which an `l1_warning` is issued. |
-| `divergence_l2_threshold` | `float` | `0.30` | L1 score above which the L2 LLM Judge is triggered. |
-| `divergence_l3_threshold` | `float` | `0.50` | L1 score above which the L3 ICM battery is triggered. |
+| Parameter                 | Type    | Default | Description                                           |
+| :------------------------ | :------ | :------ | :---------------------------------------------------- |
+| `divergence_l1_threshold` | `float` | `0.15`  | L1 ECS score above which an `l1_warning` is issued.   |
+| `divergence_l2_threshold` | `float` | `0.30`  | L1 score above which the L2 LLM Judge is triggered.   |
+| `divergence_l3_threshold` | `float` | `0.50`  | L1 score above which the L3 ICM battery is triggered. |
 
 !!! tip "Stricter thresholds for critical systems"
-    For medical, financial, or defense applications, use tighter thresholds:
-    ```python
+For medical, financial, or defense applications, use tighter thresholds:
+`python
     config = WrapperConfig(
         divergence_l1_threshold=0.10,
         divergence_l2_threshold=0.20,
         divergence_l3_threshold=0.40,
     )
-    ```
+    `
 
 ### Judge and embedding clients
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `judge_client` | `Any` | `None` | Separate LLM client for L2/L3 analysis. Required to enable L2 and L3. |
-| `embedding_client` | `Any` | `None` | Client for real embedding API calls (L1). Falls back to keyword vectors if `None`. |
-| `embedding_model` | `str` | `"text-embedding-3-small"` | Embedding model name. |
-| `strict_embedding` | `bool` | `False` | If `True`, raises `RuntimeError` when embedding API fails instead of falling back. |
+| Parameter          | Type   | Default                    | Description                                                                        |
+| :----------------- | :----- | :------------------------- | :--------------------------------------------------------------------------------- |
+| `judge_client`     | `Any`  | `None`                     | Separate LLM client for L2/L3 analysis. Required to enable L2 and L3.              |
+| `embedding_client` | `Any`  | `None`                     | Client for real embedding API calls (L1). Falls back to keyword vectors if `None`. |
+| `embedding_model`  | `str`  | `"text-embedding-3-small"` | Embedding model name.                                                              |
+| `strict_embedding` | `bool` | `False`                    | If `True`, raises `RuntimeError` when embedding API fails instead of falling back. |
 
 ### Provenance & logging
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `vault_type` | `str` | `"local"` | Storage backend. Currently only `"local"` (SQLite) is supported. |
-| `vault_path` | `str` | `"./ct_provenance.db"` | Path to the SQLite provenance database. |
-| `log_requests` | `bool` | `True` | Whether to write every interaction to the provenance log. |
-| `auto_inject_kernel` | `bool` | `True` | Whether to inject kernel rules into the system prompt automatically. |
+| Parameter            | Type   | Default                | Description                                                          |
+| :------------------- | :----- | :--------------------- | :------------------------------------------------------------------- |
+| `vault_type`         | `str`  | `"local"`              | Storage backend. Currently only `"local"` (SQLite) is supported.     |
+| `vault_path`         | `str`  | `"./ct_provenance.db"` | Path to the SQLite provenance database.                              |
+| `log_requests`       | `bool` | `True`                 | Whether to write every interaction to the provenance log.            |
+| `auto_inject_kernel` | `bool` | `True`                 | Whether to inject kernel rules into the system prompt automatically. |
 
 ### Auto-correction loop
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `auto_correction` | `bool` | `False` | Enable the L2→L1 self-correction loop. |
-| `max_correction_retries` | `int` | `1` | Maximum retry attempts before returning the last response. |
+| Parameter                | Type   | Default | Description                                                |
+| :----------------------- | :----- | :------ | :--------------------------------------------------------- |
+| `auto_correction`        | `bool` | `False` | Enable the L2→L1 self-correction loop.                     |
+| `max_correction_retries` | `int`  | `1`     | Maximum retry attempts before returning the last response. |
 
 ```python
 config = WrapperConfig(
@@ -82,9 +82,9 @@ config = WrapperConfig(
 
 ### Alerting
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `drift_alert_callback` | `Callable[[dict], None] \| None` | `None` | Called when a drift event or context compression failure occurs. |
+| Parameter              | Type                             | Default | Description                                                      |
+| :--------------------- | :------------------------------- | :------ | :--------------------------------------------------------------- |
+| `drift_alert_callback` | `Callable[[dict], None] \| None` | `None`  | Called when a drift event or context compression failure occurs. |
 
 ```python
 def my_alert(payload: dict):
@@ -96,11 +96,11 @@ config = WrapperConfig(drift_alert_callback=my_alert)
 
 ### Elasticity scheduling
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `elasticity_max_thresholds` | `tuple[float, float, float] \| None` | `None` | Maximum `(L1, L2, L3)` thresholds an experienced agent can reach. |
-| `elasticity_growth_rate` | `float \| None` | `None` | Rate at which divergence tolerance increases with experience. |
-| `risk_profile` | `RiskProfile \| None` | `None` | Structural risk profile affecting elasticity growth rate. |
+| Parameter                   | Type                                 | Default | Description                                                       |
+| :-------------------------- | :----------------------------------- | :------ | :---------------------------------------------------------------- |
+| `elasticity_max_thresholds` | `tuple[float, float, float] \| None` | `None`  | Maximum `(L1, L2, L3)` thresholds an experienced agent can reach. |
+| `elasticity_growth_rate`    | `float \| None`                      | `None`  | Rate at which divergence tolerance increases with experience.     |
+| `risk_profile`              | `RiskProfile \| None`                | `None`  | Structural risk profile affecting elasticity growth rate.         |
 
 ```python
 from ct_toolkit.divergence.scheduler import RiskProfile
@@ -114,10 +114,10 @@ config = WrapperConfig(
 
 ### Context Compression (v0.3.6+)
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `compression_passive_detection` | `bool` | `True` | Automatically detect silent provider-side history compression via shrinkage heuristics. |
-| `compression_threshold` | `float` | `0.80` | Similarity score floor (0.0 to 1.0) for summarization drift analysis. |
+| Parameter                       | Type    | Default | Description                                                                             |
+| :------------------------------ | :------ | :------ | :-------------------------------------------------------------------------------------- |
+| `compression_passive_detection` | `bool`  | `True`  | Automatically detect silent provider-side history compression via shrinkage heuristics. |
+| `compression_threshold`         | `float` | `0.80`  | Similarity score floor (0.0 to 1.0) for summarization drift analysis.                   |
 
 ```python
 config = WrapperConfig(
@@ -129,11 +129,11 @@ config = WrapperConfig(
 
 ### Staged Approval (Cooldown) (v0.3.8+)
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `endorsement_cooldown_base` | `int` | `300` | Minimum cooldown duration in seconds (5 min). |
-| `endorsement_cooldown_max` | `int` | `3600` | Maximum cooldown duration (1 hour). |
-| `endorsement_no_probe_penalty` | `int` | `600` | Penalty added if no probes are found (+10 min). |
+| Parameter                      | Type  | Default | Description                                     |
+| :----------------------------- | :---- | :------ | :---------------------------------------------- |
+| `endorsement_cooldown_base`    | `int` | `300`   | Minimum cooldown duration in seconds (5 min).   |
+| `endorsement_cooldown_max`     | `int` | `3600`  | Maximum cooldown duration (1 hour).             |
+| `endorsement_no_probe_penalty` | `int` | `600`   | Penalty added if no probes are found (+10 min). |
 
 ```python
 config = WrapperConfig(
@@ -144,13 +144,13 @@ config = WrapperConfig(
 
 ---
 
-## Enterprise mode
+## Rigorous Analysis Mode
 
-Run all three divergence tiers on every request:
+Enables simultaneous L1, L2, and L3 scanning to ensure maximum identity alignment:
 
 ```python
 config = WrapperConfig(
-    enterprise_mode=True,
+    rigorous_mode=True,
     judge_client=openai.OpenAI(),
 )
 ```
