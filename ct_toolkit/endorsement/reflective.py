@@ -271,12 +271,12 @@ class StagedUpdateManager:
     """
 
     def __init__(self) -> None:
-        self._staged: list[EndorsementRecord] = []
+        self._staged: dict[str, EndorsementRecord] = {}
 
     def register(self, record: EndorsementRecord) -> None:
         """Registers a STAGED record for tracking."""
         if record.is_staged:
-            self._staged.append(record)
+            self._staged[record.id] = record
             logger.info(
                 f"StagedUpdateManager: registered staged endorsement "
                 f"id={record.id[:8]}... cooldown_until={record.cooldown_until}"
@@ -284,16 +284,16 @@ class StagedUpdateManager:
 
     def get_active(self) -> list[EndorsementRecord]:
         """Returns all staged endorsements still in their cooldown window."""
-        return [r for r in self._staged if not r.is_cooldown_expired]
+        return [r for r in self._staged.values() if not r.is_cooldown_expired]
 
     def get_promotable(self) -> list[EndorsementRecord]:
         """
         Returns staged endorsements whose cooldown has expired without
         being rejected. Removes them from the tracking list.
         """
-        promotable = [r for r in self._staged if r.is_cooldown_expired]
+        promotable = [r for r in self._staged.values() if r.is_cooldown_expired]
         for r in promotable:
-            self._staged.remove(r)
+            del self._staged[r.id]
         return promotable
 
     def reject_staged(self, record_id: str, reason: str = "") -> bool:
@@ -301,9 +301,8 @@ class StagedUpdateManager:
         Rejects and removes a staged endorsement (e.g. on CriticalDivergenceError).
         Returns True if found and removed.
         """
-        for r in self._staged:
-            if r.id == record_id:
-                self._staged.remove(r)
+        if record_id in self._staged:
+                del self._staged[record_id]
                 logger.warning(
                     f"StagedUpdateManager: staged endorsement REJECTED "
                     f"id={record_id[:8]}... reason={reason!r}"

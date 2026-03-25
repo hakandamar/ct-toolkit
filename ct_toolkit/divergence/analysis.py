@@ -42,6 +42,7 @@ class PolicyDriftAnalyzer:
 
     def __init__(self, log: ProvenanceLog) -> None:
         self._log = log
+        self._ssc_calc = SSCSeverityCalculator()
 
     def analyze_drift(
         self, 
@@ -87,8 +88,7 @@ class PolicyDriftAnalyzer:
         slope, _ = np.polyfit(x, scores, 1)
         
         # SSC Severity calculation (Risk-adjusted)
-        calc = SSCSeverityCalculator()
-        ssc_score, struct_risk = calc.calculate(
+        ssc_score, struct_risk = self._ssc_calc.calculate(
             mean_divergence=mean_div,
             velocity=slope,
             variance=var_div,
