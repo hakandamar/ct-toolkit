@@ -1,0 +1,16 @@
+services:
+  n8n:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    environment:
+      - N8N_CUSTOM_EXTENSIONS=/custom-extensions
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  n8n_data:

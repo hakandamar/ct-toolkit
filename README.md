@@ -77,9 +77,9 @@ ct-toolkit list-templates
 
 | Metric           | Status                                                  |
 | :--------------- | :------------------------------------------------------ |
-| **Tests**        | ✅ 293/296 passing (89% coverage)                       |
+| **Tests**        | ✅ 293 passed, 3 skipped, 13 warnings (93% coverage)                       |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ Phase 6: Auditor Mode (v0.3.9: Cooldown Integrated)  |
+| **Last Phase**   | ✅ Phase 6: Auditor Mode (v0.3.10: n8n Guardrail Node)  |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 
 For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).

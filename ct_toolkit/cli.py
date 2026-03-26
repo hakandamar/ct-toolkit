@@ -168,6 +168,53 @@ def serve(
         raise typer.Exit(code=1)
 
 @app.command()
+def setup(
+    profile: str = typer.Argument("personal_kernel", help="Name of the profile to download (e.g., personal_kernel)"),
+    repo_branch: str = typer.Option("main", "--branch", help="GitHub repo branch"),
+    dest_dir: str = typer.Option("./config", "--dest", help="Destination folder (default: ./config)")
+):
+    """Download a CT-Toolkit profile (kernel, identity, probes) from the official GitHub repository."""
+    import urllib.request
+    
+    base_url = f"https://raw.githubusercontent.com/hakandamar/ct-toolkit/{repo_branch}/examples/agent_dna_config"
+    target_dir = Path(dest_dir)
+    target_dir.mkdir(parents=True, exist_ok=True)
+    
+    base_name = profile.replace("_kernel", "") if profile.endswith("_kernel") else profile
+    if base_name == profile:
+        kernel_file = f"{profile}_kernel.yaml"
+    else:
+        kernel_file = f"{profile}.yaml"
+        
+    identity_file = f"{base_name}_identity.yaml"
+    probes_file = f"{base_name}_probes.json"
+    
+    files_to_download = [kernel_file, identity_file, probes_file]
+    
+    with console.status(f"[bold green]Downloading '{profile}' profile from GitHub...[/bold green]"):
+        has_errors = False
+        for filename in files_to_download:
+            url = f"{base_url}/{filename}"
+            dest_path = target_dir / filename
+            try:
+                # Use a custom user agent to avoid 403s on some raw github requests occasionally
+                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req) as response:
+                    content = response.read()
+                    with open(dest_path, "wb") as f:
+                        f.write(content)
+                console.print(f"[green]✓ Saved {filename} to {dest_path}[/green]")
+            except Exception as e:
+                console.print(f"[red]✗ Failed to download {filename} from {url}:[/red] {e}")
+                has_errors = True
+                
+    if not has_errors:
+        console.print(f"\n[bold blue]Profile '{profile}' setup complete![/bold blue]")
+        console.print(f"You can now use this kernel by setting [bold]kernel_name='{kernel_file.replace('.yaml','')}'[/bold] in TheseusWrapper")
+    else:
+        console.print(f"\n[bold yellow]Profile '{profile}' setup finished with some errors.[/bold yellow]")
+
+@app.command()
 def list_kernels():
     """List available Constitutional Kernels."""
     kernels_dir = Path(__file__).parent / "kernels"

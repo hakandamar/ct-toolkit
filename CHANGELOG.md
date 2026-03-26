@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.10] - 2026-03-26
+
+### Added
+- **n8n Custom Node Integration**: Introduced `CtToolkit` custom node for n8n to provide identity continuity guardrails within agentic workflows.
+- **Guardrail API Documentation**: Added API documentation for the guardrail server endpoint.
+
+### Changed
+- **Testing**: Improved test coverage to 93% with 293 passing tests.
+
 ## [0.3.9] - 2026-03-22
 
 ### Security
