@@ -82,8 +82,6 @@ ct-toolkit list-templates
 | **Last Phase**   | ✅ Phase 6: Auditor Mode (v0.3.10: n8n Guardrail Node)  |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 
-For a detailed breakdown of the 8-phase roadmap, see [**PROJECT_STATUS.md**](docs/PROJECT_STATUS.md).
-
 ### Framework & Model Support
 
 Seamlessly integrate with your favorite frameworks and local models:
