@@ -111,6 +111,7 @@ class DivergenceEngine:
         template: str = "general",
         provider: str | None = None,
         judge_client: Any = None,
+        judge_model: str | None = None,
         l1_threshold: float = 0.15,
         l2_threshold: float = 0.30,
         l3_threshold: float = 0.50,
@@ -124,6 +125,7 @@ class DivergenceEngine:
         self._template = template
         self._provider = provider
         self._judge_client = judge_client
+        self._judge_model = judge_model
         self._log = provenance_log
         self._project_root = project_root
         
@@ -335,6 +337,7 @@ class DivergenceEngine:
         judge = LLMJudge(
             client=self._judge_client,
             provider=self._provider,
+            model=self._judge_model,
         )
         return judge.evaluate(
             request_text=request_text,
@@ -348,6 +351,7 @@ class DivergenceEngine:
             provider=self._provider,
             kernel=self._kernel,
             template=self._template,
+            model=self._judge_model,
             max_probes=max_probes,
             project_root=self._project_root,
         )

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.15] - 2026-03-28
+
+### Added
+- **Custom Judge Model Configuration** — Added `judge_model` field to `WrapperConfig`, allowing users to specify a dedicated model (e.g., `gpt-4o`) for L2/L3 divergence analysis separately from the main agent model.
+
+### Fixed
+- **ICM Support for Ollama** — Fixed model name normalization in `ICMRunner` (L3) to correctly handle Ollama tags containing colons (e.g., `llama3:7b`), ensuring they are formatted as `ollama/llama3:7b` for LiteLLM instead of being incorrectly converted to forward slashes.
+- **Divergence Engine Initialization** — Fixed a signature bug in `DivergenceEngine.__init__` where `judge_client` was accidentally replaced by `judge_model`. Both parameters are now correctly supported.
+
 ## [0.3.14] - 2026-03-28
 
 ### Fixed

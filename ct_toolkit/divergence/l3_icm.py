@@ -326,10 +326,15 @@ class ICMRunner:
 
         # LiteLLM format
         full_model = self._model
-        if ":" in self._model:
-            full_model = self._model.replace(":", "/", 1)
-        elif self._provider not in ("openai", "unknown"):
-            full_model = f"{self._provider}/{self._model}"
+        if ":" in self._model and self._provider != "ollama":
+             full_model = self._model.replace(":", "/", 1)
+        elif self._provider not in ("openai", "unknown") and not (":" in self._model and self._provider == "ollama"):
+             if not self._model.startswith(f"{self._provider}/"):
+                  full_model = f"{self._provider}/{self._model}"
+
+        # Ensure ollama always has prefix if it has a colon
+        if self._provider == "ollama" and ":" in self._model and not full_model.startswith("ollama/"):
+             full_model = f"ollama/{full_model}"
 
         kwargs: dict[str, Any] = {
             "model": full_model,

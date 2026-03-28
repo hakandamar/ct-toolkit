@@ -64,6 +64,7 @@ class WrapperConfig:
     log_requests: bool = True
     drift_alert_callback: Optional[Callable[[Dict[str, Any]], None]] = None
     judge_client: Any = None         # Separate provider client for L2/L3
+    judge_model: str | None = None   # Custom model for L2/L3 judge
     embedding_client: Any = None     # Client for L1 ECS embedding (falls back to main client if compatible)
     embedding_model: str = "text-embedding-3-small"
     enterprise_mode: bool = False    # Run all tiers all the time
@@ -339,6 +340,7 @@ class TheseusWrapper:
             template=self._config.template,
             provider=self._provider if self._config.judge_client else None,
             judge_client=self._config.judge_client,
+            judge_model=self._config.judge_model,
             l1_threshold=self._config.divergence_l1_threshold,
             l2_threshold=self._config.divergence_l2_threshold,
             l3_threshold=self._config.divergence_l3_threshold,
