@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.12] - 2026-03-28
+
+### Security
+- **Dependency: langchain-core path traversal (High)** — Upgraded `langchain-core` from `>=1.2.0` to `>=1.2.22` (resolved to `1.2.23` in lock file) to patch CVE reported by GitHub Dependabot. The legacy `load_prompt` / `load_prompt_from_config` / `load_prompt_from_config` functions in `langchain_core.prompts.loading` did not validate file paths against absolute path injection or `..` traversal sequences before reading from disk, allowing an attacker who controls prompt configuration dicts to read arbitrary `.txt`, `.json`, and `.yaml` files on the host filesystem. The patched version adds path validation and formally deprecates these legacy APIs in favour of `langchain_core.load` (`dumpd/dumps/load/loads`).
+
 ## [0.3.10] - 2026-03-26
 
 ### Added
