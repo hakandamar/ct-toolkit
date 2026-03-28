@@ -326,9 +326,13 @@ class ICMRunner:
 
         # LiteLLM format
         full_model = self._model
-        if ":" in self._model and self._provider != "ollama":
+        # Prevent colon-to-slash replacement if model already has ollama/ prefix 
+        # or if the provider is specifically ollama
+        is_ollama = (self._provider == "ollama" or self._model.startswith("ollama/"))
+
+        if ":" in self._model and not is_ollama:
              full_model = self._model.replace(":", "/", 1)
-        elif self._provider not in ("openai", "unknown") and not (":" in self._model and self._provider == "ollama"):
+        elif self._provider not in ("openai", "unknown") and not is_ollama:
              if not self._model.startswith(f"{self._provider}/"):
                   full_model = f"{self._provider}/{self._model}"
 
@@ -348,7 +352,13 @@ class ICMRunner:
 
         # Extract connection info from client if possible
         if hasattr(self._client, "base_url") and self._client.base_url:
-            kwargs["api_base"] = str(self._client.base_url)
+            api_base = str(self._client.base_url).rstrip("/")
+            if self._provider == "ollama" and api_base.endswith("/v1"):
+                new_base = api_base[:-3]
+                logger.debug(f"Stripping /v1 from Ollama api_base (ICM): {api_base} -> {new_base}")
+                api_base = new_base
+            kwargs["api_base"] = api_base
+            
         if hasattr(self._client, "api_key") and self._client.api_key:
             kwargs["api_key"] = self._client.api_key
             

@@ -103,6 +103,18 @@ class LLMJudge:
         self._provider = provider
         self._model = model or self._default_model(provider)
         
+        # Fix for Ollama: Strip /v1 from base_url if present
+        if provider == "ollama" and hasattr(client, "base_url"):
+            base_url = str(client.base_url).rstrip("/")
+            if base_url.endswith("/v1"):
+                new_base = base_url[:-3]
+                logger.debug(f"Stripping /v1 from Ollama judge base_url: {base_url} -> {new_base}")
+                try:
+                    import httpx
+                    client.base_url = httpx.URL(new_base)
+                except ImportError:
+                    client.base_url = new_base
+
         # Patch client with instructor based on provider
         if provider == "openai":
             self._instructor_client = instructor.from_openai(client)

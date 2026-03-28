@@ -142,8 +142,8 @@ class DivergenceEngine:
         self._enterprise = enterprise_mode
         self._scheduler = scheduler
 
-        # Client required for L2/L3
-        self._l2_available = judge_client is not None and provider is not None
+        # Client or model+provider required for L2/L3
+        self._l2_available = provider is not None and (judge_client is not None or judge_model is not None)
         self._l3_available = self._l2_available
         
         # Analyzer for longitudinal drift

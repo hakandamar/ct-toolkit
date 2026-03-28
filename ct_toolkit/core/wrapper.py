@@ -65,6 +65,7 @@ class WrapperConfig:
     drift_alert_callback: Optional[Callable[[Dict[str, Any]], None]] = None
     judge_client: Any = None         # Separate provider client for L2/L3
     judge_model: str | None = None   # Custom model for L2/L3 judge
+    judge_provider: str | None = None # Explicit provider for L2/L3 judge (e.g. "ollama")
     embedding_client: Any = None     # Client for L1 ECS embedding (falls back to main client if compatible)
     embedding_model: str = "text-embedding-3-small"
     enterprise_mode: bool = False    # Run all tiers all the time
@@ -338,7 +339,7 @@ class TheseusWrapper:
             identity_layer=self._identity_layer,
             kernel=self._kernel,
             template=self._config.template,
-            provider=self._provider if self._config.judge_client else None,
+            provider=self._config.judge_provider or (self._provider if self._config.judge_client else None),
             judge_client=self._config.judge_client,
             judge_model=self._config.judge_model,
             l1_threshold=self._config.divergence_l1_threshold,
@@ -600,9 +601,13 @@ class TheseusWrapper:
             else: model = "gpt-4o-mini"
 
         full_model = model
-        if ":" in model and self._provider != "ollama":
+        # Prevent colon-to-slash replacement if model already has ollama/ prefix 
+        # or if the provider is specifically ollama
+        is_ollama = (self._provider == "ollama" or model.startswith("ollama/"))
+
+        if ":" in model and not is_ollama:
              full_model = model.replace(":", "/", 1)
-        elif self._provider not in ("openai", "unknown") and not (":" in model and self._provider == "ollama"):
+        elif self._provider not in ("openai", "unknown") and not is_ollama:
              if not model.startswith(f"{self._provider}/"):
                   full_model = f"{self._provider}/{model}"
 
@@ -611,7 +616,13 @@ class TheseusWrapper:
              full_model = f"ollama/{full_model}"
 
         if hasattr(self._client, "base_url") and self._client.base_url:
-            kwargs["api_base"] = str(self._client.base_url)
+            api_base = str(self._client.base_url).rstrip("/")
+            if self._provider == "ollama" and api_base.endswith("/v1"):
+                new_base = api_base[:-3]
+                logger.debug(f"Stripping /v1 from Ollama api_base: {api_base} -> {new_base}")
+                api_base = new_base
+            kwargs["api_base"] = api_base
+            
         if hasattr(self._client, "api_key") and self._client.api_key:
             kwargs["api_key"] = self._client.api_key
 

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.16] - 2026-03-28
+
+### Added
+- **Ollama Provider Decoupling** — Introduced `judge_provider` field to `WrapperConfig`, allowing the judge model's provider logic (e.g., `ollama`) to be decoupled from the main model's provider (e.g., `lm-studio` via `openai`).
+
+### Fixed
+- **Ollama Integration Robustness**:
+    - Automatic stripping of `/v1` suffix from `api_base` for Ollama providers in both `TheseusWrapper` and `ICMRunner` (L3) to prevent 404 errors.
+    - Fixed model name normalization to preserve colons in Ollama tags (e.g., `llama3:7b`) when using mixed providers.
+    - Improved `LLMJudge` (L2) base URL sanitization with `httpx.URL` mutation support.
+- **Divergence Engine**: Enhanced availability check to support judge configurations defined only by `judge_provider` and `judge_model` via environment variables.
+
+
 ## [0.3.15] - 2026-03-28
 
 ### Added
