@@ -2,6 +2,8 @@
 
 CT Toolkit provides first-class middleware for the most popular agentic frameworks.
 
+If you want a complete runnable sample application for local testing, see [**ct-toolkit-fastapi**](https://github.com/hakandamar/ct-toolkit-fastapi), an external FastAPI validation project that demonstrates CT Toolkit guardrails in a developer-friendly setup.
+
 <div class="grid cards" markdown>
 
 -   :simple-langchain: **LangChain**

@@ -32,8 +32,14 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Template + Kernel compatibility matrix | ✅ Complete                                                                                                                                                       |
 | Context-Compression Passive Guard      | ✅ Core Integrated (v0.3.6)                                                                                                                                       |
 | Staged Approval (Cooldown)             | ✅ **v0.3.8 New: Sandbox Shadow Analysis**                                                                                                                        |
-| Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/)) |
+| Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/), [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/), and [FastAPI validation example](https://github.com/hakandamar/ct-toolkit-fastapi)) |
 | Test coverage                          | ✅ 308 passed, 0 failed (93% code coverage)                                                                                                                      |
+
+---
+
+## Developer Validation Example
+
+For developers who want to test CT Toolkit inside a minimal application instead of only running isolated scripts, see [**ct-toolkit-fastapi**](https://github.com/hakandamar/ct-toolkit-fastapi). It provides a FastAPI-based integration suite that exercises L1/L2/L3 guardrails and provenance logging against local LM Studio and Ollama services.
 
 ---
 

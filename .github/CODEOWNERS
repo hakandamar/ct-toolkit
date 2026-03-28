@@ -1,0 +1,19 @@
+# Default owner for the repository
+* @hakandamar
+
+# Documentation and community health files
+/README.md @hakandamar
+/CHANGELOG.md @hakandamar
+/CONTRIBUTING.md @hakandamar
+/SECURITY.md @hakandamar
+/SUPPORT.md @hakandamar
+/CODE_OF_CONDUCT.md @hakandamar
+/docs/ @hakandamar
+/website/ @hakandamar
+
+# Core package
+/ct_toolkit/ @hakandamar
+
+# Tests and examples
+/tests/ @hakandamar
+/examples/ @hakandamar

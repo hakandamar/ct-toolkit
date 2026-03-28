@@ -17,6 +17,10 @@ This directory contains standalone examples for using CT Toolkit guardrails in v
 
 - [**ollama_integration.py**](./ollama_integration.py): Running CT Toolkit against local Ollama instances (e.g., Llama 3).
 
+## External Example Projects
+
+- [**ct-toolkit-fastapi**](https://github.com/hakandamar/ct-toolkit-fastapi): FastAPI-based integration and validation suite for CT Toolkit. Useful for developers who want a ready-made project to test L1/L2/L3 guardrails, provenance logging, and local LM Studio/Ollama setups.
+
 ---
 
 ### Running Examples

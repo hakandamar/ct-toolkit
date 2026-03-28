@@ -18,6 +18,7 @@ For full API reference, architecture details, examples, and integration guides, 
 👉 [**https://hakandamar.github.io/ct-toolkit/**](https://hakandamar.github.io/ct-toolkit/)
 
 - [**Live Examples & Case Studies**](https://hakandamar.github.io/ct-toolkit/examples/): Real-world scenarios like Financial Auditor Integrity.
+- [**FastAPI Integration Test Project**](https://github.com/hakandamar/ct-toolkit-fastapi): Reference FastAPI app for validating CT Toolkit end-to-end across L1/L2/L3 guardrails and provenance logs with local model infrastructure.
 
 ---
 
@@ -71,6 +72,8 @@ ct-toolkit list-kernels
 ct-toolkit list-templates
 ```
 
+If you want a runnable application example instead of a CLI-only flow, see [**ct-toolkit-fastapi**](https://github.com/hakandamar/ct-toolkit-fastapi), a small FastAPI validation project that developers can use to test CT Toolkit locally with automated endpoints and pytest coverage.
+
 ---
 
 ## 🚦 Project Health & Status
@@ -96,6 +99,15 @@ Seamlessly integrate with your favorite frameworks and local models:
 ## Theoretical Foundation
 
 Translating the framework proposed in [**The Computational Theseus (2025)**](https://hakandamar.com/the-computational-theseus-engineering-identity-continuity-as-a-guardrail-against-sequential-963918c1720d) into engineering practice.
+
+---
+
+## Community
+
+- [**Contributing Guide**](CONTRIBUTING.md): How to propose changes, run tests, and submit pull requests.
+- [**Security Policy**](SECURITY.md): How to report vulnerabilities responsibly.
+- [**Code of Conduct**](CODE_OF_CONDUCT.md): Expected behavior for contributors and maintainers.
+- [**Support Guide**](SUPPORT.md): Where to ask questions, report bugs, and request features.
 
 ---
 

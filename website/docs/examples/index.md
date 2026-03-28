@@ -36,6 +36,14 @@ Real-world scenarios demonstrating CT Toolkit's identity protection in action.
 
     [:octicons-arrow-right-24: View example](standalone-auditor.md)
 
+-   **FastAPI Integration Test Project**
+
+    ---
+
+    External reference app for developers who want to validate CT Toolkit end-to-end with FastAPI, pytest, local LM Studio, and Ollama.
+
+    [:octicons-arrow-right-24: Open repository](https://github.com/hakandamar/ct-toolkit-fastapi)
+
 -   **Military Medical Use Case**
 
     ---
