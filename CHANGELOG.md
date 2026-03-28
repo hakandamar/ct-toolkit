@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
-## [0.3.12] - 2026-03-28
+## [0.3.13] - 2026-03-28
+
+### Security
+- **Dependency: cryptography DNS name constraint bypass (Medium)** — Upgraded `cryptography` constraint from `>=42.0.0` to `>=46.0.6` (resolved to `46.0.6`) to patch improper DNS name constraint enforcement on peer names. Prior to 46.0.6, cryptography did not validate Name Constraints against the "peer name" presented during TLS validation, only against SANs in child certificates, allowing a constrained subtree to be bypassed (cf. CVE-2025-61727 pattern).
+- **Dependency: requests insecure temp file reuse (Low/Moderate)** — Upgraded `requests` from `2.32.5` to `2.33.0` via lock file update. The `extract_zipped_paths()` utility function used a predictable temp filename, enabling a local attacker with write access to pre-create a malicious file. Standard `requests` HTTP usage in this project is not directly affected, but the upgrade eliminates the risk proactively.
+- **Note — diskcache (no upstream patch)** — `diskcache<=5.6.3` uses Python pickle for serialization by default, enabling arbitrary code execution if an attacker has write access to the cache directory. No patched version is available. This is a transitive dependency via `instructor`. Risk is inherently low in CT Toolkit's threat model as the cache directory is not exposed to untrusted input; will update when upstream releases a fix.
+- **Note — Pygments ReDoS (no upstream patch)** — `pygments<=2.19.2` contains an inefficient regex in `AdlLexer` that can cause a ReDoS. No patched version available; only exploitable with local access. Will update when upstream releases a fix.
+
+
 
 ### Security
 - **Dependency: langchain-core path traversal (High)** — Upgraded `langchain-core` from `>=1.2.0` to `>=1.2.22` (resolved to `1.2.23` in lock file) to patch CVE reported by GitHub Dependabot. The legacy `load_prompt` / `load_prompt_from_config` / `load_prompt_from_config` functions in `langchain_core.prompts.loading` did not validate file paths against absolute path injection or `..` traversal sequences before reading from disk, allowing an attacker who controls prompt configuration dicts to read arbitrary `.txt`, `.json`, and `.yaml` files on the host filesystem. The patched version adds path validation and formally deprecates these legacy APIs in favour of `langchain_core.load` (`dumpd/dumps/load/loads`).
