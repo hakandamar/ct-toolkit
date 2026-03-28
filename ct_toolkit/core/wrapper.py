@@ -598,10 +598,15 @@ class TheseusWrapper:
             else: model = "gpt-4o-mini"
 
         full_model = model
-        if ":" in model:
+        if ":" in model and self._provider != "ollama":
              full_model = model.replace(":", "/", 1)
-        elif self._provider not in ("openai", "unknown"):
-             full_model = f"{self._provider}/{model}"
+        elif self._provider not in ("openai", "unknown") and not (":" in model and self._provider == "ollama"):
+             if not model.startswith(f"{self._provider}/"):
+                  full_model = f"{self._provider}/{model}"
+
+        # Ensure ollama always has prefix if it has a colon
+        if self._provider == "ollama" and ":" in model and not full_model.startswith("ollama/"):
+             full_model = f"ollama/{full_model}"
 
         if hasattr(self._client, "base_url") and self._client.base_url:
             kwargs["api_base"] = str(self._client.base_url)

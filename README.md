@@ -79,7 +79,7 @@ ct-toolkit list-templates
 | :--------------- | :------------------------------------------------------ |
 | **Tests**        | ✅ 293 passed, 3 skipped, 13 warnings (93% coverage)                       |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ Phase 6: Security Patches (v0.3.13: cryptography & requests CVEs)  |
+| **Last Phase**   | ✅ v0.3.14: Fixed Ollama model name colon normalization bug  |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 
 ### Framework & Model Support

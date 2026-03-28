@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.14] - 2026-03-28
+
+### Fixed
+- **Ollama Model Name Normalization** — Fixed a bug where model names containing colons (e.g., `gpt-oss:20b`) were incorrectly converted to use forward slashes (e.g., `gpt-oss/20b`), causing 404 errors in Ollama. The fix ensures tags are preserved while maintaining correct provider prefixing for LiteLLM.
+
+### Changed
+- **Project Status**: Updated project status and test coverage metrics (293 passed, 93% coverage).
+
 ## [0.3.13] - 2026-03-28
 
 ### Security
