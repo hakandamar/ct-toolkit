@@ -70,52 +70,44 @@ print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.
 ## Why CT Toolkit?
 
 <div class="grid cards" markdown>
-
-- :material-shield-lock:{ .lg }
-  **Constitutional Kernels**
-
-  ***
-
-  Define immutable Axiomatic Anchors that never change, and Plastic Commitments that evolve through formal approval.
-  [:octicons-arrow-right-24: Learn about Kernels](concepts/kernels.md)
-
-- :material-chart-bell-curve:{ .lg }
-  **3-Tier Divergence Engine**
-
-  ***
-
-  Layered monitoring from zero-cost L1 embeddings to full L3 identity probes. Detect and block identity drift before it becomes systemic.
-  [:octicons-arrow-right-24: Understand Divergence](concepts/divergence.md)
-
-- :material-sitemap:{ .lg }
-  **Hierarchical Safety**
-
-  ***
-
-  Mother agent constraints propagate to sub-agents as read-only axioms. Prevent small orchestrator deviations from cascading into massive fleet-wide drift.
-  [:octicons-arrow-right-24: Explore Multi-Agent Safety](concepts/multi-agent.md)
-
-- :material-link-lock:{ .lg }
-  **Cryptographic Provenance**
-
-  ***
-
-  Every interaction is signed with HMAC-SHA256 and chained. Provide a regulator-ready audit trail of your agent's identity continuity.
-  [:octicons-arrow-right-24: View Compliance Tools](concepts/provenance.md)
-
-- :material-puzzle:{ .lg }
-  **Framework Middleware**
-
-  ***
-
-  Drop-in support for LangChain, CrewAI, and AutoGen. Add identity protection to your existing agent stack without rewriting a single chain.
-  [:octicons-arrow-right-24: Browse Integrations](integrations/index.md)
-
-- :material-rocket-launch:{ .lg }
-  **Production Ready**
-  ***
-  Tested with latest frontier models and local endpoints. 90%+ test coverage and enterprise-grade security defaults.
-  [:octicons-arrow-right-24: Project Roadmap](reference/project-status.md)
+<ul>
+  <li>
+    <p><strong>Constitutional Kernels</strong></p>
+    <hr />
+    <p>Define immutable Axiomatic Anchors that never change, and Plastic Commitments that evolve through formal approval.</p>
+    <p><a href="concepts/kernels/">Learn about Kernels</a></p>
+  </li>
+  <li>
+    <p><strong>3-Tier Divergence Engine</strong></p>
+    <hr />
+    <p>Layered monitoring from zero-cost L1 embeddings to full L3 identity probes. Detect and block identity drift before it becomes systemic.</p>
+    <p><a href="concepts/divergence/">Understand Divergence</a></p>
+  </li>
+  <li>
+    <p><strong>Hierarchical Safety</strong></p>
+    <hr />
+    <p>Mother agent constraints propagate to sub-agents as read-only axioms. Prevent small orchestrator deviations from cascading into massive fleet-wide drift.</p>
+    <p><a href="concepts/multi-agent/">Explore Multi-Agent Safety</a></p>
+  </li>
+  <li>
+    <p><strong>Cryptographic Provenance</strong></p>
+    <hr />
+    <p>Every interaction is signed with HMAC-SHA256 and chained. Provide a regulator-ready audit trail of your agent's identity continuity.</p>
+    <p><a href="concepts/provenance/">View Compliance Tools</a></p>
+  </li>
+  <li>
+    <p><strong>Framework Middleware</strong></p>
+    <hr />
+    <p>Drop-in support for LangChain, CrewAI, and AutoGen. Add identity protection to your existing agent stack without rewriting a single chain.</p>
+    <p><a href="integrations/">Browse Integrations</a></p>
+  </li>
+  <li>
+    <p><strong>Production Ready</strong></p>
+    <hr />
+    <p>Tested with latest frontier models and local endpoints. 90%+ test coverage and enterprise-grade security defaults.</p>
+    <p><a href="reference/project-status/">Project Roadmap</a></p>
+  </li>
+</ul>
 
 </div>
 
