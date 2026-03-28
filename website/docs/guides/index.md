@@ -3,37 +3,30 @@
 Step-by-step guides for common CT Toolkit use cases.
 
 <div class="grid cards" markdown>
-
-- **Custom Kernels**
-
-  ***
-
-  Define your own axiomatic anchors and plastic commitments in YAML.
-
-  [:octicons-arrow-right-24: Custom Kernels](custom-kernels.md)
-
-- **Custom Templates**
-
-  ***
-
-  Create domain-specific identity templates with custom reference text and keywords.
-
-  [:octicons-arrow-right-24: Custom Templates](custom-templates.md)
-
-- **Advanced Setup**
-
-  ***
-
-  Multi-agent hierarchies, rigorous analysis mode, and secure audit configuration.
-
-  :octicons-arrow-right-24: Advanced Setup
-
-- **Fine-Tuning with CIK**
-
-  ***
-
-  Use `DivergencePenaltyLoss` to preserve identity during PyTorch fine-tuning.
-
-  [:octicons-arrow-right-24: Fine-Tuning](fine-tuning.md)
-
+<ul>
+  <li>
+    <p><strong>Custom Kernels</strong></p>
+    <hr />
+    <p>Define your own axiomatic anchors and plastic commitments in YAML.</p>
+    <p><a href="custom-kernels/">Custom Kernels</a></p>
+  </li>
+  <li>
+    <p><strong>Custom Templates</strong></p>
+    <hr />
+    <p>Create domain-specific identity templates with custom reference text and keywords.</p>
+    <p><a href="custom-templates/">Custom Templates</a></p>
+  </li>
+  <li>
+    <p><strong>Advanced Setup</strong></p>
+    <hr />
+    <p>Multi-agent hierarchies, rigorous analysis mode, and secure audit configuration.</p>
+    <p><a href="enterprise/">Advanced Setup</a></p>
+  </li>
+  <li>
+    <p><strong>Fine-Tuning with CIK</strong></p>
+    <hr />
+    <p>Use <code>DivergencePenaltyLoss</code> to preserve identity during PyTorch fine-tuning.</p>
+    <p><a href="fine-tuning/">Fine-Tuning</a></p>
+  </li>
+</ul>
 </div>

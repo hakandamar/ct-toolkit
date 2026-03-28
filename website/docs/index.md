@@ -56,10 +56,10 @@ CT Toolkit is an open-source security layer that prevents **Sequential Self-Comp
 
 ```python
 # Before
-client = openai.OpenAI()
+# response = openai.OpenAI().chat.completions.create(...)
 
 # After — guardrails, drift detection, and audit log, all automatic
-client = TheseusWrapper(openai.OpenAI())
+client = TheseusWrapper(provider="openai")
 
 response = client.chat("What are your core values?")
 print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.0 = drifted
@@ -71,41 +71,51 @@ print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.
 
 <div class="grid cards" markdown>
 
--   :material-shield-lock:{ .lg }
-    **Constitutional Kernels**
-    ---
-    Define immutable Axiomatic Anchors that never change, and Plastic Commitments that evolve through formal approval.
-    [:octicons-arrow-right-24: Learn about Kernels](concepts/kernels.md)
+- :material-shield-lock:{ .lg }
+  **Constitutional Kernels**
 
--   :material-chart-bell-curve:{ .lg }
-    **3-Tier Divergence Engine**
-    ---
-    Layered monitoring from zero-cost L1 embeddings to full L3 identity probes. Detect and block identity drift before it becomes systemic.
-    [:octicons-arrow-right-24: Understand Divergence](concepts/divergence.md)
+  ***
 
--   :material-sitemap:{ .lg }
-    **Hierarchical Safety**
-    ---
-    Mother agent constraints propagate to sub-agents as read-only axioms. Prevent small orchestrator deviations from cascading into massive fleet-wide drift.
-    [:octicons-arrow-right-24: Explore Multi-Agent Safety](concepts/multi-agent.md)
+  Define immutable Axiomatic Anchors that never change, and Plastic Commitments that evolve through formal approval.
+  [:octicons-arrow-right-24: Learn about Kernels](concepts/kernels.md)
 
--   :material-link-lock:{ .lg }
-    **Cryptographic Provenance**
-    ---
-    Every interaction is signed with HMAC-SHA256 and chained. Provide a regulator-ready audit trail of your agent's identity continuity.
-    [:octicons-arrow-right-24: View Compliance Tools](concepts/provenance.md)
+- :material-chart-bell-curve:{ .lg }
+  **3-Tier Divergence Engine**
 
--   :material-puzzle:{ .lg }
-    **Framework Middleware**
-    ---
-    Drop-in support for LangChain, CrewAI, and AutoGen. Add identity protection to your existing agent stack without rewriting a single chain.
-    [:octicons-arrow-right-24: Browse Integrations](integrations/index.md)
+  ***
 
--   :material-rocket-launch:{ .lg }
-    **Production Ready**
-    ---
-    Tested with latest frontier models and local endpoints. 90%+ test coverage and enterprise-grade security defaults.
-    [:octicons-arrow-right-24: Project Roadmap](reference/project-status.md)
+  Layered monitoring from zero-cost L1 embeddings to full L3 identity probes. Detect and block identity drift before it becomes systemic.
+  [:octicons-arrow-right-24: Understand Divergence](concepts/divergence.md)
+
+- :material-sitemap:{ .lg }
+  **Hierarchical Safety**
+
+  ***
+
+  Mother agent constraints propagate to sub-agents as read-only axioms. Prevent small orchestrator deviations from cascading into massive fleet-wide drift.
+  [:octicons-arrow-right-24: Explore Multi-Agent Safety](concepts/multi-agent.md)
+
+- :material-link-lock:{ .lg }
+  **Cryptographic Provenance**
+
+  ***
+
+  Every interaction is signed with HMAC-SHA256 and chained. Provide a regulator-ready audit trail of your agent's identity continuity.
+  [:octicons-arrow-right-24: View Compliance Tools](concepts/provenance.md)
+
+- :material-puzzle:{ .lg }
+  **Framework Middleware**
+
+  ***
+
+  Drop-in support for LangChain, CrewAI, and AutoGen. Add identity protection to your existing agent stack without rewriting a single chain.
+  [:octicons-arrow-right-24: Browse Integrations](integrations/index.md)
+
+- :material-rocket-launch:{ .lg }
+  **Production Ready**
+  ***
+  Tested with latest frontier models and local endpoints. 90%+ test coverage and enterprise-grade security defaults.
+  [:octicons-arrow-right-24: Project Roadmap](reference/project-status.md)
 
 </div>
 
@@ -113,13 +123,13 @@ print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.
 
 ## Existing guardrails aren't enough
 
-| | Llama-Guard / Rule Engines | **CT Toolkit** |
-|---|---|---|
-| **Stateful drift detection** | ✗ Stateless per-prompt | ✓ Tracks identity over thousands of calls |
-| **Multi-agent hierarchies** | ✗ No hierarchy awareness | ✓ Propagates kernel constraints to sub-agents |
-| **Formal rule evolution** | ✗ Binary block/allow | ✓ Reflective Endorsement with signed approval |
-| **Cryptographic audit trail** | ✗ No provenance | ✓ HMAC hash chain, regulator-ready |
-| **Fine-tuning safety** | ✗ No training constraints | ✓ `DivergencePenaltyLoss` for PyTorch |
+|                               | Llama-Guard / Rule Engines | **CT Toolkit**                                |
+| ----------------------------- | -------------------------- | --------------------------------------------- |
+| **Stateful drift detection**  | ✗ Stateless per-prompt     | ✓ Tracks identity over thousands of calls     |
+| **Multi-agent hierarchies**   | ✗ No hierarchy awareness   | ✓ Propagates kernel constraints to sub-agents |
+| **Formal rule evolution**     | ✗ Binary block/allow       | ✓ Reflective Endorsement with signed approval |
+| **Cryptographic audit trail** | ✗ No provenance            | ✓ HMAC hash chain, regulator-ready            |
+| **Fine-tuning safety**        | ✗ No training constraints  | ✓ `DivergencePenaltyLoss` for PyTorch         |
 
 [:octicons-arrow-right-24: Read the full rationale](concepts/why-ct-toolkit.md)
 
@@ -127,13 +137,13 @@ print(f"Divergence Score: {response.divergence_score:.4f}")  # 0.0 = aligned, 1.
 
 ## Project status
 
-| Metric | Status |
-|:---|:---|
-| **Tests** | ✅ 293/296 passing |
-| **Coverage** | ✅ 89% |
-| **PyPI** | ✅ `pip install ct-toolkit` |
+| Metric        | Status                                                                                                                                                                                                              |
+| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Tests**     | ✅ 293/296 passing                                                                                                                                                                                                  |
+| **Coverage**  | ✅ 89%                                                                                                                                                                                                              |
+| **PyPI**      | ✅ `pip install ct-toolkit`                                                                                                                                                                                         |
 | **Downloads** | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **License** | Apache 2.0 |
-| **Python** | 3.11+ |
+| **License**   | Apache 2.0                                                                                                                                                                                                          |
+| **Python**    | 3.11+                                                                                                                                                                                                               |
 
 [:octicons-arrow-right-24: Full roadmap and status](reference/project-status.md)

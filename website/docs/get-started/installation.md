@@ -157,18 +157,18 @@ Commitments: 4
 
 CT Toolkit's core dependencies:
 
-| Package | Purpose |
-|:---|:---|
-| `litellm` | Unified transport layer (OpenAI, Anthropic, Ollama, etc.) |
-| `instructor` | Structured L2 Judge responses |
-| `numpy` | L1 embedding calculations |
-| `pyyaml` | Kernel and template YAML loading |
-| `pydantic` | Config validation |
-| `cryptography` | HMAC key management |
-| `jinja2` | System prompt templating |
+| Package        | Purpose                                                   |
+| :------------- | :-------------------------------------------------------- |
+| `litellm`      | Unified transport layer (OpenAI, Anthropic, Ollama, etc.) |
+| `instructor`   | Structured L2/L3 judge responses                          |
+| `numpy`        | L1 embedding calculations                                 |
+| `pyyaml`       | Kernel and template YAML loading                          |
+| `pydantic`     | Config validation                                         |
+| `cryptography` | HMAC key management                                       |
+| `jinja2`       | System prompt templating                                  |
 
 !!! note "No heavy ML dependency"
-    CT Toolkit's core does **not** require PyTorch or any ML framework. The `[ml]` extra is only needed for training-time `DivergencePenaltyLoss`.
+CT Toolkit's core does **not** require PyTorch or any ML framework. The `[ml]` extra is only needed for training-time `DivergencePenaltyLoss`.
 
 ---
 

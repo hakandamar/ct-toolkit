@@ -27,14 +27,13 @@ Does it conflict with a Plastic Commitment?
 ## Basic validation
 
 ```python
-import openai
 from ct_toolkit import (
     TheseusWrapper,
     AxiomaticViolationError,
     PlasticConflictError,
 )
 
-client = TheseusWrapper(openai.OpenAI())
+client = TheseusWrapper(provider="openai")
 
 rules_to_test = [
     "Use a more concise response style",           # ✓ passes

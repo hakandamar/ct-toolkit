@@ -17,7 +17,7 @@ config = WrapperConfig(
     vault_path="./military_medical_provenance.db",
 )
 
-client = TheseusWrapper(openai.OpenAI(), config=config)
+client = TheseusWrapper(provider="openai", config=config)
 
 print(f"Compatibility: {client.compatibility.level.value}")
 # → compatible

@@ -143,8 +143,8 @@ def serve(
     kernel: str = typer.Option("general", "--kernel", help="Name of the Constitutional Kernel to use."),
     template: str = typer.Option("general", "--template", help="Name of the Identity Template to use."),
     vault_path: str = typer.Option("./ct_provenance.db", "--vault", help="Path to the provenance log database."),
-    judge_provider: str = typer.Option("openai", "--judge-provider", help="LLM provider for the L2 judge."),
-    judge_model: Optional[str] = typer.Option(None, "--judge-model", help="Model ID for the L2 judge."),
+    judge_provider: str = typer.Option("openai", "--judge-provider", help="LLM provider for L2/L3 judge calls."),
+    judge_model: Optional[str] = typer.Option(None, "--judge-model", help="Model ID for L2/L3 judge calls."),
 ):
     """Start the CT-Toolkit Guardrail Server for LiteLLM integration."""
     console.print(f"Starting Guardrail Server...")
@@ -157,6 +157,8 @@ def serve(
             kernel_name=kernel,
             template=template,
             vault_path=vault_path,
+            judge_provider=judge_provider,
+            judge_model=judge_model,
             project_root=Path.cwd()
         )
         wrapper = TheseusWrapper(provider=judge_provider, config=config)

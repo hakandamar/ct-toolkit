@@ -60,4 +60,4 @@ CT Toolkit works with any provider supported by LiteLLM:
 | **LM Studio** | ✅ Local | Any model via OpenAI-compatible API |
 | **Cohere** | ✅ Native | Command-R |
 | **Groq** | ✅ Speed | Llama 3.1 70B |
-| **Any OpenAI-compatible** | ✅ | Pass `base_url` to the client |
+| **Any OpenAI-compatible** | ✅ | Pass `base_url` and set the matching `provider` on `TheseusWrapper` |

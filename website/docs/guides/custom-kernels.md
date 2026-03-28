@@ -101,7 +101,7 @@ config = WrapperConfig(
     template="finance",
 )
 
-wrapper = TheseusWrapper(openai.OpenAI(), config=config)
+wrapper = TheseusWrapper(provider="openai", config=config)
 print(wrapper.kernel.name)  # finance_strict
 ```
 

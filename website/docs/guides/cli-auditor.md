@@ -35,9 +35,9 @@ ct-toolkit audit --url <PROVIDER_URL> --kernel <KERNEL_NAME> [OPTIONS]
 **Options:**
 
 - `--url`: The base URL of the LLM provider (e.g., `http://localhost:11434/v1` for Ollama).
-- `--kernel`: Name of the Constitutional Kernel to use (default: `default`).
+- `--kernel`: Name of the Constitutional Kernel to use (default: `general`).
 - `--template`: Identity template for embedding comparison (default: `general`).
-- `--model`: Specific model name to request (default: `l3-auditor`).
+- `--model`: Specific model name to request (default is provider-dependent, e.g. `gpt-4o-mini` for OpenAI).
 
 **Example: Auditing a local Ollama model**
 
@@ -83,7 +83,7 @@ Upon startup, the CLI greets you with the **Theseus Guard** banner, ensuring you
     | |  | |  | | |____ ____) | |____| |__| |____) | | |__| | |__| |/ ____ \
     |_|  |_|  |_|______|_____/|______|_____/|_____/   \_____|\____//_/    \_\
 
-  computational theseus toolkit (ct toolkit) v0.3.5
+  computational theseus toolkit (ct toolkit) v0.3.19
   identity continuity guardrails for agentic systems
 ```
 
@@ -93,9 +93,7 @@ Upon startup, the CLI greets you with the **Theseus Guard** banner, ensuring you
 
 When an audit runs, the CLI provides a detailed table of results and a final **Identity Health Score**:
 
-![CLI Audit Output](../assets/cli_audit_demo.png)
-
-_(Note: The above image represents the terminal output. An actual audit will show PASSED/FAILED status for each probe category.)_
+_(Representative screenshot removed from docs assets. Run `ct-toolkit audit ...` to see the live terminal table output with PASSED/FAILED probe rows.)_
 
 ### Interpreting Results:
 

@@ -32,7 +32,7 @@ Understanding CT Toolkit's architecture helps you use it effectively. Start here
 
     ---
 
-    The three-tier analysis pipeline: L1 ECS → L2 Judge → L3 ICM.
+    The three-tier analysis pipeline: L1 ECS → L2 LLM-as-judge → L3 ICM.
 
     [:octicons-arrow-right-24: Divergence Engine](divergence.md)
 

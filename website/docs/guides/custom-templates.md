@@ -108,5 +108,5 @@ config = WrapperConfig(
     project_root=Path(__file__).parent,
 )
 
-wrapper = TheseusWrapper(openai.OpenAI(), config=config)
+wrapper = TheseusWrapper(provider="openai", config=config)
 ```

@@ -7,12 +7,12 @@ The main entry point. A transparent proxy that wraps any LLM client with identit
 ```python
 from ct_toolkit import TheseusWrapper, WrapperConfig
 
-# Simplest form — wraps existing client
-wrapper = TheseusWrapper(openai.OpenAI())
+# Simplest form — provider-only
+wrapper = TheseusWrapper(provider="openai")
 
 # With full config
 wrapper = TheseusWrapper(
-    openai.OpenAI(),
+    provider="openai",
     config=WrapperConfig(
         template="finance",
         kernel_name="finance",

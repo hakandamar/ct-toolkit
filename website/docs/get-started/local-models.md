@@ -40,13 +40,13 @@ ollama pull qwen2.5:7b      # Alibaba Qwen 2.5
 import openai
 from ct_toolkit import TheseusWrapper
 
-# Point to local Ollama endpoint
+# Point to local Ollama endpoint (/v1 and non-/v1 are both supported)
 client = openai.OpenAI(
     base_url="http://localhost:11434/v1",
     api_key="ollama",  # Required by the SDK, not validated by Ollama
 )
 
-wrapper = TheseusWrapper(client)
+wrapper = TheseusWrapper(client=client, provider="ollama")
 
 response = wrapper.chat(
     "What are your core values?",
@@ -58,7 +58,7 @@ print(f"Divergence: {response.divergence_score:.4f}")
 ```
 
 !!! tip "Using Ollama's embedding API for better L1 accuracy"
-    If you have an embedding model pulled, pass it explicitly:
+If you have an embedding model pulled, pass it explicitly:
 
     ```python
     from ct_toolkit import TheseusWrapper, WrapperConfig
@@ -73,7 +73,7 @@ print(f"Divergence: {response.divergence_score:.4f}")
         embedding_model="nomic-embed-text",  # ollama pull nomic-embed-text
     )
 
-    wrapper = TheseusWrapper(embedding_client, config=config)
+    wrapper = TheseusWrapper(client=embedding_client, provider="ollama", config=config)
     ```
 
 ---
@@ -132,19 +132,19 @@ wrapper = TheseusWrapper(provider="openai")
 ```
 
 !!! note "Embedding quality"
-    The keyword fallback is sufficient for basic drift detection. For production deployments or high-stakes systems, we recommend providing a real embedding client for more accurate L1 scores.
+The keyword fallback is sufficient for basic drift detection. For production deployments or high-stakes systems, we recommend providing a real embedding client for more accurate L1 scores.
 
 ---
 
 ## Tested local models
 
-| Model | Provider | Notes |
-|:---|:---|:---|
-| `llama3` | Ollama | Fully tested, good baseline |
-| `mistral` | Ollama | Fast, good for L2 judge |
-| `qwen2.5:7b` | Ollama | Strong reasoning chain support |
+| Model                  | Provider  | Notes                             |
+| :--------------------- | :-------- | :-------------------------------- |
+| `llama3`               | Ollama    | Fully tested, good baseline       |
+| `mistral`              | Ollama    | Fast, good for L2/L3 judge paths  |
+| `qwen2.5:7b`           | Ollama    | Strong reasoning chain support    |
 | `qwen/qwen3-coder-30b` | LM Studio | Tested with `<think>` tag parsing |
-| `phi3` | Ollama | Lightweight, good for sub-agents |
+| `phi3`                 | Ollama    | Lightweight, good for sub-agents  |
 
 ---
 
@@ -165,5 +165,5 @@ For local endpoints, pass the client directly:
 import openai
 
 local_client = openai.OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
-wrapper = TheseusWrapper(local_client)
+wrapper = TheseusWrapper(client=local_client, provider="ollama")
 ```

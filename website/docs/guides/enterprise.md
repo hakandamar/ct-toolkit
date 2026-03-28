@@ -7,7 +7,9 @@ For high-stakes environments, you can enforce all three divergence tiers on ever
 ```python
 config = WrapperConfig(
     rigorous_mode=True,
-    judge_client=openai.OpenAI(),
+    judge_client=openai.OpenAI(base_url="http://localhost:11434/v1", api_key="ollama"),
+    judge_provider="ollama",
+    judge_model="mistral",
     divergence_l1_threshold=0.10,
     divergence_l2_threshold=0.20,
     divergence_l3_threshold=0.40,
@@ -19,13 +21,13 @@ config = WrapperConfig(
 ```python
 # Manager agent
 manager = TheseusWrapper(
-    openai.OpenAI(),
+    provider="openai",
     config=WrapperConfig(kernel_name="defense", template="defense")
 )
 
 # Worker inherits manager's constraints
 worker = TheseusWrapper(
-    openai.OpenAI(),
+    provider="openai",
     config=WrapperConfig(parent_kernel=manager.kernel)
 )
 ```

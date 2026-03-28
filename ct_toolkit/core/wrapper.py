@@ -68,7 +68,8 @@ class WrapperConfig:
     judge_provider: str | None = None # Explicit provider for L2/L3 judge (e.g. "ollama")
     embedding_client: Any = None     # Client for L1 ECS embedding (falls back to main client if compatible)
     embedding_model: str = "text-embedding-3-small"
-    enterprise_mode: bool = False    # Run all tiers all the time
+    rigorous_mode: bool | None = None # Preferred name for running all tiers every call
+    enterprise_mode: bool = False    # Deprecated alias for rigorous_mode
     parent_kernel: ConstitutionalKernel | None = None  # Propagated from mother agent
     
     # -- Auto-Correction Loop --
@@ -151,6 +152,20 @@ class TheseusWrapper:
             kernel_name=kernel_name,
             project_root=project_root,
         )
+
+        # Backward compatibility: rigorous_mode is the new name for enterprise_mode.
+        if self._config.rigorous_mode is not None:
+            if self._config.enterprise_mode != self._config.rigorous_mode:
+                logger.warning(
+                    "Both `rigorous_mode` and deprecated `enterprise_mode` were provided with different values. "
+                    "Using `rigorous_mode` value."
+                )
+            self._config.enterprise_mode = self._config.rigorous_mode
+        elif self._config.enterprise_mode:
+            logger.warning(
+                "`enterprise_mode` is deprecated and will be removed in a future release. "
+                "Please use `rigorous_mode` instead."
+            )
         
         if client is None and provider is None:
             # Default to openai if nothing specified

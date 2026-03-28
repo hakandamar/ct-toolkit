@@ -75,14 +75,13 @@ This guide gets you from zero to a fully protected agent in **under 5 minutes**.
 Create a file called `main.py`:
 
 ```python
-import openai
 from ct_toolkit import TheseusWrapper
 
-# Before: standard client
-# client = openai.OpenAI()
+# Before: direct provider calls in your app
+# response = openai.OpenAI().chat.completions.create(...)
 
-# After: two characters changed, full protection enabled
-client = TheseusWrapper(openai.OpenAI())
+# After: wrap with provider-level guardrails
+client = TheseusWrapper(provider="openai")
 
 response = client.chat("Why is AI safety important?")
 
@@ -142,7 +141,7 @@ CT Toolkit blocks instructions that violate your agent's core identity:
 ```python
 from ct_toolkit import TheseusWrapper, AxiomaticViolationError, PlasticConflictError
 
-client = TheseusWrapper(openai.OpenAI())
+client = TheseusWrapper(provider="openai")
 
 # This will raise AxiomaticViolationError — cannot be overridden
 try:

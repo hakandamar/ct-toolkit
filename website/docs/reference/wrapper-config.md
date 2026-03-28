@@ -12,7 +12,7 @@ config = WrapperConfig(
     log_requests=True,
 )
 
-wrapper = TheseusWrapper(openai.OpenAI(), config=config)
+wrapper = TheseusWrapper(provider="openai", config=config)
 ```
 
 ---
@@ -31,11 +31,11 @@ wrapper = TheseusWrapper(openai.OpenAI(), config=config)
 
 ### Divergence thresholds
 
-| Parameter                 | Type    | Default | Description                                           |
-| :------------------------ | :------ | :------ | :---------------------------------------------------- |
-| `divergence_l1_threshold` | `float` | `0.15`  | L1 ECS score above which an `l1_warning` is issued.   |
-| `divergence_l2_threshold` | `float` | `0.30`  | L1 score above which the L2 LLM Judge is triggered.   |
-| `divergence_l3_threshold` | `float` | `0.50`  | L1 score above which the L3 ICM battery is triggered. |
+| Parameter                 | Type    | Default | Description                                                 |
+| :------------------------ | :------ | :------ | :---------------------------------------------------------- |
+| `divergence_l1_threshold` | `float` | `0.15`  | L1 ECS score above which an `l1_warning` is issued.         |
+| `divergence_l2_threshold` | `float` | `0.30`  | L1 score above which the L2 LLM-as-judge path is triggered. |
+| `divergence_l3_threshold` | `float` | `0.50`  | L1 score above which the L3 ICM battery is triggered.       |
 
 !!! tip "Stricter thresholds for critical systems"
 For medical, financial, or defense applications, use tighter thresholds:
@@ -51,7 +51,9 @@ For medical, financial, or defense applications, use tighter thresholds:
 
 | Parameter          | Type   | Default                    | Description                                                                        |
 | :----------------- | :----- | :------------------------- | :--------------------------------------------------------------------------------- |
-| `judge_client`     | `Any`  | `None`                     | Separate LLM client for L2/L3 analysis. Required to enable L2 and L3.              |
+| `judge_client`     | `Any`  | `None`                     | Separate LLM client for L2/L3 analysis.                                            |
+| `judge_provider`   | `str`  | `None`                     | Explicit provider for judge calls (for example, `"ollama"`).                       |
+| `judge_model`      | `str`  | `None`                     | Explicit model for judge calls (shared by L2 and L3 judge paths).                  |
 | `embedding_client` | `Any`  | `None`                     | Client for real embedding API calls (L1). Falls back to keyword vectors if `None`. |
 | `embedding_model`  | `str`  | `"text-embedding-3-small"` | Embedding model name.                                                              |
 | `strict_embedding` | `bool` | `False`                    | If `True`, raises `RuntimeError` when embedding API fails instead of falling back. |
@@ -76,7 +78,9 @@ For medical, financial, or defense applications, use tighter thresholds:
 config = WrapperConfig(
     auto_correction=True,
     max_correction_retries=2,
-    judge_client=openai.OpenAI(),  # Required for L2
+    judge_client=openai.OpenAI(base_url="http://localhost:11434/v1", api_key="ollama"),
+    judge_provider="ollama",
+    judge_model="mistral",
 )
 ```
 
@@ -148,10 +152,13 @@ config = WrapperConfig(
 
 Enables simultaneous L1, L2, and L3 scanning to ensure maximum identity alignment:
 
+`rigorous_mode` is the preferred flag. `enterprise_mode` is still accepted for backward compatibility but is deprecated and may be removed in a future release.
+
 ```python
 config = WrapperConfig(
     rigorous_mode=True,
-    judge_client=openai.OpenAI(),
+    judge_provider="openai",
+    judge_model="gpt-4o-mini",
 )
 ```
 
@@ -174,7 +181,7 @@ import openai
 from ct_toolkit import TheseusWrapper, WrapperConfig
 from ct_toolkit.divergence.scheduler import RiskProfile
 
-judge = openai.OpenAI()  # Can be a different model/provider
+judge = openai.OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")  # Can be a different provider/endpoint
 
 config = WrapperConfig(
     # Identity
@@ -188,6 +195,8 @@ config = WrapperConfig(
 
     # Use a separate judge model
     judge_client=judge,
+    judge_provider="ollama",
+    judge_model="mistral",
 
     # Vault
     vault_path="./clinical_provenance.db",
@@ -206,5 +215,5 @@ config = WrapperConfig(
     risk_profile=RiskProfile(has_tool_calling=True),
 )
 
-wrapper = TheseusWrapper(openai.OpenAI(), config=config)
+wrapper = TheseusWrapper(provider="openai", config=config)
 ```

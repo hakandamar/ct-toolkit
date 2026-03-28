@@ -1576,7 +1576,7 @@
   <span class="md-ellipsis">
     
   
-    Enterprise Setup
+    Advanced Setup
   
 
     
@@ -2551,9 +2551,9 @@
 <p><strong>Options:</strong></p>
 <ul>
 <li><code>--url</code>: The base URL of the LLM provider (e.g., <code>http://localhost:11434/v1</code> for Ollama).</li>
-<li><code>--kernel</code>: Name of the Constitutional Kernel to use (default: <code>default</code>).</li>
+<li><code>--kernel</code>: Name of the Constitutional Kernel to use (default: <code>general</code>).</li>
 <li><code>--template</code>: Identity template for embedding comparison (default: <code>general</code>).</li>
-<li><code>--model</code>: Specific model name to request (default: <code>l3-auditor</code>).</li>
+<li><code>--model</code>: Specific model name to request (default is provider-dependent, e.g. <code>gpt-4o-mini</code> for OpenAI).</li>
 </ul>
 <p><strong>Example: Auditing a local Ollama model</strong></p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ct-toolkit<span class="w"> </span>audit<span class="w"> </span>--url<span class="w"> </span>http://localhost:11434/v1<span class="w"> </span>--kernel<span class="w"> </span>defense
@@ -2580,14 +2580,13 @@
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    | |  | |  | | |____ ____) | |____| |__| |____) | | |__| | |__| |/ ____ \
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    |_|  |_|  |_|______|_____/|______|_____/|_____/   \_____|\____//_/    \_\
 </span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>  computational theseus toolkit (ct toolkit) v0.3.5
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>  computational theseus toolkit (ct toolkit) v0.3.19
 </span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  identity continuity guardrails for agentic systems
 </span></code></pre></div>
 <hr />
 <h2 id="example-output">Example Output<a class="headerlink" href="#example-output" title="Permanent link">&para;</a></h2>
 <p>When an audit runs, the CLI provides a detailed table of results and a final <strong>Identity Health Score</strong>:</p>
-<p><img alt="CLI Audit Output" src="../assets/cli_audit_demo.png" /></p>
-<p><em>(Note: The above image represents the terminal output. An actual audit will show PASSED/FAILED status for each probe category.)</em></p>
+<p><em>(Representative screenshot removed from docs assets. Run <code>ct-toolkit audit ...</code> to see the live terminal table output with PASSED/FAILED probe rows.)</em></p>
 <h3 id="interpreting-results">Interpreting Results:<a class="headerlink" href="#interpreting-results" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Health Score</strong>: 0% to 100%. A score below 80% usually indicates significant <a href="../../concepts/identity-continuity/">Identity Drift</a>.</li>
