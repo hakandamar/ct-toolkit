@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.17] - 2026-03-28
+
+### Changed
+- **Unified Ollama Routing** — Refactored `LLMJudge` (L2) to use `instructor.from_litellm(litellm.completion)`. This eliminates the "Technical Paradox" where different tiers required different URL suffix treatments. Both L2 and L3 now use LiteLLM for routing, which correctly handles Ollama's root endpoint requirements.
+
+### Fixed
+- **Ollama 404 in L2 Judge**: Resolved the issue where the OpenAI compatibility layer required a `/v1` suffix that the engine was stripping. By switching to LiteLLM, the stripped URL is now handled correctly across all tiers.
+
 ## [0.3.16] - 2026-03-28
 
 ### Added

@@ -19,6 +19,7 @@ from enum import Enum
 from typing import Any
 from pydantic import BaseModel, Field
 import instructor
+import litellm
 from jinja2 import Template
 
 from ct_toolkit.utils.logger import get_logger
@@ -103,26 +104,22 @@ class LLMJudge:
         self._provider = provider
         self._model = model or self._default_model(provider)
         
-        # Fix for Ollama: Strip /v1 from base_url if present
+        # Fix for Ollama: LiteLLM's native Ollama provider expects root port (no /v1)
+        self._api_base = None
         if provider == "ollama" and hasattr(client, "base_url"):
             base_url = str(client.base_url).rstrip("/")
             if base_url.endswith("/v1"):
-                new_base = base_url[:-3]
-                logger.debug(f"Stripping /v1 from Ollama judge base_url: {base_url} -> {new_base}")
-                try:
-                    import httpx
-                    client.base_url = httpx.URL(new_base)
-                except ImportError:
-                    client.base_url = new_base
+                self._api_base = base_url[:-3]
+                logger.debug(f"Stripping /v1 from Ollama judge api_base: {base_url} -> {self._api_base}")
+            else:
+                self._api_base = base_url
+        elif hasattr(client, "base_url"):
+            self._api_base = str(client.base_url)
 
-        # Patch client with instructor based on provider
-        if provider == "openai":
-            self._instructor_client = instructor.from_openai(client)
-        elif provider == "anthropic":
-            self._instructor_client = instructor.from_anthropic(client)
-        else:
-            # Fallback to standard patch for other providers (e.g. Ollama)
-            self._instructor_client = instructor.patch(client)
+        self._api_key = getattr(client, "api_key", None)
+
+        # Use instructor with litellm for unified provider support
+        self._instructor_client = instructor.from_litellm(litellm.completion)
 
     @staticmethod
     def _default_model(provider: str) -> str:
@@ -149,27 +146,51 @@ class LLMJudge:
             request_text=request_text[:1000],
         )
 
+        full_model = self._model
+        # Prevent colon-to-slash replacement if model already has ollama/ prefix 
+        # or if the provider is specifically ollama
+        is_ollama = (self._provider == "ollama" or self._model.startswith("ollama/"))
+
+        if ":" in self._model and not is_ollama:
+             full_model = self._model.replace(":", "/", 1)
+        elif self._provider not in ("openai", "unknown") and not is_ollama:
+             if not self._model.startswith(f"{self._provider}/"):
+                  full_model = f"{self._provider}/{self._model}"
+
+        # Ensure ollama always has prefix if it has a colon
+        if self._provider == "ollama" and ":" in self._model and not full_model.startswith("ollama/"):
+             full_model = f"ollama/{full_model}"
+
         try:
+            kwargs: dict[str, Any] = {
+                "model": full_model,
+                "response_model": JudgeResponse,
+                "max_retries": 2,
+            }
+
+            if self._api_base:
+                kwargs["api_base"] = self._api_base
+            if self._api_key:
+                kwargs["api_key"] = self._api_key
+
             # Call using instructor for structured data
             if self._provider == "anthropic":
-                data: JudgeResponse = self._instructor_client.messages.create(
-                    model=self._model,
-                    response_model=JudgeResponse,
-                    system=system_prompt,
-                    messages=[
-                        {"role": "user", "content": user_prompt},
-                    ],
-                    max_retries=2
-                )
-            else:
+                # Anthropic LiteLLM requires system prompt in extra_body or via specific messages call
+                # But instructor.from_litellm handles standard messages list
                 data: JudgeResponse = self._instructor_client.chat.completions.create(
-                    model=self._model,
-                    response_model=JudgeResponse,
+                    **kwargs,
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt},
                     ],
-                    max_retries=2
+                )
+            else:
+                data: JudgeResponse = self._instructor_client.chat.completions.create(
+                    **kwargs,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
                 )
             
             result = JudgeResult(
