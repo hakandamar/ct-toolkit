@@ -19,11 +19,21 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import instructor
 import litellm
+from pydantic import BaseModel, Field
 
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+
+# ── Pydantic Models for Structured Responses ────────────────────────────────
+
+class ProbeResponse(BaseModel):
+    """Pydantic model for structured probe response with graceful fallback."""
+    content: str = Field(..., description="Model's response text")
+    reasoning: str = Field(default="", description="Model's reasoning if provided")
 
 
 # ── Data Models ─────────────────────────────────────────────────────────────
@@ -221,6 +231,9 @@ class ICMRunner:
         self._include_domain = include_domain_probes
         self._project_root = project_root
         self._max_probes = max_probes
+        
+        # Use instructor with litellm for structured response validation
+        self._instructor_client = instructor.from_litellm(litellm.completion)
 
     @staticmethod
     def _default_model(provider: str) -> str:
@@ -322,35 +335,93 @@ class ICMRunner:
     # ── Model Call ──────────────────────────────────────────────────────────
 
     def _call_model(self, prompt: str) -> str:
+        """
+        Calls model with structured response validation and graceful fallback.
+        
+        L3 Graceful Fallback Strategy:
+          1. Try structured call via instructor (validates against ProbeResponse schema)
+          2. If validation fails (e.g., JSON parse error), fall back to raw completion
+          3. If raw completion fails, return safe error placeholder
+        
+        This mirrors L2 Judge's approach, preventing "parse failure = hard error" behavior.
+        """
         system = self._kernel.get_system_prompt_injection()
+        full_model = self._format_model_name()
+        
+        user_content = (
+            f"{prompt}\n\n"
+            "Please provide your reasoning step-by-step wrapped in <think></think> tags "
+            "before your final response."
+        )
 
-        # LiteLLM format
+        kwargs = self._build_litellm_kwargs(full_model, system, user_content)
+
+        # ── Attempt 1: Structured call with instructor validation ────────
+        try:
+            logger.debug(f"L3 ICM attempting structured validation for model {full_model}")
+            response: ProbeResponse = self._instructor_client.chat.completions.create(
+                **kwargs,
+                response_model=ProbeResponse,
+                max_retries=1,
+            )
+            
+            # Combine reasoning and content into full response
+            full_response = f"<think>{response.reasoning}</think>\n{response.content}" \
+                if response.reasoning else response.content
+            logger.debug(f"L3 ICM structured call succeeded")
+            return full_response
+            
+        except Exception as e:
+            logger.warning(
+                f"L3 ICM structured validation failed (likely JSON/tool-call parse error): {e}. "
+                f"Falling back to raw completion."
+            )
+            
+            # ── Attempt 2: Raw litellm.completion without structured validation ────────
+            try:
+                resp = litellm.completion(**kwargs)
+                content = self._extract_response_content(resp)
+                logger.info(f"L3 ICM raw fallback succeeded")
+                return content
+                
+            except Exception as fallback_e:
+                # ── Attempt 3: Safe error response ────────
+                logger.error(
+                    f"L3 ICM both structured and raw calls failed: "
+                    f"structured={type(e).__name__}, raw={type(fallback_e).__name__}. "
+                    f"Returning error placeholder for graceful degradation."
+                )
+                return "[ERROR: Model call failed, unable to assess response]"
+
+    def _format_model_name(self) -> str:
+        """Format model name according to provider conventions."""
         full_model = self._model
-        # Prevent colon-to-slash replacement if model already has ollama/ prefix 
-        # or if the provider is specifically ollama
         is_ollama = (self._provider == "ollama" or self._model.startswith("ollama/"))
-
+        
         if ":" in self._model and not is_ollama:
-             full_model = self._model.replace(":", "/", 1)
+            full_model = self._model.replace(":", "/", 1)
         elif self._provider not in ("openai", "unknown") and not is_ollama:
-             if not self._model.startswith(f"{self._provider}/"):
-                  full_model = f"{self._provider}/{self._model}"
-
-        # Ensure ollama always has prefix if it has a colon
+            if not self._model.startswith(f"{self._provider}/"):
+                full_model = f"{self._provider}/{self._model}"
+        
         if self._provider == "ollama" and ":" in self._model and not full_model.startswith("ollama/"):
-             full_model = f"ollama/{full_model}"
+            full_model = f"ollama/{full_model}"
+        
+        return full_model
 
+    def _build_litellm_kwargs(self, full_model: str, system: str, user_content: str) -> dict[str, Any]:
+        """Build kwargs for litellm call."""
         kwargs: dict[str, Any] = {
             "model": full_model,
             "messages": [
                 {"role": "system", "content": system},
-                {"role": "user", "content": f"{prompt}\n\nPlease provide your reasoning step-by-step wrapped in <think></think> tags before your final response."},
+                {"role": "user", "content": user_content},
             ],
             "max_tokens": 512,
             "temperature": 0.0,
         }
-
-        # Extract connection info from client if possible
+        
+        # Extract connection info from client
         if hasattr(self._client, "base_url") and self._client.base_url:
             api_base = str(self._client.base_url).rstrip("/")
             if self._provider == "ollama" and api_base.endswith("/v1"):
@@ -358,31 +429,30 @@ class ICMRunner:
                 logger.debug(f"Stripping /v1 from Ollama api_base (ICM): {api_base} -> {new_base}")
                 api_base = new_base
             kwargs["api_base"] = api_base
-            
+        
         if hasattr(self._client, "api_key") and self._client.api_key:
             kwargs["api_key"] = self._client.api_key
-            
-        try:
-            resp = litellm.completion(**kwargs)
-            
-            # Extract content from LiteLLM response
-            if hasattr(resp, "choices") and resp.choices:
-                choice = resp.choices[0]
-                if hasattr(choice, "message") and choice.message:
-                    return choice.message.content or ""
-            
-            # Fallback
-            if isinstance(resp, dict):
-                if "choices" in resp and resp["choices"]:
-                    return resp["choices"][0].get("message", {}).get("content", "")
-                if "message" in resp:
-                    return resp["message"].get("content", "")
-                return str(resp)
+        
+        return kwargs
 
+    @staticmethod
+    def _extract_response_content(resp: Any) -> str:
+        """Extract text content from litellm response object."""
+        # Handle object response with .choices attribute
+        if hasattr(resp, "choices") and resp.choices:
+            choice = resp.choices[0]
+            if hasattr(choice, "message") and choice.message:
+                return choice.message.content or ""
+        
+        # Handle dict response
+        if isinstance(resp, dict):
+            if "choices" in resp and resp["choices"]:
+                return resp["choices"][0].get("message", {}).get("content", "")
+            if "message" in resp:
+                return resp["message"].get("content", "")
             return str(resp)
-        except Exception as e:
-            logger.error(f"ICM probe litellm call failed: {e}")
-            raise
+        
+        return str(resp)
 
     # ── Probe Loading ──────────────────────────────────────────────────────────
 

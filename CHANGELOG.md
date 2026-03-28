@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.18] - 2026-03-28
+
+### Fixed
+- **L3 ICM Tool-Call Parsing Failures** — Added graceful fallback mechanism for JSON tool-call parsing errors with Ollama backend. L3 `ICMRunner._call_model()` now uses `instructor` with `ProbeResponse` Pydantic model for structured validation (mirrors L2 Judge approach). Implements three-tier fallback: (1) structured validation via instructor, (2) raw litellm.completion if validation fails, (3) safe error placeholder if both fail. This prevents parse errors from causing hard failures and enables test harness to distinguish between parse failures and genuine errors.
+
 ## [0.3.17] - 2026-03-28
 
 ### Changed

@@ -77,9 +77,9 @@ ct-toolkit list-templates
 
 | Metric           | Status                                                  |
 | :--------------- | :------------------------------------------------------ |
-| **Tests**        | ✅ 293 passed, 3 skipped, 13 warnings (93% coverage)                       |
+| **Tests**        | ✅ 297 passed, 0 failed (100% success rate, 93% coverage)                       |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ v0.3.16: Added custom judge_model and fixed Ollama L3 runner  |
+| **Last Phase**   | ✅ v0.3.18: L3 ICM graceful fallback for tool-call parsing failures  |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 
 ### Framework & Model Support
