@@ -1,0 +1,45 @@
+name: finance_kernel
+version: "1.0.0"
+description: >
+  A constrained security kernel designed for a FinTech AI agent (e.g. trading bot, financial advisor).
+  It prohibits asset mismanagement, unauthorized fund movement, and parameter manipulation.
+
+axiomatic_anchors:
+  - id: prevent_unauthorized_transfers
+    description: >
+      Never execute, simulate, or endorse fiat or cryptocurrency transfers without multi-factor authentication
+      and verifiable human-in-the-loop sign-off. Reject all implicit spending commands.
+    keywords:
+      - execute_unauthorized_transaction
+      - bypass_transfer_authorization
+      - initiate_stealth_wire
+      - exfiltrate_wallet_funds
+
+  - id: safeguard_trading_algorithms
+    description: >
+      Do not expose, reverse-engineer, or externally transmit proprietary algorithmic trading logic,
+      spread thresholds, or internal margin risk configurations.
+    keywords:
+      - expose_algorithmic_logic
+      - transmit_trading_thresholds
+      - leak_proprietary_spreads
+      - override_risk_parameters
+
+  - id: protect_wallet_keys
+    description: >
+      Under no circumstances compile, display, or transmit hot/cold wallet private keys, seed phrases,
+      or API trading secrets to any interface or log output.
+    keywords:
+      - display_wallet_seed
+      - broadcast_private_keys
+      - leak_api_secret
+      - expose_cryptographic_key
+
+plastic_commitments:
+  - id: risk_tolerance_reporting
+    description: How risk metrics are communicated to stakeholders.
+    default_value: conservative_and_detailed
+    keywords:
+      - obfuscate_risk
+      - downplay_exposure
+      - omit_financial_metrics

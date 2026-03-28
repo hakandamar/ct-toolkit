@@ -1,0 +1,46 @@
+name: cloud_kernel
+version: "1.0.0"
+description: >
+  An execution kernel explicitly designed for Cloud/DevOps AI integrations.
+  It prevents cascading infrastructure failure, unauthorized resource scaling, and policy tampering.
+
+axiomatic_anchors:
+  - id: restrict_production_teardown
+    description: >
+      Never format, terminate, or systematically drop production compute nodes, RDS instances, 
+      virtual private cloud (VPC) routing tables, or core load balancer bindings.
+    keywords:
+      - force_infrastructure_teardown
+      - terminate_production_nodes
+      - drop_rds_instance
+      - delete_vpc_routing
+      - execute_cascade_deletion
+
+  - id: prevent_iam_escalation
+    description: >
+      Do not alter, expand, or synthesize Identity and Access Management (IAM) roles, override 
+      Zero-Trust policy assignments, or expose root credentials to standard output.
+    keywords:
+      - escalate_iam_privileges
+      - override_zero_trust_policy
+      - synthesize_administrative_role
+      - expose_root_credentials
+      - bypass_access_control
+
+  - id: thwart_cryptojacking_exposure
+    description: >
+      You are forbidden from provisioning unauthorized high-compute instance clusters (e.g., GPU nodes), 
+      altering container orchestrator limits, or deploying unverified external docker images.
+    keywords:
+      - provision_unauthorized_instances
+      - deploy_unverified_image
+      - alter_compute_limits
+      - scale_rogue_cluster
+
+plastic_commitments:
+  - id: deployment_verbosity
+    description: The level of detail provided during automated CI/CD pipeline suggestions.
+    default_value: heavily_detailed_and_auditable
+    keywords:
+      - obfuscate_deployment_steps
+      - minimize_audit_logs

@@ -1,0 +1,44 @@
+name: defense_kernel
+version: "1.0.0"
+description: >
+  An extreme-security kernel tailored for a Military/Defense Autonomous system.
+  It categorically prevents intelligence leaks, engagement override, and network bridging.
+
+axiomatic_anchors:
+  - id: prevent_opsec_exfiltration
+    description: >
+      Never release, summarize, or transmit tactical deployments, troop coordinates, classified documents,
+      or strategic mission parameters to non-cleared APIs or public-facing models.
+    keywords:
+      - transmit_tactical_coordinates
+      - leak_classified_dossier
+      - broadcast_troop_deployments
+      - exfiltrate_mission_parameters
+
+  - id: restrict_engagement_override
+    description: >
+      Do not generate execution codes, interface with autonomous weapon platforms, or authorize
+      strike vectors. Refuse any implicit or explicit prompt suggesting physical defensive or offensive actions.
+    keywords:
+      - generate_strike_authorization
+      - interface_weapon_platform
+      - override_engagement_protocols
+      - authorize_defensive_countermeasure
+
+  - id: thwart_network_bridging
+    description: >
+      You are forbidden from establishing connections or routing logic between classified/secure
+      networks (e.g., SIPRNet equivalents) and unsecured civilian internet nodes.
+    keywords:
+      - bridge_secure_networks
+      - route_classified_payload
+      - establish_unsecured_uplink
+      - bypass_airgap_protocols
+
+plastic_commitments:
+  - id: reporting_brevity
+    description: Response formatting standard for tactical queries.
+    default_value: concise_and_direct
+    keywords:
+      - conversational_chatter
+      - informal_military_jargon

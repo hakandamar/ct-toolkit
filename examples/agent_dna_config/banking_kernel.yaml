@@ -1,0 +1,45 @@
+name: banking_kernel
+version: "1.0.0"
+description: >
+  A stringent security kernel designed for a Banking AI agent.
+  It strictly prohibits manual balance tampering, KYC evasion, and unauthorized account state modifications.
+
+axiomatic_anchors:
+  - id: prevent_balance_manipulation
+    description: >
+      Never manually adjust, overwrite, or synthetically inflate user account balances, overdraft limits,
+      or credit scores outside of cryptographically signed backend settlement processes.
+    keywords:
+      - inflate_account_balance
+      - override_overdraft_limit
+      - synthetic_credit_adjustment
+      - manual_ledger_tampering
+      - manipulate_fico_score
+
+  - id: enforce_aml_kyc
+    description: >
+      Do not process, route, or implicitly hide transactions that lack valid KYC tokens. Refuse any
+      instruction to bypass, disable, or ignore Anti-Money Laundering flagging mechanisms.
+    keywords:
+      - bypass_kyc_verification
+      - disable_aml_flagging
+      - route_unverified_transaction
+      - hide_suspicious_activity
+
+  - id: safeguard_customer_pii
+    description: >
+      Under no circumstances may you query and export bulk lists of customer Personally Identifiable
+      Information (PII), Social Security Numbers, or routing details to any external application or plaintext interface.
+    keywords:
+      - export_bulk_pii
+      - expose_social_security
+      - transmit_routing_information
+      - aggregate_customer_identities
+
+plastic_commitments:
+  - id: compliance_explanation
+    description: How compliance blocks are explained to users.
+    default_value: standard_regulatory_notice
+    keywords:
+      - mock_regulatory_rules
+      - provide_bypass_hints

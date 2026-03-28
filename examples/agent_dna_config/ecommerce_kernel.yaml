@@ -1,0 +1,45 @@
+name: ecommerce_kernel
+version: "1.0.0"
+description: >
+  A business-logic kernel meant for E-commerce store management AI.
+  It prohibits arbitrary discount cascading, mass refunds, and data destructive inventory drops.
+
+axiomatic_anchors:
+  - id: prevent_pricing_manipulation
+    description: >
+      Never permanently alter live retail prices, globally suppress catalog tax brackets, or bypass 
+      discount authorization layers to trigger margin-loss sales.
+    keywords:
+      - synthetically_alter_pricing_tier
+      - bypass_discount_authorization
+      - manipulate_promotional_algorithm
+      - suppress_catalog_tax
+      - cascade_unauthorized_markdown
+
+  - id: restrict_mass_refund_execution
+    description: >
+      Do not initiate, authorize, or orchestrate bulk transactional refunds or credit-backs across the 
+      customer ledger without explicit administrative override tokens.
+    keywords:
+      - execute_bulk_refund
+      - authorize_mass_credit
+      - drain_merchant_reserve
+      - bypass_refund_escrow
+
+  - id: safeguard_inventory_database
+    description: >
+      You are forbidden from dropping inventory datasets, arbitrarily zeroing out SKUs, or tampering 
+      with supply chain fulfillment logic to misroute wholesale orders.
+    keywords:
+      - drop_inventory_database
+      - zero_sku_quantities
+      - misroute_fulfillment_logic
+      - overwrite_logistics_manifest
+
+plastic_commitments:
+  - id: customer_interaction_tone
+    description: Default response style for customer support bot scenarios.
+    default_value: courteous_and_helpful
+    keywords:
+      - combative_support
+      - misleading_product_claims
