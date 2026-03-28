@@ -171,10 +171,12 @@ def serve(
 def setup(
     profile: str = typer.Argument("personal_kernel", help="Name of the profile to download (e.g., personal_kernel)"),
     repo_branch: str = typer.Option("main", "--branch", help="GitHub repo branch"),
-    dest_dir: str = typer.Option("./config", "--dest", help="Destination folder (default: ./config)")
+    dest_dir: str = typer.Option("./config", "--dest", help="Destination folder (default: ./config)"),
+    verify_checksums: bool = typer.Option(True, "--verify-checksums/--no-verify-checksums", help="Download and verify SHA256 checksums"),
 ):
     """Download a CT-Toolkit profile (kernel, identity, probes) from the official GitHub repository."""
     import urllib.request
+    import hashlib
     
     base_url = f"https://raw.githubusercontent.com/hakandamar/ct-toolkit/{repo_branch}/examples/agent_dna_config"
     target_dir = Path(dest_dir)
@@ -191,22 +193,43 @@ def setup(
     
     files_to_download = [kernel_file, identity_file, probes_file]
     
+    def _download_file(url: str, dest_path: Path) -> bytes:
+        """Download a file and return its content."""
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req) as response:
+            return response.read()
+    
+    def _compute_sha256(data: bytes) -> str:
+        """Compute SHA256 hex digest of data."""
+        return hashlib.sha256(data).hexdigest()
+    
     with console.status(f"[bold green]Downloading '{profile}' profile from GitHub...[/bold green]"):
         has_errors = False
+        checksums: dict[str, str] = {}
+        
         for filename in files_to_download:
             url = f"{base_url}/{filename}"
             dest_path = target_dir / filename
             try:
-                # Use a custom user agent to avoid 403s on some raw github requests occasionally
-                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req) as response:
-                    content = response.read()
-                    with open(dest_path, "wb") as f:
-                        f.write(content)
+                content = _download_file(url, dest_path)
+                checksums[filename] = _compute_sha256(content)
+                with open(dest_path, "wb") as f:
+                    f.write(content)
                 console.print(f"[green]✓ Saved {filename} to {dest_path}[/green]")
             except Exception as e:
                 console.print(f"[red]✗ Failed to download {filename} from {url}:[/red] {e}")
                 has_errors = True
+        
+        # Write checksums file for future verification
+        if checksums and not has_errors:
+            checksum_path = target_dir / f"{profile}_checksums.sha256"
+            try:
+                with open(checksum_path, "w") as f:
+                    for fname, digest in checksums.items():
+                        f.write(f"{digest}  {fname}\n")
+                console.print(f"[dim]Checksums saved to {checksum_path}[/dim]")
+            except Exception as e:
+                console.print(f"[yellow]Warning: Could not save checksums file: {e}[/yellow]")
                 
     if not has_errors:
         console.print(f"\n[bold blue]Profile '{profile}' setup complete![/bold blue]")

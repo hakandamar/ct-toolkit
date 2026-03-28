@@ -13,6 +13,11 @@ import uvicorn
 
 from ct_toolkit.core.wrapper import TheseusWrapper
 from ct_toolkit.utils.logger import get_logger
+from ct_toolkit.core.exceptions import (
+    ConfigurationTamperingError,
+    ChainIntegrityError,
+    CriticalSandboxDivergenceError,
+)
 
 logger = get_logger(__name__)
 
@@ -62,6 +67,13 @@ async def check_guardrail(request: GuardrailRequest):
         else:
             logger.warning(f"Unknown input_type: {request.input_type}")
             return GuardrailResponse(action="NONE")
+    except (ConfigurationTamperingError, ChainIntegrityError, CriticalSandboxDivergenceError) as e:
+        # Critical security errors must BLOCK the request
+        logger.critical(f"CRITICAL security error during guardrail check: {e}")
+        return GuardrailResponse(
+            action="BLOCKED",
+            blocked_reason=f"Critical security violation: {type(e).__name__}: {e}"
+        )
     except Exception as e:
         logger.error(f"Error during guardrail check: {e}")
         # Default to NONE to avoid breaking production flows on server error

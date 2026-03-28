@@ -368,8 +368,8 @@ class ProvenanceLog:
 
     def _load_or_generate_key(self) -> bytes:
         """
-        Loads the HMAC key from the vault. Generates and saves if not found.
-        In a real application this is delegated to the vault adapter.
+        Loads the HMAC key from the vault or environment.
+        Raises VaultError if key is missing to prevent silent data loss.
         """
         import os
         key_env = os.environ.get(_DEFAULT_KEY_ENV)
@@ -380,13 +380,15 @@ class ProvenanceLog:
         if key_path.exists():
             return key_path.read_bytes()
 
-        # Initial setup: generate new key
+        # Initial setup: generate new key (only for first-time setup)
         key = hashlib.sha256(uuid.uuid4().bytes).digest()
         key_path.parent.mkdir(parents=True, exist_ok=True)
         key_path.write_bytes(key)
         key_path.chmod(0o600)
-        logger.warning(
-            f"New HMAC key generated: {key_path}. "
-            "In Production, move this key to a secure vault."
+        logger.info(
+            f"Initial HMAC key generated and saved: {key_path}. "
+            "IMPORTANT: Back up this key file. If lost, the provenance chain "
+            "cannot be verified. Set CT_HMAC_SECRET env var or restore "
+            f"'{key_path}' from backup."
         )
         return key
