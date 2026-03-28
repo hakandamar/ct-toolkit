@@ -21,7 +21,7 @@ graph LR
 
 ## How CT Toolkit Solves It
 
-CT Toolkit implements the **Nested Agency Architecture (NAA)** to prevent SSC through three primary mechanisms:
+CT Toolkit implements the **Nested Agentic Architecture (NAA)** to prevent SSC through three primary mechanisms:
 
 1.  **Axiomatic Anchoring**: Core principles are defined as immutable "Axioms" that can never be overridden by user prompts or model updates.
 2.  **Stateful Monitoring**: Unlike stateless guardrails (which look at one prompt at a time), CT Toolkit tracks the current state against the **Genesis Configuration**.

@@ -92,7 +92,7 @@ There are many open-source libraries ensuring a model gives "safe" answers. Ther
 
 ## Theoretical foundation
 
-CT Toolkit implements the **Nested Agency Architecture (NAA)** framework from:
+CT Toolkit implements the **Nested Agentic Architecture (NAA)** framework from:
 
 > Hakan Damar — *"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"* (2026)
 
