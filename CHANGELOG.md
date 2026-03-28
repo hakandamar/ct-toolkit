@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)*
 
+## [0.3.19] - 2026-03-28
+
+### Changed
+- **L2 Judge Raw JSON Path** — Replaced instructor-structured L2 evaluation with provider-agnostic raw completion + JSON parse flow. Judge now returns deterministic fallback (`uncertain`, `0.0`, `Judge evaluation unavailable`) on parse/tool-call failures.
+- **Provider-Safe Tool-Call Controls (L2/L3)** — Added provider-aware request shaping: OpenAI/Anthropic-like backends send explicit tool-disable controls (`tools=[]`, `tool_choice=none`, `parallel_tool_calls=false`), while Ollama-compatible backends omit unsupported tool parameters.
+- **L3 ICM Ollama Path** — Ollama path now bypasses instructor structured parsing and executes raw completion path directly to reduce tool-call parse noise while preserving graceful fallback behavior.
+
+### Added
+- **Integration Coverage for Judge Providers** — Added integration tests covering OpenAI/Anthropic/Ollama judge invocation paths, provider override behavior, and deterministic fallback on multiple tool-call responses.
+- **Unit Coverage for L2/L3 Tool Guards** — Added unit tests for raw JSON parsing, deterministic fallback behavior, and provider-safe tool-disable kwargs.
+
+### Validation
+- **Automated Tests:** `308 passed, 0 failed`.
+- **Live Endpoint Validation:** Verified with LM Studio (`192.168.1.137:1234`) + Ollama judge (`localhost:11434`, `gpt-oss:20b`) across L1→L2→L3 escalation and `skip_l3` control paths.
+
 ## [0.3.18] - 2026-03-28
 
 ### Fixed

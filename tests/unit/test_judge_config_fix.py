@@ -88,3 +88,50 @@ class TestJudgeConfigFix:
                 mock_completion.assert_called_once()
                 args, kwargs = mock_completion.call_args
                 assert kwargs["model"] == expected_full, f"Failed for {provider}/{model_name}"
+
+    def test_icm_runner_openai_disables_tool_calling(self):
+        """Verify ICMRunner sends tool-disable params on providers that support them."""
+        kernel = ConstitutionalKernel.default()
+        client = MagicMock()
+        runner = ICMRunner(client=client, provider="openai", kernel=kernel, model="gpt-4o-mini")
+
+        # Force raw fallback path so we can assert litellm kwargs directly.
+        runner._instructor_client = MagicMock()
+        runner._instructor_client.chat.completions.create.side_effect = Exception("structured fail")
+
+        with patch("litellm.completion") as mock_completion:
+            mock_completion.return_value = MagicMock(
+                choices=[MagicMock(message=MagicMock(content="ok", tool_calls=None))]
+            )
+            runner._call_model("test prompt")
+
+        _, kwargs = mock_completion.call_args
+        assert kwargs["tools"] == []
+        assert kwargs["tool_choice"] == "none"
+        assert kwargs["parallel_tool_calls"] is False
+
+    def test_icm_runner_ollama_omits_unsupported_tool_params(self):
+        """Verify ICMRunner omits tool params for Ollama-compatible backends."""
+        kernel = ConstitutionalKernel.default()
+        client = MagicMock()
+        client.base_url = "http://localhost:11434/v1"
+        client.api_key = "ollama"
+
+        runner = ICMRunner(client=client, provider="ollama", kernel=kernel, model="gpt-oss:20b")
+
+        runner._instructor_client = MagicMock()
+        runner._instructor_client.chat.completions.create.side_effect = Exception("structured fail")
+
+        with patch("litellm.completion") as mock_completion:
+            mock_completion.return_value = MagicMock(
+                choices=[MagicMock(message=MagicMock(content="ok", tool_calls=None))]
+            )
+            runner._call_model("test prompt")
+
+        _, kwargs = mock_completion.call_args
+        assert kwargs["model"] == "ollama/gpt-oss:20b"
+        assert kwargs["api_base"] == "http://localhost:11434"
+        assert kwargs["api_key"] == "ollama"
+        assert "tools" not in kwargs
+        assert "tool_choice" not in kwargs
+        assert "parallel_tool_calls" not in kwargs

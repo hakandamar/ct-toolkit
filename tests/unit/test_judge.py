@@ -1,7 +1,8 @@
 import pytest
-from unittest.mock import MagicMock
-from ct_toolkit.divergence.l2_judge import LLMJudge, JudgeResult, JudgeVerdict, JudgeResponse
+from unittest.mock import MagicMock, patch
+
 from ct_toolkit.core.kernel import ConstitutionalKernel
+from ct_toolkit.divergence.l2_judge import LLMJudge, JudgeResponse, JudgeResult, JudgeVerdict
 from pydantic import ValidationError
 
 class TestLLMJudge:
@@ -52,3 +53,74 @@ class TestLLMJudge:
     def test_format_kernel_rules_contains_axiomatic_label(self):
         rules = self.judge._format_kernel_rules(ConstitutionalKernel.default())
         assert "AXIOMATIC" in rules
+
+    def test_evaluate_uses_raw_completion_with_tools_disabled(self):
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock(message=MagicMock(content='{"verdict":"aligned","confidence":0.91,"reason":"ok"}', tool_calls=None))]
+
+        with patch("ct_toolkit.divergence.l2_judge.litellm.completion", return_value=mock_response) as mock_completion:
+            result = self.judge.evaluate(
+                request_text="What should I do?",
+                response_text="Stay aligned.",
+                kernel=ConstitutionalKernel.default(),
+            )
+
+        assert result.verdict == JudgeVerdict.ALIGNED
+        assert result.confidence == 0.91
+        _, kwargs = mock_completion.call_args
+        assert kwargs["tools"] == []
+        assert kwargs["tool_choice"] == "none"
+        assert kwargs["parallel_tool_calls"] is False
+        assert "response_model" not in kwargs
+
+    def test_evaluate_returns_deterministic_fallback_on_invalid_json(self):
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock(message=MagicMock(content="not json", tool_calls=None))]
+
+        with patch("ct_toolkit.divergence.l2_judge.litellm.completion", return_value=mock_response):
+            result = self.judge.evaluate(
+                request_text="What should I do?",
+                response_text="Stay aligned.",
+                kernel=ConstitutionalKernel.default(),
+            )
+
+        assert result.verdict == JudgeVerdict.UNCERTAIN
+        assert result.confidence == 0.0
+        assert result.reason == "Judge evaluation unavailable"
+
+    def test_evaluate_returns_deterministic_fallback_on_tool_call_response(self):
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock(message=MagicMock(content="", tool_calls=[{"id": "call_1"}] ))]
+
+        with patch("ct_toolkit.divergence.l2_judge.litellm.completion", return_value=mock_response):
+            result = self.judge.evaluate(
+                request_text="What should I do?",
+                response_text="Stay aligned.",
+                kernel=ConstitutionalKernel.default(),
+            )
+
+        assert result.verdict == JudgeVerdict.UNCERTAIN
+        assert result.confidence == 0.0
+        assert result.reason == "Judge evaluation unavailable"
+
+    def test_ollama_request_omits_unsupported_tool_params(self):
+        mock_client = MagicMock()
+        mock_client.base_url = "http://localhost:11434/v1"
+        judge = LLMJudge(client=mock_client, provider="ollama", model="gpt-oss:20b")
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock(message=MagicMock(content='{"verdict":"aligned","confidence":0.75,"reason":"ok"}', tool_calls=None))]
+
+        with patch("ct_toolkit.divergence.l2_judge.litellm.completion", return_value=mock_response) as mock_completion:
+            result = judge.evaluate(
+                request_text="What should I do?",
+                response_text="Stay aligned.",
+                kernel=ConstitutionalKernel.default(),
+            )
+
+        assert result.verdict == JudgeVerdict.ALIGNED
+        _, kwargs = mock_completion.call_args
+        assert kwargs["model"] == "ollama/gpt-oss:20b"
+        assert kwargs["api_base"] == "http://localhost:11434"
+        assert "tools" not in kwargs
+        assert "tool_choice" not in kwargs
+        assert "parallel_tool_calls" not in kwargs

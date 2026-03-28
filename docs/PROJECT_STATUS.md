@@ -8,7 +8,7 @@
 
 CT Toolkit is an open-source Python library that brings the **Nested Agentic Architecture (NAA)** framework — proposed in Hakan Damar's _"The Computational Theseus: Engineering Identity Continuity as a Guardrail Against Sequential Self-Compression in Multi-Agent AGI Systems"_ (2026 - 2nd edition) — into engineering practice.
 
-**Current Version:** `v0.3.16`
+**Current Version:** `v0.3.19`
 
 ### The Problem It Solves
 
@@ -33,7 +33,7 @@ CT Toolkit addresses this by treating **identity continuity as a first-class sys
 | Context-Compression Passive Guard      | ✅ Core Integrated (v0.3.6)                                                                                                                                       |
 | Staged Approval (Cooldown)             | ✅ **v0.3.8 New: Sandbox Shadow Analysis**                                                                                                                        |
 | Documentation                          | ✅ Complete (Added [Live Examples](https://hakandamar.github.io/ct-toolkit/examples/) & [CLI Guide](https://hakandamar.github.io/ct-toolkit/guides/cli-auditor/)) |
-| Test coverage                          | ✅ 293 passed, 3 skipped (93% code coverage)                                                                                                                     |
+| Test coverage                          | ✅ 308 passed, 0 failed (93% code coverage)                                                                                                                      |
 
 ---
 
@@ -159,7 +159,7 @@ The roadmap covers all mechanisms defined in the paper and the research directio
 
 ## Final Results
 
-- **Total Passing Tests:** 293 (3 skipped, 296 total)
+- **Total Passing Tests:** 308 (0 failed)
 - **Overall Code Coverage:** 93%
 - **Key Coverage Highlights:**
   - `middleware/langchain.py`: **100%**
@@ -181,7 +181,7 @@ All backend refactorings were verified using the extended test suite.
 
 ```bash
 uv run pytest --cov=ct_toolkit tests/
-# Result: 293 passed, 0 failures | Coverage: 93%
+# Result: 308 passed, 0 failures | Coverage: 93%
 ```
 
 ---

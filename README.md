@@ -77,9 +77,9 @@ ct-toolkit list-templates
 
 | Metric           | Status                                                  |
 | :--------------- | :------------------------------------------------------ |
-| **Tests**        | ✅ 297 passed, 0 failed (100% success rate, 93% coverage)                       |
+| **Tests**        | ✅ 308 passed, 0 failed (100% success rate, 93% coverage)                       |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ v0.3.18: L3 ICM graceful fallback for tool-call parsing failures  |
+| **Last Phase**   | ✅ v0.3.19: Provider-safe tool-calling disabled in L2/L3 judge paths  |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
 
 ### Framework & Model Support

@@ -356,6 +356,11 @@ class ICMRunner:
 
         kwargs = self._build_litellm_kwargs(full_model, system, user_content)
 
+        # Ollama-compatible endpoints can be noisy/fragile with instructor structured
+        # parsing paths; use raw mode directly for deterministic behavior.
+        if self._provider == "ollama":
+            return self._call_model_raw_with_fallback(kwargs, structured_error=None)
+
         # ── Attempt 1: Structured call with instructor validation ────────
         try:
             logger.debug(f"L3 ICM attempting structured validation for model {full_model}")
@@ -376,22 +381,32 @@ class ICMRunner:
                 f"L3 ICM structured validation failed (likely JSON/tool-call parse error): {e}. "
                 f"Falling back to raw completion."
             )
-            
-            # ── Attempt 2: Raw litellm.completion without structured validation ────────
-            try:
-                resp = litellm.completion(**kwargs)
-                content = self._extract_response_content(resp)
-                logger.info(f"L3 ICM raw fallback succeeded")
-                return content
-                
-            except Exception as fallback_e:
-                # ── Attempt 3: Safe error response ────────
+
+            return self._call_model_raw_with_fallback(kwargs, structured_error=e)
+
+    @staticmethod
+    def _call_model_raw_with_fallback(kwargs: dict[str, Any], structured_error: Exception | None) -> str:
+        # ── Raw litellm.completion without structured validation ────────
+        try:
+            resp = litellm.completion(**kwargs)
+            content = ICMRunner._extract_response_content(resp)
+            logger.info(f"L3 ICM raw fallback succeeded")
+            return content
+
+        except Exception as fallback_e:
+            # ── Safe error response ────────
+            if structured_error is None:
                 logger.error(
-                    f"L3 ICM both structured and raw calls failed: "
-                    f"structured={type(e).__name__}, raw={type(fallback_e).__name__}. "
+                    f"L3 ICM raw call failed: raw={type(fallback_e).__name__}. "
                     f"Returning error placeholder for graceful degradation."
                 )
-                return "[ERROR: Model call failed, unable to assess response]"
+            else:
+                logger.error(
+                    f"L3 ICM both structured and raw calls failed: "
+                    f"structured={type(structured_error).__name__}, raw={type(fallback_e).__name__}. "
+                    f"Returning error placeholder for graceful degradation."
+                )
+            return "[ERROR: Model call failed, unable to assess response]"
 
     def _format_model_name(self) -> str:
         """Format model name according to provider conventions."""
@@ -420,6 +435,8 @@ class ICMRunner:
             "max_tokens": 512,
             "temperature": 0.0,
         }
+
+        kwargs.update(self._tool_call_guard_kwargs())
         
         # Extract connection info from client
         if hasattr(self._client, "base_url") and self._client.base_url:
@@ -435,6 +452,18 @@ class ICMRunner:
         
         return kwargs
 
+    def _tool_call_guard_kwargs(self) -> dict[str, Any]:
+        """Return provider-safe kwargs that disable/discourage tool calling."""
+        # Ollama-compatible backends may reject tool-related fields entirely.
+        if self._provider == "ollama":
+            return {}
+
+        return {
+            "tools": [],
+            "tool_choice": "none",
+            "parallel_tool_calls": False,
+        }
+
     @staticmethod
     def _extract_response_content(resp: Any) -> str:
         """Extract text content from litellm response object."""
@@ -442,12 +471,22 @@ class ICMRunner:
         if hasattr(resp, "choices") and resp.choices:
             choice = resp.choices[0]
             if hasattr(choice, "message") and choice.message:
+                tool_calls = getattr(choice.message, "tool_calls", None)
+                has_tool_calls = (
+                    (isinstance(tool_calls, (list, tuple)) and len(tool_calls) > 0)
+                    or (isinstance(tool_calls, dict) and len(tool_calls) > 0)
+                )
+                if has_tool_calls:
+                    raise ValueError("icm_tool_call_detected")
                 return choice.message.content or ""
         
         # Handle dict response
         if isinstance(resp, dict):
             if "choices" in resp and resp["choices"]:
-                return resp["choices"][0].get("message", {}).get("content", "")
+                message = resp["choices"][0].get("message", {})
+                if message.get("tool_calls"):
+                    raise ValueError("icm_tool_call_detected")
+                return message.get("content", "")
             if "message" in resp:
                 return resp["message"].get("content", "")
             return str(resp)

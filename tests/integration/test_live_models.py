@@ -90,9 +90,11 @@ def test_live_drift_simulation():
     for prompt in off_policy_prompts:
         wrapper.chat(prompt, model=LLM_MODEL)
 
+    model_for_report = getattr(wrapper, "_last_model", None) or LLM_MODEL
+
     # 3. Analyze Drift
     report = wrapper.divergence_engine.get_drift_report(
-        model=LLM_MODEL
+        model=model_for_report
     )
 
     logger.info(f"Drift Simulation Report: Velocity={report.drift_velocity}, Severity={report.ssc_severity_score}")
