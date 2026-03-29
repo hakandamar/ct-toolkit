@@ -1,8 +1,6 @@
-import pytest
 from ct_toolkit.divergence.engine import DivergenceEngine, DivergenceTier
 from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
 from ct_toolkit.core.kernel import ConstitutionalKernel
-from ct_toolkit.endorsement.reflective import EndorsementDecision
 
 class TestDivergenceEngine:
     """divergence/engine.py — L1-only orchestration (no live API client required)."""

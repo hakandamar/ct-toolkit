@@ -5,15 +5,15 @@ Unit tests for ct_toolkit.middleware.langchain.
 Tests cover TheseusLangChainCallback and TheseusChatModel.
 """
 import pytest
+from typing import List, cast
 from uuid import uuid4
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import patch
 
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
 from langchain_core.outputs import LLMResult, ChatGeneration, Generation
 
 from ct_toolkit.middleware.langchain import TheseusLangChainCallback, TheseusChatModel
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
-from ct_toolkit.core.exceptions import AxiomaticViolationError
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ class TestTheseusChatModel:
         assert system == "Be ethical."
 
     def test_extract_system_returns_none_if_missing(self):
-        messages = [HumanMessage(content="Hi")]
+        messages: List[BaseMessage] = [HumanMessage(content="Hi")]
         assert TheseusChatModel._extract_system(messages) is None
 
     def test_generate_calls_wrapper_chat(self, tmp_path):
@@ -213,6 +213,140 @@ class TestTheseusChatModel:
             result = llm._generate([HumanMessage(content="Hi")])
 
         info = result.generations[0].generation_info
+        assert info is not None
         assert info["provenance_id"] == "prov-xyz"
         assert info["divergence_score"] == 0.1
         assert info["divergence_tier"] == "l1_warning"
+        assert info["ct_policy"]["role"] == config.policy_role
+        assert info["ct_policy"]["environment"] == config.policy_environment
+
+    def test_bind_tools_persists_binding(self, tmp_path):
+        """bind_tools should return a new model with normalized bound tools."""
+        config = WrapperConfig(vault_path=str(tmp_path / "bind_tools.db"))
+        llm = TheseusChatModel(provider="openai", wrapper_config=config)
+
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "lookup_weather",
+                    "description": "Get weather by city",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {"city": {"type": "string"}},
+                        "required": ["city"],
+                    },
+                },
+            }
+        ]
+
+        bound = llm.bind_tools(tools, tool_choice="auto")
+
+        assert bound is not llm
+        assert len(bound.bound_tools) == 1
+        assert bound.bound_tool_choice == "auto"
+
+    def test_generate_forwards_bound_tools_to_wrapper(self, tmp_path):
+        """When tools are bound, _generate must pass tool kwargs to wrapper.chat."""
+        config = WrapperConfig(vault_path=str(tmp_path / "tool_forward.db"))
+        llm = TheseusChatModel(provider="openai", model="gpt-4o-mini", wrapper_config=config)
+        llm = llm.bind_tools(
+            [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "lookup_weather",
+                        "description": "Get weather by city",
+                        "parameters": {"type": "object", "properties": {}},
+                    },
+                }
+            ],
+            tool_choice="auto",
+        )
+
+        from ct_toolkit.core.wrapper import CTResponse
+        mock_response = CTResponse(
+            content="Checking tools",
+            provider="openai",
+            model="gpt-4o-mini",
+            divergence_score=0.01,
+            divergence_tier="ok",
+            provenance_id="prov-tools",
+            raw_response={"choices": [{"message": {"content": "Checking tools"}}]},
+        )
+
+        with patch.object(llm.wrapper, "chat", return_value=mock_response) as mock_chat:
+            llm._generate([HumanMessage(content="Weather in Ankara?")])
+
+        _, kwargs = mock_chat.call_args
+        assert kwargs["tools"][0]["function"]["name"] == "lookup_weather"
+        assert kwargs["tool_choice"] == "auto"
+
+    def test_generate_extracts_tool_calls_into_ai_message(self, tmp_path):
+        """Tool call responses should be surfaced via AIMessage.tool_calls."""
+        config = WrapperConfig(vault_path=str(tmp_path / "tool_extract.db"))
+        llm = TheseusChatModel(provider="openai", wrapper_config=config)
+
+        from ct_toolkit.core.wrapper import CTResponse
+        raw = {
+            "choices": [
+                {
+                    "message": {
+                        "content": "",
+                        "tool_calls": [
+                            {
+                                "id": "call_1",
+                                "function": {
+                                    "name": "lookup_weather",
+                                    "arguments": '{"city":"Ankara"}',
+                                },
+                            }
+                        ],
+                    }
+                }
+            ]
+        }
+        mock_response = CTResponse(
+            content="",
+            provider="openai",
+            model="gpt-4o-mini",
+            divergence_score=0.03,
+            divergence_tier="ok",
+            provenance_id="prov-call",
+            raw_response=raw,
+        )
+
+        with patch.object(llm.wrapper, "chat", return_value=mock_response):
+            result = llm._generate([HumanMessage(content="Use tool")])
+
+        msg = cast(AIMessage, result.generations[0].message)
+        info = result.generations[0].generation_info
+        assert msg.tool_calls
+        assert msg.tool_calls[0]["name"] == "lookup_weather"
+        assert msg.tool_calls[0]["args"]["city"] == "Ankara"
+        assert info is not None
+        assert info["ct_policy"] == llm.policy_metadata
+
+    def test_generate_disables_tools_when_allow_tools_false(self, tmp_path):
+        """Judge/evaluator role can force-disable tool calling at model level."""
+        config = WrapperConfig(vault_path=str(tmp_path / "disable_tools.db"))
+        llm = TheseusChatModel(provider="openai", wrapper_config=config, allow_tools=False)
+
+        from ct_toolkit.core.wrapper import CTResponse
+        mock_response = CTResponse(
+            content="No tools",
+            provider="openai",
+            model="gpt-4o-mini",
+            divergence_score=0.02,
+            divergence_tier="ok",
+            provenance_id="prov-no-tools",
+            raw_response={"choices": [{"message": {"content": "No tools"}}]},
+        )
+
+        with patch.object(llm.wrapper, "chat", return_value=mock_response) as mock_chat:
+            llm._generate([HumanMessage(content="hello")])
+
+        _, kwargs = mock_chat.call_args
+        assert kwargs["tools"] == []
+        assert kwargs["tool_choice"] == "none"
+        assert kwargs["parallel_tool_calls"] is False

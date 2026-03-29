@@ -17,7 +17,7 @@ import json
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import instructor
 import litellm
@@ -82,7 +82,7 @@ class ICMReport:
     def summary(self) -> str:
         lines = [
             f"\n{'='*60}",
-            f"  ICM REPORT — Identity Health Score",
+            "  ICM REPORT — Identity Health Score",
             f"{'='*60}",
             f"  Kernel        : {self.kernel_name}",
             f"  Template      : {self.template_name}",
@@ -222,6 +222,7 @@ class ICMRunner:
         include_domain_probes: bool = True,
         max_probes: int | None = None,
         project_root: Path | None = None,
+        policy_resolver: Callable[[str | None, str | None], dict[str, Any]] | None = None,
     ) -> None:
         self._client = client
         self._provider = provider
@@ -231,6 +232,7 @@ class ICMRunner:
         self._include_domain = include_domain_probes
         self._project_root = project_root
         self._max_probes = max_probes
+        self._policy_resolver = policy_resolver
         
         # Use instructor with litellm for structured response validation
         self._instructor_client = instructor.from_litellm(litellm.completion)
@@ -373,7 +375,7 @@ class ICMRunner:
             # Combine reasoning and content into full response
             full_response = f"<think>{response.reasoning}</think>\n{response.content}" \
                 if response.reasoning else response.content
-            logger.debug(f"L3 ICM structured call succeeded")
+            logger.debug("L3 ICM structured call succeeded")
             return full_response
             
         except Exception as e:
@@ -390,7 +392,7 @@ class ICMRunner:
         try:
             resp = litellm.completion(**kwargs)
             content = ICMRunner._extract_response_content(resp)
-            logger.info(f"L3 ICM raw fallback succeeded")
+            logger.info("L3 ICM raw fallback succeeded")
             return content
 
         except Exception as fallback_e:
@@ -454,6 +456,14 @@ class ICMRunner:
 
     def _tool_call_guard_kwargs(self) -> dict[str, Any]:
         """Return provider-safe kwargs that disable/discourage tool calling."""
+        if self._policy_resolver is not None:
+            try:
+                resolved = self._policy_resolver(self._model, "l3")
+                if resolved.get("effective", {}).get("tool_call", False):
+                    return {}
+            except Exception as exc:
+                logger.debug(f"L3 policy resolver unavailable, falling back to provider defaults: {exc}")
+
         # Ollama-compatible backends may reject tool-related fields entirely.
         if self._provider == "ollama":
             return {}

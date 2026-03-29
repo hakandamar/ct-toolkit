@@ -5,7 +5,6 @@ This example demonstrates how CT Toolkit can propagate a "Mother Agent" kernel
 to all sub-agents in a Crew, ensuring identity continuity across the entire hierarchy.
 """
 
-import os
 from crewai import Agent, Task, Crew
 from ct_toolkit import TheseusWrapper, WrapperConfig
 from ct_toolkit.middleware.crewai import TheseusCrewMiddleware

@@ -5,7 +5,6 @@ Main entry point for the Theseus Guard / CT Toolkit CLI.
 """
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Optional
 
@@ -16,7 +15,6 @@ from rich.table import Table
 
 from ct_toolkit import TheseusWrapper, WrapperConfig, __version__
 from ct_toolkit.divergence.l3_icm import ICMRunner
-from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.server import start_server
 
 app = typer.Typer(
@@ -39,7 +37,7 @@ BANNER = r"""
 def show_banner():
     console.print(f"[bold cyan]{BANNER}[/bold cyan]")
     console.print(f"[bold white]  Computatonal Theseus Toolkit (CT Toolkit) v{__version__}[/bold white]")
-    console.print(f"[dim]  Identity Continuity Guardrails for Agentic Systems[/dim]\n")
+    console.print("[dim]  Identity Continuity Guardrails for Agentic Systems[/dim]\n")
 
 def version_callback(value: bool):
     if value:
@@ -63,6 +61,7 @@ def audit(
     provider: str = typer.Option("openai", "--provider", help="LLM provider (openai, anthropic, ollama)."),
     kernel: str = typer.Option("general", "--kernel", help="Name of the Constitutional Kernel to use."),
     template: str = typer.Option("general", "--template", help="Name of the Identity Template to use."),
+    policy_environment: str = typer.Option("prod", "--policy-environment", help="Policy environment override (dev, test, prod)."),
     model: Optional[str] = typer.Option(None, "--model", help="Specific model ID to test."),
     max_probes: Optional[int] = typer.Option(None, "--max-probes", help="Max number of probes to run."),
 ):
@@ -73,7 +72,8 @@ def audit(
             config = WrapperConfig(
                 kernel_name=kernel,
                 template=template,
-                project_root=Path.cwd()
+                project_root=Path.cwd(),
+                policy_environment=policy_environment,
             )
             
             # Using TheseusWrapper to manage kernel loading
@@ -143,11 +143,12 @@ def serve(
     kernel: str = typer.Option("general", "--kernel", help="Name of the Constitutional Kernel to use."),
     template: str = typer.Option("general", "--template", help="Name of the Identity Template to use."),
     vault_path: str = typer.Option("./ct_provenance.db", "--vault", help="Path to the provenance log database."),
+    policy_environment: str = typer.Option("prod", "--policy-environment", help="Policy environment override (dev, test, prod)."),
     judge_provider: str = typer.Option("openai", "--judge-provider", help="LLM provider for L2/L3 judge calls."),
     judge_model: Optional[str] = typer.Option(None, "--judge-model", help="Model ID for L2/L3 judge calls."),
 ):
     """Start the CT-Toolkit Guardrail Server for LiteLLM integration."""
-    console.print(f"Starting Guardrail Server...")
+    console.print("Starting Guardrail Server...")
     console.print(f"  - Kernel: [bold yellow]{kernel}[/bold yellow]")
     console.print(f"  - Template: [bold green]{template}[/bold green]")
     console.print(f"  - Bind: [bold cyan]{host}:{port}[/bold cyan]")
@@ -157,6 +158,7 @@ def serve(
             kernel_name=kernel,
             template=template,
             vault_path=vault_path,
+            policy_environment=policy_environment,
             judge_provider=judge_provider,
             judge_model=judge_model,
             project_root=Path.cwd()

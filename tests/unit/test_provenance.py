@@ -1,8 +1,8 @@
 import sqlite3
 import tempfile
 import pytest
-from ct_toolkit.provenance.log import ProvenanceLog, ProvenanceEntry
-from ct_toolkit.core.exceptions import ChainIntegrityError, VaultError
+from ct_toolkit.provenance.log import ProvenanceLog
+from ct_toolkit.core.exceptions import ChainIntegrityError
 
 class TestProvenanceLogWithStatus:
     """provenance/log.py status-based rollback and multi-agent safety."""
@@ -57,9 +57,9 @@ class TestProvenanceLogWithStatus:
     # -- Hash chain with status ------------------------------------------------
 
     def test_verify_chain_ignores_rolled_back_entries(self):
-        id1 = self.log.record("q1", "a1")
+        self.log.record("q1", "a1")
         id2 = self.log.record("q2", "a2") # This will be rolled back
-        id3 = self.log.record("q3", "a3")
+        self.log.record("q3", "a3")
 
         # Manually mark the second entry as rolled_back
         conn = sqlite3.connect(self.tmp)
@@ -102,9 +102,6 @@ class TestProvenanceLogWithStatus:
         id_B1 = self.log.record("q_B1", "a_B1", metadata={"agent_id": "agent_B"})
 
         self.log.rollback("agent_A", id_A2) # Rollback A's last entry
-
-        entry_A2 = self.log.get_entry(id_A2)
-        entry_B1 = self.log.get_entry(id_B1)
 
         # This test is tricky because rollback affects entries *after* the target.
         # Let's add another entry for agent A and then rollback

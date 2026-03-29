@@ -146,6 +146,25 @@ config = WrapperConfig(
 )
 ```
 
+### Capability Handshake & Policy Control (v0.3.20+)
+
+| Parameter                            | Type   | Default                        | Description                                                                      |
+| :----------------------------------- | :----- | :----------------------------- | :------------------------------------------------------------------------------- |
+| `capability_cache_file`              | `str`  | `"config/llm_capability.yaml"` | Path to startup capability cache and policy registry YAML.                       |
+| `capability_refresh_interval_s`      | `int`  | `3600`                         | Refresh interval for provider/model capability refresh.                          |
+| `capability_enable_active_handshake` | `bool` | `False`                        | If enabled, attempts lightweight active capability checks via provider metadata. |
+| `capability_force_refresh`           | `bool` | `False`                        | Forces capability refresh on access instead of waiting for interval expiry.      |
+| `policy_role`                        | `str`  | `"main"`                       | Role selector used by policy resolution (`main`, `sub`, `judge`, `l3`).          |
+| `policy_environment`                 | `str`  | `"prod"`                       | Environment selector for policy overrides (`dev`, `test`, `prod`).               |
+
+```python
+config = WrapperConfig(
+    capability_cache_file="config/llm_capability.yaml",
+    policy_role="sub",
+    policy_environment="test",
+)
+```
+
 ---
 
 ## Rigorous Analysis Mode

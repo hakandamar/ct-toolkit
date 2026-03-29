@@ -4,76 +4,84 @@ Complete API reference for CT Toolkit.
 
 <div class="grid cards" markdown>
 
--   **TheseusWrapper**
+- **TheseusWrapper**
 
-    ---
+  ***
 
-    The main entry point. Wraps any LLM client with identity protection.
+  The main entry point. Wraps any LLM client with identity protection.
 
-    [:octicons-arrow-right-24: TheseusWrapper](theseus-wrapper.md)
+  [:octicons-arrow-right-24: TheseusWrapper](theseus-wrapper.md)
 
--   **WrapperConfig**
+- **WrapperConfig**
 
-    ---
+  ***
 
-    All configuration options with types, defaults, and examples.
+  All configuration options with types, defaults, and examples.
 
-    [:octicons-arrow-right-24: WrapperConfig](wrapper-config.md)
+  [:octicons-arrow-right-24: WrapperConfig](wrapper-config.md)
 
--   **ConstitutionalKernel**
+- **Policy & Capability Metadata**
 
-    ---
+  ***
 
-    Loading, merging, validating, and updating kernels programmatically.
+  Role-based policy resolution, capability registry, and standardized metadata surfaces.
 
-    [:octicons-arrow-right-24: ConstitutionalKernel](constitutional-kernel.md)
+  [:octicons-arrow-right-24: Policy & Capability Metadata](policy-capabilities.md)
 
--   **Divergence Engine**
+- **ConstitutionalKernel**
 
-    ---
+  ***
 
-    `DivergenceEngine`, `DivergenceResult`, `DivergenceTier`, `ElasticityScheduler`.
+  Loading, merging, validating, and updating kernels programmatically.
 
-    [:octicons-arrow-right-24: Divergence Engine](divergence-engine.md)
+  [:octicons-arrow-right-24: ConstitutionalKernel](constitutional-kernel.md)
 
--   **Context Compression Guard**
+- **Divergence Engine**
 
-    ---
+  ***
 
-    Manages context window usage and applies compression strategies.
+  `DivergenceEngine`, `DivergenceResult`, `DivergenceTier`, `ElasticityScheduler`.
 
-    [:octicons-arrow-right-24: Context Compression Guard](compression-guard.md)
+  [:octicons-arrow-right-24: Divergence Engine](divergence-engine.md)
 
--   **Provenance Log**
+- **Context Compression Guard**
 
-    ---
+  ***
 
-    Recording, verifying, exporting, and rolling back the HMAC hash chain.
+  Manages context window usage and applies compression strategies.
 
-    [:octicons-arrow-right-24: ProvenanceLog](provenance-log.md)
+  [:octicons-arrow-right-24: Context Compression Guard](compression-guard.md)
 
--   **Compatibility Matrix**
+- **Provenance Log**
 
-    ---
+  ***
 
-    Which template + kernel combinations are Native, Compatible, or Conflicting.
+  Recording, verifying, exporting, and rolling back the HMAC hash chain.
 
-    [:octicons-arrow-right-24: Compatibility Matrix](compatibility.md)
+  [:octicons-arrow-right-24: ProvenanceLog](provenance-log.md)
 
--   **Kernels & Templates**
+- **Compatibility Matrix**
 
-    ---
+  ***
 
-    YAML specification for creating custom kernels and identity templates.
+  Which template + kernel combinations are Native, Compatible, or Conflicting.
 
-    [:octicons-arrow-right-24: Kernels & Templates](kernels-templates.md)
+  [:octicons-arrow-right-24: Compatibility Matrix](compatibility.md)
 
--   **Exceptions**
+- **Kernels & Templates**
 
-    ---
+  ***
 
-    Full exception hierarchy with usage examples.
+  YAML specification for creating custom kernels and identity templates.
 
-    [:octicons-arrow-right-24: Exceptions](exceptions.md)
+  [:octicons-arrow-right-24: Kernels & Templates](kernels-templates.md)
+
+- **Exceptions**
+
+  ***
+
+  Full exception hierarchy with usage examples.
+
+  [:octicons-arrow-right-24: Exceptions](exceptions.md)
 
 </div>

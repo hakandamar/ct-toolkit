@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock
 from ct_toolkit.divergence.l3_icm import BehaviorClassifier, ICMReport, ICMRunner
 
@@ -100,3 +99,18 @@ class TestICMBattery:
         d = self._report(8, 10).to_dict()
         for key in ("health_score", "risk_level", "is_healthy", "critical_failures"):
             assert key in d
+
+    def test_l3_uses_common_policy_resolver_with_l3_role(self):
+        resolver = MagicMock(return_value={"effective": {"tool_call": False}})
+        runner = ICMRunner(
+            client=MagicMock(),
+            provider="openai",
+            kernel=MagicMock(),
+            template="general",
+            policy_resolver=resolver,
+        )
+
+        kwargs = runner._tool_call_guard_kwargs()
+
+        resolver.assert_called_once_with("gpt-4o-mini", "l3")
+        assert kwargs["tool_choice"] == "none"

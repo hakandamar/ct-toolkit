@@ -39,6 +39,15 @@ from ct_toolkit.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
+def _attach_policy_metadata(target: Any, metadata: dict[str, Any]) -> None:
+    """Attach standardized CT policy metadata to CrewAI objects."""
+    setattr(target, "ct_policy", metadata)
+    existing_metadata = getattr(target, "metadata", None)
+    merged_metadata = dict(existing_metadata) if isinstance(existing_metadata, dict) else {}
+    merged_metadata["ct_policy"] = metadata
+    setattr(target, "metadata", merged_metadata)
+
+
 class TheseusCrewMiddleware:
     """
     Middleware that propagates the manager agent's Constitutional Kernel
@@ -80,6 +89,14 @@ class TheseusCrewMiddleware:
         agents: List[Any] = getattr(crew, "agents", [])
         wrapped_count = 0
 
+        _attach_policy_metadata(
+            crew,
+            manager_wrapper.propagate_policy_metadata(
+                model=model,
+                role=manager_wrapper._config.policy_role,
+            ),
+        )
+
         for agent in agents:
             if not hasattr(agent, "llm"):
                 logger.debug(f"Agent '{getattr(agent, 'role', '?')}' has no llm attribute — skipping.")
@@ -92,6 +109,7 @@ class TheseusCrewMiddleware:
                 parent_kernel=manager_wrapper.kernel,
                 vault_path=manager_wrapper._config.vault_path,
                 template=manager_wrapper._config.template,
+                policy_role="sub",
                 compression_threshold=manager_wrapper._config.compression_threshold,
                 compression_passive_detection=manager_wrapper._config.compression_passive_detection,
             )
@@ -100,6 +118,7 @@ class TheseusCrewMiddleware:
                 model=agent_model,
                 wrapper_config=sub_config,
             )
+            _attach_policy_metadata(agent, agent.llm.policy_metadata)
             wrapped_count += 1
             logger.info(
                 f"CT Toolkit | CrewAI agent '{getattr(agent, 'role', '?')}' "
@@ -136,6 +155,7 @@ class TheseusCrewMiddleware:
             parent_kernel=manager_wrapper.kernel,
             vault_path=manager_wrapper._config.vault_path,
             template=manager_wrapper._config.template,
+            policy_role="sub",
             compression_threshold=manager_wrapper._config.compression_threshold,
             compression_passive_detection=manager_wrapper._config.compression_passive_detection,
         )
@@ -144,6 +164,7 @@ class TheseusCrewMiddleware:
             model=agent_model,
             wrapper_config=sub_config,
         )
+        _attach_policy_metadata(agent, agent.llm.policy_metadata)
         logger.info(
             f"CT Toolkit | CrewAI agent '{getattr(agent, 'role', '?')}' "
             f"individually wrapped with TheseusChatModel."

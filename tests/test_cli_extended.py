@@ -1,4 +1,3 @@
-import pytest
 from typer.testing import CliRunner
 from ct_toolkit.cli import app
 from unittest.mock import MagicMock, patch
@@ -32,6 +31,27 @@ def test_cli_audit_no_probes(mock_icm, mock_wrapper):
     result = runner.invoke(app, ["audit", "--url", "http://test", "--api-key", "test"])
     assert result.exit_code == 1
     assert "No probes were loaded" in result.stdout
+
+@patch("ct_toolkit.cli.TheseusWrapper")
+@patch("ct_toolkit.cli.ICMRunner")
+def test_cli_audit_passes_policy_environment(mock_icm, mock_wrapper):
+    mock_report = MagicMock()
+    mock_report.total_probes = 1
+    mock_report.results = []
+    mock_report.is_healthy = True
+    mock_report.risk_level = "LOW"
+    mock_report.health_score = 1.0
+    mock_report.passed = 1
+    mock_icm.return_value.run.return_value = mock_report
+
+    result = runner.invoke(
+        app,
+        ["audit", "--url", "http://test", "--api-key", "test", "--policy-environment", "test"],
+    )
+
+    assert result.exit_code == 0
+    config = mock_wrapper.call_args.kwargs["config"]
+    assert config.policy_environment == "test"
 
 @patch("ct_toolkit.cli.TheseusWrapper")
 @patch("ct_toolkit.cli.ICMRunner")

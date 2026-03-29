@@ -257,7 +257,6 @@ class ProvenanceLog:
     # ── Database ──────────────────────────────────────────────────────────────
 
     def _init_db(self) -> sqlite3.Connection:
-        import os
         self._vault_path.parent.mkdir(parents=True, exist_ok=True)
         if not self._vault_path.exists():
             self._vault_path.touch()

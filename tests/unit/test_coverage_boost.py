@@ -1,12 +1,9 @@
 import pytest
-import sqlite3
-import json
 from unittest.mock import MagicMock, patch
-from pathlib import Path
 import tempfile
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig, CTResponse
 from ct_toolkit.divergence.engine import DivergenceEngine, DivergenceResult, DivergenceTier
-from ct_toolkit.divergence.l3_icm import ICMRunner, BehaviorClassifier, ProbeResult
+from ct_toolkit.divergence.l3_icm import ICMRunner, BehaviorClassifier
 from ct_toolkit.provenance.log import ProvenanceLog, ProvenanceEntry
 from ct_toolkit.core.exceptions import VaultError
 
@@ -30,11 +27,11 @@ class TestWrapperCoverage:
         # Trigger the fallback by making the initial loader fail
         mock_from_yaml.side_effect = Exception("Failed")
         config = WrapperConfig(kernel_path="/non/existent/path")
-        with patch("ct_toolkit.core.wrapper.logger") as mock_logger:
+        with patch("ct_toolkit.core.wrapper.logger"):
             # This might still fail if default() fails, but we want to see the warning
             try:
                 TheseusWrapper(config=config)
-            except:
+            except Exception:
                 pass
 
     def test_extract_content_dict_formats(self):

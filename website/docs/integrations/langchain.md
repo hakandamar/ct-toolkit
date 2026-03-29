@@ -78,6 +78,17 @@ info = result.generations[0].generation_info
 print(f"Divergence score : {info['divergence_score']:.4f}")
 print(f"Divergence tier  : {info['divergence_tier']}")
 print(f"Provenance ID    : {info['provenance_id']}")
+print(f"Policy role      : {info['ct_policy']['role']}")
+print(f"Policy env       : {info['ct_policy']['environment']}")
+```
+
+### Standard policy metadata
+
+`TheseusChatModel` exposes resolved policy metadata for external readers:
+
+```python
+print(llm.policy_metadata)
+# {'role': 'main', 'environment': 'prod', 'effective': {...}}
 ```
 
 ---
@@ -126,7 +137,7 @@ llm = TheseusChatModel(model="gpt-4o")
 
 # Access the guard
 audit_result = llm.compression_guard.analyze_summary_drift(
-    original_messages, 
+    original_messages,
     new_summary
 )
 ```
@@ -175,8 +186,8 @@ class MyCallback(TheseusLangChainCallback):
 
 ## Compatibility
 
-| LangChain version | CT Toolkit support |
-|:---|:---|
-| `langchain-core >= 1.2` | ✅ Full support |
-| `langchain >= 0.2` | ✅ Works via langchain-core |
-| LangGraph | ✅ Works via LangChain callback |
+| LangChain version       | CT Toolkit support              |
+| :---------------------- | :------------------------------ |
+| `langchain-core >= 1.2` | ✅ Full support                 |
+| `langchain >= 0.2`      | ✅ Works via langchain-core     |
+| LangGraph               | ✅ Works via LangChain callback |

@@ -1,7 +1,7 @@
-import pytest
 from typer.testing import CliRunner
 from ct_toolkit.cli import app
 from ct_toolkit import __version__
+from unittest.mock import patch
 
 runner = CliRunner()
 
@@ -42,3 +42,14 @@ def test_cli_audit_invalid_url():
     assert (result.exit_code == 1) or (result.exit_code == 0 and "0.0%" in output)
     # At least some indicator of failure or starting should be there
     assert "starting audit" in output
+
+
+@patch("ct_toolkit.cli.start_server")
+@patch("ct_toolkit.cli.TheseusWrapper")
+def test_cli_serve_passes_policy_environment(mock_wrapper, mock_start_server):
+    result = runner.invoke(app, ["serve", "--policy-environment", "dev"])
+
+    assert result.exit_code == 0
+    config = mock_wrapper.call_args.kwargs["config"]
+    assert config.policy_environment == "dev"
+    mock_start_server.assert_called_once()

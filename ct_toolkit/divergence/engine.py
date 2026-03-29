@@ -14,11 +14,10 @@ action is taken based on the total score.
 """
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
 from ct_toolkit.divergence.l2_judge import LLMJudge, JudgeVerdict
@@ -119,6 +118,7 @@ class DivergenceEngine:
         scheduler: Any | None = None,    # ElasticityScheduler instance
         provenance_log: Any | None = None, 
         project_root: Path | None = None,
+        policy_resolver: Callable[[str | None, str | None], dict[str, Any]] | None = None,
     ) -> None:
         self._identity = identity_layer
         self._kernel = kernel
@@ -128,6 +128,7 @@ class DivergenceEngine:
         self._judge_model = judge_model
         self._log = provenance_log
         self._project_root = project_root
+        self._policy_resolver = policy_resolver
         
         # Base thresholds
         self._base_l1_threshold = l1_threshold
@@ -260,7 +261,7 @@ class DivergenceEngine:
                 l2_confidence=l2_result.confidence,
                 l2_reason=l2_result.reason,
                 action_required=True,
-                summary=f"L2 problematic, L3 not available",
+                summary="L2 problematic, L3 not available",
             )
 
         l3_report = self._run_l3()
@@ -338,6 +339,7 @@ class DivergenceEngine:
             client=self._judge_client,
             provider=self._provider,
             model=self._judge_model,
+            policy_resolver=self._policy_resolver,
         )
         return judge.evaluate(
             request_text=request_text,
@@ -354,5 +356,6 @@ class DivergenceEngine:
             model=self._judge_model,
             max_probes=max_probes,
             project_root=self._project_root,
+            policy_resolver=self._policy_resolver,
         )
         return runner.run()

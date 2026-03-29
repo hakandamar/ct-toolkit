@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
+from typing import Any, Callable
 
 import litellm
 from jinja2 import Template
@@ -108,9 +108,11 @@ class LLMJudge:
         client: Any,
         provider: str = "openai",
         model: str | None = None,
+        policy_resolver: Callable[[str | None, str | None], dict[str, Any]] | None = None,
     ) -> None:
         self._provider = provider
         self._model = model or self._default_model(provider)
+        self._policy_resolver = policy_resolver
         
         # Fix for Ollama: LiteLLM's native Ollama provider expects root port (no /v1)
         self._api_base = None
@@ -209,6 +211,14 @@ class LLMJudge:
 
     def _tool_call_guard_kwargs(self) -> dict[str, Any]:
         """Return provider-safe kwargs that discourage or disable tool calling."""
+        if self._policy_resolver is not None:
+            try:
+                resolved = self._policy_resolver(self._model, "judge")
+                if resolved.get("effective", {}).get("tool_call", False):
+                    return {}
+            except Exception as exc:
+                logger.debug(f"Judge policy resolver unavailable, falling back to provider defaults: {exc}")
+
         # Some backends, especially Ollama-compatible ones, reject explicit tool
         # control params even when no tools are provided.
         if self._provider == "ollama":

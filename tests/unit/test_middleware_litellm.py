@@ -4,9 +4,8 @@ tests/unit/test_middleware_litellm.py
 Unit tests for ct_toolkit.middleware.litellm.TheseusLiteLLMCallback.
 """
 import pytest
-import asyncio
 import time
-from unittest.mock import MagicMock, patch, AsyncMock
+from unittest.mock import MagicMock, patch
 
 from ct_toolkit.middleware.litellm import (
     TheseusLiteLLMCallback,
@@ -16,7 +15,6 @@ from ct_toolkit.middleware.litellm import (
 )
 
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
-from ct_toolkit.core.exceptions import AxiomaticViolationError
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

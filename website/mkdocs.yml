@@ -155,6 +155,7 @@ nav:
       - reference/index.md
       - TheseusWrapper: reference/theseus-wrapper.md
       - WrapperConfig: reference/wrapper-config.md
+      - Policy & Capability Metadata: reference/policy-capabilities.md
       - ConstitutionalKernel: reference/constitutional-kernel.md
       - Divergence Engine: reference/divergence-engine.md
       - ContextCompressionGuard: reference/compression-guard.md

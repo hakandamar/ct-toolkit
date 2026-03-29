@@ -1,7 +1,7 @@
 
 import unittest
 from unittest.mock import MagicMock
-from ct_toolkit.middleware.deepagents import wrap_deep_agent_factory, DeepAgentTheseusHelper
+from ct_toolkit.middleware.deepagents import wrap_deep_agent_factory
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
 from ct_toolkit.middleware.langchain import TheseusChatModel
 
@@ -29,6 +29,8 @@ class TestDeepAgentsIntegration(unittest.TestCase):
         self.assertIsInstance(kwargs["model"], TheseusChatModel)
         self.assertEqual(kwargs["model"].wrapper.kernel.name, "default")
         self.assertEqual(kwargs["model"].wrapper._config.template, "defense")
+        self.assertEqual(kwargs["model"].wrapper._config.policy_role, "main")
+        self.assertEqual(kwargs["metadata"]["ct_policy"]["role"], "main")
 
     def test_subagent_propagation_logging(self):
         mock_create = MagicMock()
@@ -47,6 +49,14 @@ class TestDeepAgentsIntegration(unittest.TestCase):
         # In current implementation, we just log and pass through, 
         # but we verify the subagents list was passed.
         self.assertEqual(len(mock_create.call_args[1]["subagents"]), 2)
+
+    def test_prepare_config_exposes_standard_policy_metadata(self):
+        wrapper = TheseusWrapper(config=WrapperConfig(policy_role="main"))
+
+        config = wrap_deep_agent_factory.__globals__["DeepAgentTheseusHelper"].prepare_config(wrapper)
+
+        self.assertTrue(config["metadata"]["ct_identity_protection"])
+        self.assertEqual(config["metadata"]["ct_policy"]["role"], "main")
 
 if __name__ == "__main__":
     unittest.main()

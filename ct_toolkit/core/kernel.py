@@ -7,7 +7,6 @@ and plastic commitments that can be extended by the user.
 from __future__ import annotations
 
 import yaml
-import importlib.resources
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any

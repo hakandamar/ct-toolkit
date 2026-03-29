@@ -7,7 +7,7 @@ Exposes /guardrail/check to LiteLLM for pre-call and post-call validation.
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
-from fastapi import FastAPI, Body, HTTPException
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import uvicorn
 

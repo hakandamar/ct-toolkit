@@ -10,13 +10,22 @@ Constitutional Kernel.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union, Callable
+from typing import Any, Dict, Optional, Callable
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
 from ct_toolkit.core.compression_guard import ContextCompressionGuard
 from ct_toolkit.middleware.langchain import TheseusChatModel
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+
+def _policy_metadata(
+    wrapper: TheseusWrapper,
+    model: str | None = None,
+    role: str | None = None,
+) -> Dict[str, Any]:
+    """Build standardized CT policy metadata for Deep Agents surfaces."""
+    return wrapper.propagate_policy_metadata(model=model, role=role)
 
 
 
@@ -31,17 +40,29 @@ def wrap_deep_agent_factory(
     inject Theseus guardrails, enable hierarchical kernel propagation,
     and monitor context compression drift.
     """
+    if wrapper_config and not wrapper_config.policy_role:
+        wrapper_config.policy_role = "main"
     _wrapper = wrapper or TheseusWrapper(config=wrapper_config)
-    guard = ContextCompressionGuard(_wrapper, threshold=compression_threshold)
+    ContextCompressionGuard(_wrapper, threshold=compression_threshold)
 
     def wrapped_create_deep_agent(*args: Any, **kwargs: Any) -> Any:
         # 1. Inject TheseusChatModel
         model = kwargs.get("model")
+        model_name = model if isinstance(model, str) else None
         if isinstance(model, str) or model is None:
             kwargs["model"] = TheseusChatModel(
                 wrapper=_wrapper,
                 model=model if isinstance(model, str) else "gpt-4o-mini"
             )
+
+        existing_metadata = kwargs.get("metadata")
+        metadata = dict(existing_metadata) if isinstance(existing_metadata, dict) else {}
+        metadata["ct_policy"] = _policy_metadata(
+            _wrapper,
+            model=model_name or kwargs["model"].model,
+            role=_wrapper._config.policy_role,
+        )
+        kwargs["metadata"] = metadata
 
         # 2. Inject ContextCompressionGuard into the middleware stack if possible
         # Since deepagents middleware is internal, we use the helper to signal it
@@ -62,6 +83,10 @@ class DeepAgentTheseusHelper:
             "callbacks": [], # We could add TheseusLangChainCallback here
             "metadata": {
                 "ct_kernel": wrapper.kernel.name,
-                "ct_identity_protection": True
+                "ct_identity_protection": True,
+                "ct_policy": _policy_metadata(
+                    wrapper,
+                    role=wrapper._config.policy_role,
+                ),
             }
         }

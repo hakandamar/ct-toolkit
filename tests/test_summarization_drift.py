@@ -52,7 +52,7 @@ class TestSummarizationDrift(unittest.TestCase):
         original_msgs = [{"role": "user", "content": "A"}]
         summary = "B"
         
-        result = guard.analyze_summary_drift(original_msgs, summary)
+        guard.analyze_summary_drift(original_msgs, summary)
         
     def test_safety_floor_trigger(self):
         """Verify that even with a low user threshold, the 0.70 safety floor triggers an alert."""

@@ -10,7 +10,7 @@ This example demonstrates:
 """
 import os
 import openai
-from ct_toolkit import TheseusWrapper, WrapperConfig, AxiomaticViolationError
+from ct_toolkit import TheseusWrapper, WrapperConfig
 from ct_toolkit.provenance.log import ProvenanceLog
 
 # ── Configuration ─────────────────────────────────────────────────────────────

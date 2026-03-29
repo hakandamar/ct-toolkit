@@ -54,7 +54,6 @@ class TestReflectiveEndorsement:
 
     def test_plastic_conflict_rejected(self):
         """Kernel does not change when the user rejects."""
-        re = make_re(auto_approve=False)
         k = ConstitutionalKernel.default()
 
         # Save initial value

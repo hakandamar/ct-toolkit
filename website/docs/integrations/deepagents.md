@@ -16,6 +16,18 @@ agent = protected_factory(
 )
 ```
 
+Wrapped factory calls now include standardized policy metadata under `metadata["ct_policy"]`.
+
+```python
+kwargs = {
+    "model": "gpt-4o-mini",
+    "metadata": {"trace_id": "abc-123"},
+}
+
+agent = protected_factory(**kwargs)
+# Effective payload passed to deepagents includes metadata.ct_policy
+```
+
 ## Context Compression Guard
 
 Long-running agents auto-summarize their history. CT Toolkit monitors whether the summary preserves the agent's identity:

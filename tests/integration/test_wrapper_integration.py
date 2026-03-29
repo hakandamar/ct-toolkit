@@ -8,7 +8,6 @@ are properly triggered and logged using a mocked OpenAI client.
 import pytest
 import os
 from unittest.mock import MagicMock, patch
-from pathlib import Path
 
 # Set dummy API keys for LiteLLM validation bypass
 os.environ["OPENAI_API_KEY"] = "dummy"
@@ -16,7 +15,6 @@ os.environ["ANTHROPIC_API_KEY"] = "dummy"
 
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
 from ct_toolkit.core.compatibility import CompatibilityLevel
-from ct_toolkit.divergence.engine import DivergenceTier
 from ct_toolkit.divergence.l2_judge import JudgeVerdict
 
 
@@ -102,7 +100,7 @@ class TestWrapperIntegration:
         mock_divergence.return_value = 0.40
         
         # Mock LLMJudge.evaluate to return ALIGNED
-        from ct_toolkit.divergence.l2_judge import JudgeResult, JudgeVerdict
+        from ct_toolkit.divergence.l2_judge import JudgeResult
         mock_judge_result = JudgeResult(
             verdict=JudgeVerdict.ALIGNED,
             confidence=0.9,
@@ -130,7 +128,7 @@ class TestWrapperIntegration:
         mock_divergence.return_value = 0.40
         
         # Mock LLMJudge.evaluate to return MISALIGNED
-        from ct_toolkit.divergence.l2_judge import JudgeResult, JudgeVerdict
+        from ct_toolkit.divergence.l2_judge import JudgeResult
         mock_judge_result = JudgeResult(
             verdict=JudgeVerdict.MISALIGNED,
             confidence=0.95,

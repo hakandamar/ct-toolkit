@@ -1,4 +1,5 @@
 import pytest
+import yaml
 from unittest.mock import MagicMock
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
 from ct_toolkit.core.compatibility import CompatibilityLevel
@@ -60,6 +61,76 @@ class TestTheseusWrapper:
 
     def test_wrapper_has_divergence_engine(self):
         assert hasattr(self.wrapper, "_divergence_engine")
+
+    def test_startup_creates_llm_capability_cache_file(self, tmp_path):
+        wrapper = TheseusWrapper(
+            provider="openai",
+            project_root=tmp_path,
+            config=WrapperConfig(project_root=tmp_path),
+        )
+
+        cache_path = tmp_path / "config" / "llm_capability.yaml"
+        assert cache_path.exists()
+
+        data = yaml.safe_load(cache_path.read_text(encoding="utf-8"))
+        assert "providers" in data
+        assert wrapper._provider in data["providers"]
+        assert "role_policies" in data
+        assert data["role_policies"]["judge"]["allow_tool_call"] is False
+
+    def test_risk_profile_is_derived_from_capability_cache(self, tmp_path):
+        wrapper = TheseusWrapper(
+            provider="openai",
+            project_root=tmp_path,
+            config=WrapperConfig(project_root=tmp_path),
+        )
+
+        assert wrapper._config.risk_profile is not None
+        # OpenAI defaults are discovered as tool-capable and multimodal.
+        assert wrapper._config.risk_profile.has_tool_calling is True
+        assert wrapper._config.risk_profile.has_vision_audio is True
+
+    def test_resolve_llm_policy_applies_role_constraints(self, tmp_path):
+        wrapper = TheseusWrapper(
+            provider="openai",
+            project_root=tmp_path,
+            config=WrapperConfig(project_root=tmp_path),
+        )
+
+        main_policy = wrapper.resolve_llm_policy(model="gpt-4o-mini", role="main")
+        judge_policy = wrapper.resolve_llm_policy(model="gpt-4o-mini", role="judge")
+        l3_policy = wrapper.resolve_llm_policy(model="gpt-4o-mini", role="l3")
+
+        assert main_policy["effective"]["tool_call"] is True
+        assert judge_policy["effective"]["tool_call"] is False
+        assert judge_policy["effective"]["reasoning"] is False
+        assert l3_policy["effective"]["tool_call"] is False
+
+    def test_resolve_llm_policy_applies_environment_override(self, tmp_path):
+        wrapper = TheseusWrapper(
+            provider="openai",
+            project_root=tmp_path,
+            config=WrapperConfig(project_root=tmp_path, policy_environment="test"),
+        )
+
+        policy = wrapper.resolve_llm_policy(model="gpt-4o-mini", role="main")
+
+        assert policy["environment"] == "test"
+        assert policy["effective"]["tool_call"] is False
+        assert policy["effective"]["multimodal"] is False
+
+    def test_propagate_headers_include_policy_metadata(self, tmp_path):
+        wrapper = TheseusWrapper(
+            provider="openai",
+            project_root=tmp_path,
+            config=WrapperConfig(project_root=tmp_path, policy_environment="prod"),
+        )
+
+        headers = wrapper.propagate_headers(model="gpt-4o-mini", role="judge")
+
+        assert headers["X-CT-Policy-Role"] == "judge"
+        assert headers["X-CT-Policy-Environment"] == "prod"
+        assert "X-CT-Policy" in headers
 
     # -- validate_user_rule ----------------------------------------------------
 
@@ -249,3 +320,33 @@ axiomatic_anchors:
         assert wrapper._call_provider.call_count == 2
         assert response.content == "Still bad"
         assert response.divergence_tier == DivergenceTier.L2_JUDGE
+
+    def test_call_provider_strips_tool_kwargs_when_model_has_no_tool_call(self, tmp_path):
+        client = MagicMock()
+        client.__class__.__module__ = "ollama"
+        wrapper = TheseusWrapper(
+            client=client,
+            config=WrapperConfig(project_root=tmp_path),
+            project_root=tmp_path,
+        )
+
+        with pytest.MonkeyPatch.context() as mp:
+            def _mock_completion(*args, **kwargs):
+                assert "tools" not in kwargs
+                assert "tool_choice" not in kwargs
+                assert "parallel_tool_calls" not in kwargs
+                response = MagicMock()
+                response.choices = [MagicMock(message=MagicMock(content="ok", tool_calls=None))]
+                response.model = "ollama/llama3"
+                return response
+
+            mp.setattr("ct_toolkit.core.wrapper.litellm.completion", _mock_completion)
+            raw = wrapper._call_provider(
+                messages=[{"role": "user", "content": "hello"}],
+                model="llama3",
+                tools=[{"type": "function", "function": {"name": "f", "parameters": {"type": "object"}}}],
+                tool_choice="auto",
+                parallel_tool_calls=True,
+            )
+
+        assert raw.model == "ollama/llama3"

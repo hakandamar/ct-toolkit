@@ -1,8 +1,7 @@
 import pytest
 import tempfile
-import sqlite3
 from ct_toolkit.core.kernel import ConstitutionalKernel
-from ct_toolkit.provenance.log import ProvenanceLog, ChainIntegrityError
+from ct_toolkit.provenance.log import ProvenanceLog
 from ct_toolkit.endorsement.reflective import (
     ReflectiveEndorsement,
     EndorsementDecision,

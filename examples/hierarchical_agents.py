@@ -18,7 +18,6 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from ct_toolkit import TheseusWrapper, WrapperConfig
-from ct_toolkit.core.kernel import ConstitutionalKernel
 
 def run_hierarchy_demo():
     print("=== Phase 2: Multi-Agent Hierarchy Demo ===\n")
@@ -44,7 +43,7 @@ def run_hierarchy_demo():
             parent_kernel=manager_client.kernel # Propagation happens here
         )
     )
-    print(f"Worker Agent initialized. Parent constraints merged.")
+    print("Worker Agent initialized. Parent constraints merged.")
 
     # 4. Demonstrate CIK Enforcement
     print("\n--- Worker System Prompt (with propagated constraints) ---")

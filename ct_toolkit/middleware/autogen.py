@@ -54,6 +54,8 @@ class TheseusAutoGenMiddleware:
     def apply_to_agent(
         agent: Any,
         wrapper: TheseusWrapper,
+        *,
+        role: str | None = None,
     ) -> None:
         """
         Attach identity-continuity guardrails to an AutoGen ``ConversableAgent``.
@@ -66,6 +68,14 @@ class TheseusAutoGenMiddleware:
         if not hasattr(agent, "register_reply"):
             raise TypeError(
                 f"agent must be an AutoGen ConversableAgent, got {type(agent).__name__}"
+            )
+
+        llm_config = getattr(agent, "llm_config", None)
+        if isinstance(llm_config, dict):
+            TheseusAutoGenMiddleware.apply_policy_to_llm_config(
+                llm_config,
+                wrapper,
+                role=role,
             )
 
         def _theseus_reply(
@@ -118,6 +128,8 @@ class TheseusAutoGenMiddleware:
     def wrap_config_list(
         config_list: List[Dict[str, Any]],
         wrapper: TheseusWrapper,
+        *,
+        role: str | None = None,
     ) -> List[Dict[str, Any]]:
         """
         Inject CT Toolkit propagation headers into AutoGen ``config_list``
@@ -133,16 +145,21 @@ class TheseusAutoGenMiddleware:
         Returns:
             A new config list with CT headers injected.
         """
-        headers = wrapper.propagate_headers()
         new_config: List[Dict[str, Any]] = []
 
         for config in config_list:
             cfg = dict(config)
+            model = _extract_model_from_config(cfg)
+            headers = wrapper.propagate_headers(model=model, role=role)
+            policy_metadata = wrapper.propagate_policy_metadata(model=model, role=role)
             api_params: Dict[str, Any] = dict(cfg.get("api_params", {}))
             existing_headers: Dict[str, str] = dict(api_params.get("headers", {}))
             existing_headers.update(headers)
             api_params["headers"] = existing_headers
             cfg["api_params"] = api_params
+            metadata: Dict[str, Any] = dict(cfg.get("metadata", {}))
+            metadata["ct_policy"] = policy_metadata
+            cfg["metadata"] = metadata
             new_config.append(cfg)
 
         logger.info(
@@ -150,6 +167,31 @@ class TheseusAutoGenMiddleware:
             f"{len(new_config)} AutoGen config entries."
         )
         return new_config
+
+    @staticmethod
+    def apply_policy_to_llm_config(
+        llm_config: Dict[str, Any],
+        wrapper: TheseusWrapper,
+        *,
+        role: str | None = None,
+    ) -> Dict[str, Any]:
+        """Inject CT policy metadata into AutoGen llm_config and nested config_list."""
+        model = _extract_model_from_config(llm_config)
+        policy_metadata = wrapper.propagate_policy_metadata(model=model, role=role)
+
+        metadata: Dict[str, Any] = dict(llm_config.get("metadata", {}))
+        metadata["ct_policy"] = policy_metadata
+        llm_config["metadata"] = metadata
+
+        config_list = llm_config.get("config_list")
+        if isinstance(config_list, list):
+            llm_config["config_list"] = TheseusAutoGenMiddleware.wrap_config_list(
+                config_list,
+                wrapper,
+                role=role,
+            )
+
+        return llm_config
 
 
 # ── Post-reply observer ────────────────────────────────────────────────────────
@@ -213,3 +255,20 @@ def _extract_text(message: Any) -> str:
     if isinstance(message, dict):
         return str(message.get("content", ""))
     return str(message)
+
+
+def _extract_model_from_config(config: Dict[str, Any]) -> str | None:
+    """Best-effort extraction of model id from AutoGen config payloads."""
+    model = config.get("model")
+    if isinstance(model, str):
+        return model
+
+    config_list = config.get("config_list")
+    if isinstance(config_list, list):
+        for item in config_list:
+            if isinstance(item, dict):
+                nested_model = item.get("model")
+                if isinstance(nested_model, str):
+                    return nested_model
+
+    return None

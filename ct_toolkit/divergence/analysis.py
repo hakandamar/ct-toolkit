@@ -11,12 +11,12 @@ from __future__ import annotations
 import math
 import numpy as np
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from ct_toolkit.utils.logger import get_logger
 
 if TYPE_CHECKING:
-    from ct_toolkit.provenance.log import ProvenanceLog, ProvenanceEntry
+    from ct_toolkit.provenance.log import ProvenanceLog
     from ct_toolkit.divergence.scheduler import RiskProfile
 
 logger = get_logger(__name__)

@@ -17,6 +17,7 @@ Compatible with langchain-core >= 1.2.
 """
 from __future__ import annotations
 
+import json
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
@@ -28,6 +29,7 @@ from langchain_core.messages import (
     SystemMessage,
 )
 from langchain_core.outputs import ChatGeneration, ChatResult, LLMResult
+from pydantic import Field
 
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
 from ct_toolkit.utils.logger import get_logger
@@ -186,6 +188,9 @@ class TheseusChatModel(BaseChatModel):
     # Pydantic model fields (BaseChatModel is Pydantic-based in langchain-core v1.2)
     wrapper: Any = None
     model: str = "gpt-4o-mini"
+    bound_tools: List[Dict[str, Any]] = Field(default_factory=list)
+    bound_tool_choice: Any = None
+    allow_tools: bool = True
 
     model_config = {"arbitrary_types_allowed": True}
 
@@ -202,12 +207,22 @@ class TheseusChatModel(BaseChatModel):
             provider=provider,
             config=wrapper_config,
         )
-        super().__init__(wrapper=_wrapper, model=model, **kwargs)
+        super().__init__(**kwargs)
+        self.wrapper = _wrapper
+        self.model = model
 
     @property
     def compression_guard(self) -> Any:
         """Access the underlying ContextCompressionGuard."""
         return self.wrapper._compression_guard
+
+    @property
+    def policy_metadata(self) -> Dict[str, Any]:
+        """Expose resolved CT policy metadata for external middleware consumers."""
+        return self.wrapper.propagate_policy_metadata(
+            model=self.model,
+            role=self.wrapper._config.policy_role,
+        )
 
     @property
     def _llm_type(self) -> str:
@@ -231,6 +246,101 @@ class TheseusChatModel(BaseChatModel):
                 return msg.content
         return None
 
+    @staticmethod
+    def _format_tool(tool: Any) -> Dict[str, Any]:
+        """Normalize a tool into OpenAI-compatible tool schema."""
+        try:
+            from langchain_core.utils.function_calling import convert_to_openai_tool
+
+            return convert_to_openai_tool(tool)
+        except Exception:
+            if isinstance(tool, dict):
+                return tool
+            if hasattr(tool, "name"):
+                return {
+                    "type": "function",
+                    "function": {
+                        "name": str(getattr(tool, "name")),
+                        "description": str(getattr(tool, "description", "")),
+                        "parameters": getattr(tool, "args_schema", {}) or {},
+                    },
+                }
+            raise TypeError("Unsupported tool format for TheseusChatModel.bind_tools")
+
+    @staticmethod
+    def _extract_tool_calls(raw_response: Any) -> List[Dict[str, Any]]:
+        """Extract tool calls from LiteLLM/OpenAI-like responses into LangChain format."""
+        tool_calls: Any = None
+
+        if isinstance(raw_response, dict):
+            choices = raw_response.get("choices") or []
+            if choices:
+                tool_calls = (choices[0].get("message") or {}).get("tool_calls")
+        elif hasattr(raw_response, "choices") and raw_response.choices:
+            message = getattr(raw_response.choices[0], "message", None)
+            if message is not None:
+                tool_calls = getattr(message, "tool_calls", None)
+
+        if not tool_calls:
+            return []
+
+        parsed_calls: List[Dict[str, Any]] = []
+        for tc in tool_calls:
+            if isinstance(tc, dict):
+                fn = tc.get("function") or {}
+                raw_args = fn.get("arguments", "{}")
+                call_id = tc.get("id")
+                name = fn.get("name", "")
+            else:
+                fn = getattr(tc, "function", None)
+                raw_args = getattr(fn, "arguments", "{}") if fn is not None else "{}"
+                call_id = getattr(tc, "id", None)
+                name = getattr(fn, "name", "") if fn is not None else ""
+
+            args: Dict[str, Any]
+            if isinstance(raw_args, str):
+                try:
+                    loaded = json.loads(raw_args) if raw_args else {}
+                    args = loaded if isinstance(loaded, dict) else {"_raw": raw_args}
+                except json.JSONDecodeError:
+                    args = {"_raw": raw_args}
+            elif isinstance(raw_args, dict):
+                args = raw_args
+            else:
+                args = {"_raw": str(raw_args)}
+
+            parsed_calls.append(
+                {
+                    "id": call_id or f"tool_call_{len(parsed_calls) + 1}",
+                    "name": name,
+                    "args": args,
+                    "type": "tool_call",
+                }
+            )
+
+        return parsed_calls
+
+    def bind_tools(
+        self,
+        tools: List[Any],
+        *,
+        tool_choice: Any = None,
+        **kwargs: Any,
+    ) -> "TheseusChatModel":
+        """
+        Bind tools to the model for agent/tool-calling workflows.
+
+        This keeps tool support in the model layer while preserving CT guardrails.
+        """
+        _ = kwargs
+        formatted_tools = [self._format_tool(tool) for tool in tools]
+        return self.model_copy(
+            update={
+                "bound_tools": formatted_tools,
+                "bound_tool_choice": tool_choice,
+            }
+        )
+
     # ── core generation ────────────────────────────────────────────────────
 
     def _generate(
@@ -240,22 +350,54 @@ class TheseusChatModel(BaseChatModel):
         run_manager: Any = None,
         **kwargs: Any,
     ) -> ChatResult:
+        _ = run_manager
         user_text = self._extract_user_text(messages)
         system_prompt = self._extract_system(messages)
+
+        call_kwargs: Dict[str, Any] = dict(kwargs)
+        if stop:
+            call_kwargs["stop"] = stop
+
+        resolved_policy = self.wrapper.resolve_llm_policy(model=self.model)
+        tool_call_allowed = bool(resolved_policy["effective"].get("tool_call", False)) and self.allow_tools
+
+        if tool_call_allowed:
+            if self.bound_tools:
+                call_kwargs["tools"] = self.bound_tools
+            if self.bound_tool_choice is not None:
+                call_kwargs["tool_choice"] = self.bound_tool_choice
+        else:
+            if not self.allow_tools:
+                provider = getattr(self.wrapper, "_provider", "unknown")
+                if provider != "ollama":
+                    call_kwargs.update(
+                        {
+                            "tools": [],
+                            "tool_choice": "none",
+                            "parallel_tool_calls": False,
+                        }
+                    )
+            else:
+                call_kwargs.update(self.wrapper.resolve_tool_control_kwargs(model=self.model))
 
         ct_response = self.wrapper.chat(
             user_text,
             model=self.model,
             system=system_prompt,
+            **call_kwargs,
         )
 
-        ai_message = AIMessage(content=ct_response.content)
+        tool_calls = self._extract_tool_calls(ct_response.raw_response)
+
+        ai_message = AIMessage(content=ct_response.content or "", tool_calls=tool_calls)
         generation = ChatGeneration(
             message=ai_message,
             generation_info={
                 "divergence_score": ct_response.divergence_score,
                 "divergence_tier": ct_response.divergence_tier,
                 "provenance_id": ct_response.provenance_id,
+                "ct_policy": self.policy_metadata,
+                "tool_calls": tool_calls,
             },
         )
         return ChatResult(generations=[generation])

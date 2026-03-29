@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, patch
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
 from ct_toolkit.divergence.engine import DivergenceEngine
@@ -82,7 +81,7 @@ class TestJudgeConfigFix:
                 
                 try:
                     runner._call_model("test prompt")
-                except:
+                except Exception:
                     pass # We only care about the call args
                 
                 mock_completion.assert_called_once()

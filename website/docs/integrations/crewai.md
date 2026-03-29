@@ -31,6 +31,14 @@ crew.kickoff()
 
 After `apply_to_crew()`, each agent's `llm` is replaced with a `TheseusChatModel` configured with the manager's kernel as read-only constraints.
 
+Crew-level and agent-level policy metadata are also attached in a standard form:
+
+```python
+print(crew.ct_policy)
+print(researcher.ct_policy)
+print(researcher.metadata["ct_policy"])
+```
+
 ## Single agent
 
 ```python

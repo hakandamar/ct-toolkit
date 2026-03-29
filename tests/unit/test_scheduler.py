@@ -1,4 +1,3 @@
-import pytest
 from ct_toolkit.divergence.scheduler import ElasticityScheduler, RiskProfile
 
 class TestElasticityScheduler:

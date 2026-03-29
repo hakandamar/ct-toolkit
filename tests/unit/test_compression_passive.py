@@ -1,8 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, patch
 import numpy as np
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
-from ct_toolkit.core.compression_guard import ContextCompressionGuard
 
 def mock_wrapper_with_identity() -> TheseusWrapper:
     """Return a TheseusWrapper with a mocked identity layer."""

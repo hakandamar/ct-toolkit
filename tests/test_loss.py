@@ -1,6 +1,5 @@
 import unittest
 import torch
-import torch.nn as nn
 from ct_toolkit.divergence.loss import DivergencePenaltyLoss
 
 class TestDivergenceLoss(unittest.TestCase):

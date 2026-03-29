@@ -2,7 +2,6 @@ import pytest
 import time
 from unittest.mock import MagicMock, patch
 from ct_toolkit import TheseusWrapper, WrapperConfig
-from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.endorsement.reflective import EndorsementDecision, auto_staged_channel
 from ct_toolkit.core.exceptions import CriticalSandboxDivergenceError
 
@@ -28,7 +27,6 @@ def mock_embedding():
 
 def test_staged_approval_flow(mock_litellm, mock_embedding):
     """Verify that a staged endorsement enters cooldown and is promoted after expiration."""
-    kernel = ConstitutionalKernel.default()
     config = WrapperConfig(
         endorsement_cooldown_base=2, # Very short for testing
         endorsement_cooldown_max=5,
@@ -67,7 +65,6 @@ def test_staged_approval_flow(mock_litellm, mock_embedding):
 
 def test_staged_approval_critical_failure(mock_litellm, mock_embedding):
     """Verify that critical divergence in sandbox rejects the update."""
-    kernel = ConstitutionalKernel.default()
     config = WrapperConfig(
         endorsement_cooldown_base=10,
         divergence_l3_threshold=0.5

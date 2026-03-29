@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, patch
 from ct_toolkit.identity.embedding import IdentityEmbeddingLayer
 
@@ -99,7 +98,6 @@ class TestIdentityEmbeddingLayer:
     def test_ngram_fallback_on_empty_overlap(self):
         """When text has no keyword overlap, it should use trigram hashing."""
         import numpy as np
-        from ct_toolkit.core.kernel import ConstitutionalKernel
         layer = IdentityEmbeddingLayer(template="default")
         # Text with zero probability of having default kernel keywords
         text = "xyz pdq abc 123" 

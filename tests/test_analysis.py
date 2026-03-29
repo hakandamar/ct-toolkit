@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-from ct_toolkit.divergence.analysis import PolicyDriftAnalyzer, DriftReport, SSCSeverityCalculator
+from ct_toolkit.divergence.analysis import PolicyDriftAnalyzer, SSCSeverityCalculator
 from ct_toolkit.provenance.log import ProvenanceEntry
 
 class TestPolicyDrift(unittest.TestCase):

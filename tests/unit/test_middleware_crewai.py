@@ -5,7 +5,7 @@ Unit tests for ct_toolkit.middleware.crewai.TheseusCrewMiddleware.
 Uses mocks — does NOT require crewai to be installed.
 """
 import pytest
-from unittest.mock import MagicMock, patch, PropertyMock
+from unittest.mock import MagicMock
 
 from ct_toolkit.middleware.crewai import TheseusCrewMiddleware, _extract_model_name
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
@@ -63,6 +63,25 @@ class TestApplyToCrew:
         assert sub_kernel is not None
         assert sub_kernel.name == manager_wrapper.kernel.name
 
+    def test_sub_agents_receive_sub_policy_role(self, manager_wrapper):
+        agent = _make_agent("Analyst")
+        crew = _make_crew(agent)
+
+        TheseusCrewMiddleware.apply_to_crew(crew, manager_wrapper)
+
+        assert agent.llm.wrapper._config.policy_role == "sub"
+
+    def test_policy_metadata_is_attached_to_crew_and_agent(self, manager_wrapper):
+        agent = _make_agent("Analyst")
+        crew = _make_crew(agent)
+
+        TheseusCrewMiddleware.apply_to_crew(crew, manager_wrapper)
+
+        assert crew.ct_policy["role"] == manager_wrapper._config.policy_role
+        assert crew.metadata["ct_policy"] == crew.ct_policy
+        assert agent.ct_policy["role"] == "sub"
+        assert agent.metadata["ct_policy"] == agent.ct_policy
+
     def test_agent_without_llm_attribute_is_skipped(self, manager_wrapper):
         """Agents that have no llm attribute should not crash the middleware."""
         agent_no_llm = MagicMock(spec=["role"])     # no llm attribute  
@@ -104,6 +123,19 @@ class TestWrapAgent:
         TheseusCrewMiddleware.wrap_agent(agent, manager_wrapper)
 
         assert agent.llm.wrapper._config.parent_kernel is not None
+
+    def test_wrap_agent_sets_sub_policy_role(self, manager_wrapper):
+        agent = _make_agent("Reviewer")
+        TheseusCrewMiddleware.wrap_agent(agent, manager_wrapper)
+
+        assert agent.llm.wrapper._config.policy_role == "sub"
+
+    def test_wrap_agent_attaches_policy_metadata(self, manager_wrapper):
+        agent = _make_agent("Reviewer")
+        TheseusCrewMiddleware.wrap_agent(agent, manager_wrapper)
+
+        assert agent.ct_policy["role"] == "sub"
+        assert agent.metadata["ct_policy"] == agent.ct_policy
 
 
 # ── _extract_model_name helper ─────────────────────────────────────────────────

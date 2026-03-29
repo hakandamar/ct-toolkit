@@ -83,7 +83,7 @@ Upon startup, the CLI greets you with the **Theseus Guard** banner, ensuring you
     | |  | |  | | |____ ____) | |____| |__| |____) | | |__| | |__| |/ ____ \
     |_|  |_|  |_|______|_____/|______|_____/|_____/   \_____|\____//_/    \_\
 
-  computational theseus toolkit (ct toolkit) v0.3.19
+  computational theseus toolkit (ct toolkit) v0.3.20
   identity continuity guardrails for agentic systems
 ```
 

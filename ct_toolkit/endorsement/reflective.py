@@ -25,11 +25,11 @@ import json
 import time
 import sys
 import uuid
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Callable, Any
 
-from ct_toolkit.core.exceptions import PlasticConflictError, AxiomaticViolationError
+from ct_toolkit.core.exceptions import PlasticConflictError
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)

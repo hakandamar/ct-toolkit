@@ -47,7 +47,6 @@ Compatible with litellm >= 1.40.0
 """
 from __future__ import annotations
 
-import time
 from typing import Any, Optional
 
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig

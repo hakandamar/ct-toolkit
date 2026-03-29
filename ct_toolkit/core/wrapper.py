@@ -23,11 +23,13 @@ from __future__ import annotations
 
 import time
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional, Callable, Dict, List
 
 import litellm
+import yaml
 
 from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.core.compatibility import CompatibilityLayer, CompatibilityResult
@@ -80,6 +82,14 @@ class WrapperConfig:
     elasticity_max_thresholds: tuple[float, float, float] | None = None  # (max_l1, max_l2, max_l3)
     elasticity_growth_rate: float | None = None
     risk_profile: RiskProfile | None = None
+
+    # -- Capability Handshake & Discovery --
+    capability_cache_file: str = "config/llm_capability.yaml"
+    capability_refresh_interval_s: int = 3600
+    capability_enable_active_handshake: bool = False
+    capability_force_refresh: bool = False
+    policy_role: str = "main"
+    policy_environment: str = "prod"
 
     strict_embedding: bool = False   # Raise error if embedding API fails
 
@@ -173,11 +183,29 @@ class TheseusWrapper:
             
         self._client = client
         self._provider = provider or self._detect_provider(client)
+        self._config.policy_environment = (
+            self._config.policy_environment
+            or os.environ.get("CT_TOOLKIT_ENV")
+            or os.environ.get("CT_ENV")
+            or os.environ.get("ENV")
+            or "prod"
+        )
         self._project_root = (
             Path(self._config.project_root)
             if self._config.project_root
             else Path(os.getcwd())
         )
+
+        # ── Capability Handshake / Discovery Cache ──
+        self._capability_cache_path = self._resolve_capability_cache_path()
+        self._capability_registry = self._initialize_capability_registry()
+
+        # Auto-derive RiskProfile from discovered model capabilities unless explicitly provided.
+        self._auto_risk_profile = self._config.risk_profile is None
+        if self._auto_risk_profile:
+            startup_caps = self._get_model_capabilities(model=None)
+            self._apply_discovered_risk_profile(startup_caps)
+
         self._kernel = self._load_kernel()
 
         # If a parent kernel exists, merge it into our own kernel as axiomatic constraints
@@ -218,7 +246,7 @@ class TheseusWrapper:
         # 1. Scan built-in package files
         try:
             from importlib.resources import files
-            package_root = files("ct_toolkit")
+            package_root = Path(str(files("ct_toolkit")))
             
             internal_patterns = [
                 "kernels/**/*.yaml",
@@ -249,6 +277,461 @@ class TheseusWrapper:
                         if file_path.is_file():
                             self._integrity_monitor.register_file(file_path)
 
+    # ── Capability Handshake / Discovery ─────────────────────────────────────
+
+    def _resolve_capability_cache_path(self) -> Path:
+        """Resolve capability cache path, relative to project_root when needed."""
+        cache_path = Path(self._config.capability_cache_file)
+        if cache_path.is_absolute():
+            return cache_path
+        return self._project_root / cache_path
+
+    def _initialize_capability_registry(self) -> dict[str, Any]:
+        """Load or create capability cache and ensure provider defaults exist."""
+        cache_path = self._capability_cache_path
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+
+        registry = self._load_capability_registry_from_disk(cache_path)
+        registry_roles = registry.setdefault("role_policies", {})
+        default_roles = self._default_role_policies()
+        for role_name, defaults in default_roles.items():
+            role_entry = registry_roles.setdefault(role_name, {})
+            for key, value in defaults.items():
+                role_entry.setdefault(key, value)
+
+        registry_environments = registry.setdefault("environment_overrides", {})
+        default_environment_overrides = self._default_environment_role_overrides()
+        for env_name, env_defaults in default_environment_overrides.items():
+            env_entry = registry_environments.setdefault(env_name, {})
+            env_role_policies = env_entry.setdefault("role_policies", {})
+            for role_name, role_defaults in env_defaults.get("role_policies", {}).items():
+                role_entry = env_role_policies.setdefault(role_name, {})
+                for key, value in role_defaults.items():
+                    role_entry.setdefault(key, value)
+
+        providers = registry.setdefault("providers", {})
+        provider_entry = providers.setdefault(self._provider, {})
+
+        default_caps = self._perform_capability_handshake(model=None)
+        provider_entry.setdefault("models", {})
+        provider_entry["defaults"] = {
+            "capabilities": default_caps,
+            "source": "startup_handshake",
+            "last_checked": time.time(),
+        }
+        provider_entry["refresh_interval_s"] = self._config.capability_refresh_interval_s
+
+        self._write_capability_registry(cache_path, registry)
+        return registry
+
+    @staticmethod
+    def _load_capability_registry_from_disk(cache_path: Path) -> dict[str, Any]:
+        if not cache_path.exists():
+            return {
+                "version": 1,
+                "generated_at": time.time(),
+                "providers": {},
+            }
+
+        try:
+            with cache_path.open("r", encoding="utf-8") as handle:
+                loaded = yaml.safe_load(handle) or {}
+            if not isinstance(loaded, dict):
+                raise ValueError("capability cache root must be a mapping")
+            loaded.setdefault("version", 1)
+            loaded.setdefault("generated_at", time.time())
+            loaded.setdefault("providers", {})
+            return loaded
+        except Exception as exc:
+            logger.warning(f"Capability cache could not be loaded, rebuilding: {exc}")
+            return {
+                "version": 1,
+                "generated_at": time.time(),
+                "providers": {},
+            }
+
+    def _write_capability_registry(self, cache_path: Path, registry: dict[str, Any]) -> None:
+        try:
+            registry["updated_at"] = time.time()
+            with cache_path.open("w", encoding="utf-8") as handle:
+                yaml.safe_dump(registry, handle, sort_keys=False, allow_unicode=False)
+            if hasattr(self, "_integrity_monitor") and cache_path.is_file():
+                self._integrity_monitor.register_file(cache_path)
+        except Exception as exc:
+            logger.warning(f"Capability cache write skipped: {exc}")
+
+    @staticmethod
+    def _default_role_policies() -> dict[str, dict[str, bool]]:
+        return {
+            "main": {
+                "allow_tool_call": True,
+                "allow_reasoning": True,
+                "allow_multimodal": True,
+            },
+            "sub": {
+                "allow_tool_call": True,
+                "allow_reasoning": True,
+                "allow_multimodal": True,
+            },
+            "judge": {
+                "allow_tool_call": False,
+                "allow_reasoning": False,
+                "allow_multimodal": False,
+            },
+            "l3": {
+                "allow_tool_call": False,
+                "allow_reasoning": True,
+                "allow_multimodal": False,
+            },
+        }
+
+    @staticmethod
+    def _default_environment_role_overrides() -> dict[str, dict[str, dict[str, dict[str, bool]]]]:
+        return {
+            "dev": {
+                "role_policies": {
+                    "main": {
+                        "allow_tool_call": True,
+                        "allow_reasoning": True,
+                        "allow_multimodal": True,
+                    },
+                    "sub": {
+                        "allow_tool_call": True,
+                        "allow_reasoning": True,
+                        "allow_multimodal": True,
+                    },
+                }
+            },
+            "test": {
+                "role_policies": {
+                    "main": {
+                        "allow_tool_call": False,
+                        "allow_reasoning": True,
+                        "allow_multimodal": False,
+                    },
+                    "sub": {
+                        "allow_tool_call": False,
+                        "allow_reasoning": True,
+                        "allow_multimodal": False,
+                    },
+                    "judge": {
+                        "allow_tool_call": False,
+                        "allow_reasoning": False,
+                        "allow_multimodal": False,
+                    },
+                    "l3": {
+                        "allow_tool_call": False,
+                        "allow_reasoning": True,
+                        "allow_multimodal": False,
+                    },
+                }
+            },
+            "prod": {
+                "role_policies": {
+                    "main": {
+                        "allow_tool_call": True,
+                        "allow_reasoning": True,
+                        "allow_multimodal": True,
+                    },
+                    "sub": {
+                        "allow_tool_call": True,
+                        "allow_reasoning": True,
+                        "allow_multimodal": True,
+                    },
+                    "judge": {
+                        "allow_tool_call": False,
+                        "allow_reasoning": False,
+                        "allow_multimodal": False,
+                    },
+                    "l3": {
+                        "allow_tool_call": False,
+                        "allow_reasoning": True,
+                        "allow_multimodal": False,
+                    },
+                }
+            },
+        }
+
+    def _perform_capability_handshake(self, model: str | None) -> dict[str, bool]:
+        """
+        Determine model capabilities via static discovery + optional LiteLLM metadata.
+        """
+        capabilities = self._infer_capabilities(provider=self._provider, model=model)
+
+        if not self._config.capability_enable_active_handshake:
+            return capabilities
+
+        model_for_lookup = model or self._default_model_for_provider(self._provider)
+        if not model_for_lookup:
+            return capabilities
+
+        # Lightweight active handshake: use LiteLLM parameter metadata when available.
+        try:
+            get_params = getattr(litellm, "get_supported_openai_params", None)
+            if callable(get_params):
+                params = get_params(model=model_for_lookup, custom_llm_provider=self._provider)
+                if isinstance(params, (list, tuple, set)):
+                    param_set = {str(p) for p in params}
+                else:
+                    param_set = set()
+                if "tools" in param_set or "tool_choice" in param_set:
+                    capabilities["tool_call"] = True
+                if "reasoning_effort" in param_set:
+                    capabilities["reasoning"] = True
+                if "modalities" in param_set:
+                    capabilities["audio"] = True
+                if "image" in param_set:
+                    capabilities["image"] = True
+        except Exception as exc:
+            logger.debug(f"Capability active handshake metadata unavailable: {exc}")
+
+        capabilities["multimodal"] = bool(
+            capabilities.get("image")
+            or capabilities.get("audio")
+            or capabilities.get("video")
+        )
+        return capabilities
+
+    @staticmethod
+    def _default_model_for_provider(provider: str) -> str | None:
+        defaults = {
+            "openai": "gpt-4o-mini",
+            "anthropic": "claude-3-5-sonnet-latest",
+            "ollama": "llama3",
+            "google": "gemini-1.5-flash",
+        }
+        return defaults.get(provider)
+
+    @staticmethod
+    def _infer_capabilities(provider: str, model: str | None) -> dict[str, bool]:
+        """Heuristic capability discovery used for startup and fallback refresh."""
+        model_name = (model or "").lower()
+        provider_name = (provider or "unknown").lower()
+
+        image = False
+        audio = False
+        video = False
+        tool_call = False
+        reasoning = False
+
+        if provider_name in {"openai", "anthropic", "google"}:
+            tool_call = True
+
+        if provider_name == "openai":
+            image = True
+            audio = True
+
+        if provider_name == "google":
+            image = True
+            audio = True
+            video = True
+
+        if provider_name == "ollama":
+            image = bool(re.search(r"llava|moondream|vision", model_name))
+            tool_call = False
+
+        if re.search(r"o1|o3|r1|reason|thinking|deepseek-r1", model_name):
+            reasoning = True
+
+        multimodal = image or audio or video
+        return {
+            "text": True,
+            "image": image,
+            "audio": audio,
+            "video": video,
+            "multimodal": multimodal,
+            "tool_call": tool_call,
+            "reasoning": reasoning,
+        }
+
+    def _get_model_capabilities(self, model: str | None) -> dict[str, bool]:
+        """Return cached capabilities for provider/model, refreshing on-demand."""
+        providers = self._capability_registry.setdefault("providers", {})
+        provider_entry = providers.setdefault(self._provider, {"models": {}})
+        provider_entry.setdefault("models", {})
+        provider_entry.setdefault("defaults", {"capabilities": self._infer_capabilities(self._provider, None)})
+
+        refresh_interval = float(provider_entry.get("refresh_interval_s", self._config.capability_refresh_interval_s))
+        should_refresh = self._config.capability_force_refresh
+
+        if model:
+            model_entry = provider_entry["models"].get(model)
+            if model_entry is None:
+                should_refresh = True
+            else:
+                last_checked = float(model_entry.get("last_checked", 0.0))
+                if (time.time() - last_checked) >= refresh_interval:
+                    should_refresh = True
+
+            if should_refresh:
+                caps = self._perform_capability_handshake(model=model)
+                provider_entry["models"][model] = {
+                    "capabilities": caps,
+                    "source": "refresh_discovery",
+                    "last_checked": time.time(),
+                }
+                self._apply_discovered_risk_profile(caps)
+                self._write_capability_registry(self._capability_cache_path, self._capability_registry)
+                return caps
+
+            return dict(model_entry.get("capabilities", {}))
+
+        default_entry = provider_entry.get("defaults", {})
+        return dict(default_entry.get("capabilities", {}))
+
+    @staticmethod
+    def _risk_profile_from_capabilities(capabilities: dict[str, bool]) -> RiskProfile:
+        return RiskProfile(
+            has_tool_calling=bool(capabilities.get("tool_call", False)),
+            has_vision_audio=bool(
+                capabilities.get("image", False)
+                or capabilities.get("audio", False)
+                or capabilities.get("video", False)
+                or capabilities.get("multimodal", False)
+            ),
+            mcp_server_count=0,
+        )
+
+    def _apply_discovered_risk_profile(self, capabilities: dict[str, bool]) -> None:
+        """Apply auto-managed risk profile updates from discovered capabilities."""
+        if not getattr(self, "_auto_risk_profile", False):
+            return
+
+        new_profile = self._risk_profile_from_capabilities(capabilities)
+        old_profile = self._config.risk_profile
+        changed = (
+            old_profile is None
+            or old_profile.has_tool_calling != new_profile.has_tool_calling
+            or old_profile.has_vision_audio != new_profile.has_vision_audio
+            or old_profile.mcp_server_count != new_profile.mcp_server_count
+        )
+        if not changed:
+            return
+
+        self._config.risk_profile = new_profile
+        if hasattr(self, "_divergence_engine"):
+            self._divergence_engine = self._init_divergence_engine()
+
+    def resolve_llm_policy(
+        self,
+        model: str | None = None,
+        role: str | None = None,
+    ) -> dict[str, Any]:
+        """Resolve effective role policy using cached capabilities and YAML role rules."""
+        role_name = (role or self._config.policy_role or "main").lower()
+        environment_name = (self._config.policy_environment or "prod").lower()
+        role_defaults = self._default_role_policies()
+        registry_roles = self._capability_registry.setdefault("role_policies", {})
+        resolved_role = dict(role_defaults.get(role_name, role_defaults["main"]))
+        resolved_role.update(registry_roles.get(role_name, {}))
+
+        environment_defaults = self._default_environment_role_overrides()
+        registry_environments = self._capability_registry.setdefault("environment_overrides", {})
+        environment_entry = registry_environments.get(environment_name, environment_defaults.get(environment_name, {}))
+        environment_role_overrides = (environment_entry.get("role_policies", {}) if isinstance(environment_entry, dict) else {})
+        resolved_role.update(environment_role_overrides.get(role_name, {}))
+
+        capabilities = self._get_model_capabilities(model)
+        effective = {
+            "text": bool(capabilities.get("text", True)),
+            "image": bool(capabilities.get("image", False) and resolved_role["allow_multimodal"]),
+            "audio": bool(capabilities.get("audio", False) and resolved_role["allow_multimodal"]),
+            "video": bool(capabilities.get("video", False) and resolved_role["allow_multimodal"]),
+            "tool_call": bool(capabilities.get("tool_call", False) and resolved_role["allow_tool_call"]),
+            "reasoning": bool(capabilities.get("reasoning", False) and resolved_role["allow_reasoning"]),
+        }
+        effective["multimodal"] = bool(
+            effective["image"] or effective["audio"] or effective["video"]
+        )
+
+        return {
+            "role": role_name,
+            "environment": environment_name,
+            "role_policy": resolved_role,
+            "capabilities": capabilities,
+            "effective": effective,
+        }
+
+    def propagate_policy_metadata(
+        self,
+        model: str | None = None,
+        role: str | None = None,
+    ) -> dict[str, Any]:
+        """Return serializable policy metadata for downstream middleware/frameworks."""
+        resolved = self.resolve_llm_policy(model=model, role=role)
+        return {
+            "role": resolved["role"],
+            "environment": resolved["environment"],
+            "effective": resolved["effective"],
+        }
+
+    def resolve_tool_control_kwargs(
+        self,
+        model: str | None = None,
+        role: str | None = None,
+    ) -> dict[str, Any]:
+        """Return provider-safe tool control kwargs from resolved role policy."""
+        policy = self.resolve_llm_policy(model=model, role=role)
+        if policy["effective"]["tool_call"]:
+            return {}
+        if self._provider == "ollama":
+            return {}
+        return {
+            "tools": [],
+            "tool_choice": "none",
+            "parallel_tool_calls": False,
+        }
+
+    def _record_passive_capability_discovery(self, model: str, raw_response: Any) -> None:
+        """Update capability registry from observed responses without extra API calls."""
+        discovered: dict[str, bool] = {}
+
+        try:
+            # Detect tool calling usage in observed output.
+            if isinstance(raw_response, dict):
+                choices = raw_response.get("choices") or []
+                if choices:
+                    message = (choices[0].get("message") or {})
+                    if message.get("tool_calls"):
+                        discovered["tool_call"] = True
+                    content = message.get("content")
+                    if isinstance(content, str) and content.strip().startswith("<think>"):
+                        discovered["reasoning"] = True
+            elif hasattr(raw_response, "choices") and raw_response.choices:
+                msg = getattr(raw_response.choices[0], "message", None)
+                if msg is not None:
+                    if getattr(msg, "tool_calls", None):
+                        discovered["tool_call"] = True
+                    content = getattr(msg, "content", "")
+                    if isinstance(content, str) and content.strip().startswith("<think>"):
+                        discovered["reasoning"] = True
+        except Exception:
+            return
+
+        if not discovered:
+            return
+
+        providers = self._capability_registry.setdefault("providers", {})
+        provider_entry = providers.setdefault(self._provider, {"models": {}})
+        provider_entry.setdefault("models", {})
+        current = provider_entry["models"].get(model, {
+            "capabilities": self._infer_capabilities(self._provider, model),
+            "source": "passive_discovery",
+            "last_checked": time.time(),
+        })
+        current_caps = dict(current.get("capabilities", {}))
+        for key, value in discovered.items():
+            current_caps[key] = bool(current_caps.get(key, False) or value)
+        current_caps["multimodal"] = bool(
+            current_caps.get("image") or current_caps.get("audio") or current_caps.get("video")
+        )
+        current["capabilities"] = current_caps
+        current["source"] = "passive_discovery"
+        current["last_checked"] = time.time()
+        provider_entry["models"][model] = current
+        self._apply_discovered_risk_profile(current_caps)
+        self._write_capability_registry(self._capability_cache_path, self._capability_registry)
+
 
     # ── Factory / Init ─────────────────────────────────────────────────────────
 
@@ -264,13 +747,19 @@ class TheseusWrapper:
                 return client.provider
 
             module = type(client).__module__.lower()
-            if "openai" in module: return "openai"
-            if "anthropic" in module: return "anthropic"
-            if "ollama" in module: return "ollama"
-            if "google" in module: return "google"
-            if "cohere" in module: return "cohere"
-            if "mistral" in module: return "mistral"
-        except:
+            if "openai" in module:
+                return "openai"
+            if "anthropic" in module:
+                return "anthropic"
+            if "ollama" in module:
+                return "ollama"
+            if "google" in module:
+                return "google"
+            if "cohere" in module:
+                return "cohere"
+            if "mistral" in module:
+                return "mistral"
+        except Exception:
             pass
         return "unknown"
 
@@ -364,6 +853,7 @@ class TheseusWrapper:
             scheduler=scheduler,
             project_root=self._project_root,
             provenance_log=self._provenance_log,
+            policy_resolver=self.resolve_llm_policy,
         )
 
     def _log_init(self) -> None:
@@ -566,7 +1056,7 @@ class TheseusWrapper:
                 # Write promotion event to log
                 if self._config.log_requests:
                     self._provenance_log.record(
-                        request_text=f"[COOLDOWN_EXPIRED] Promoting staged rule",
+                        request_text="[COOLDOWN_EXPIRED] Promoting staged rule",
                         response_text=f"Rule applied to production kernel: {record.rule_text}",
                         metadata={
                             "event_type": "staged_promotion",
@@ -610,10 +1100,14 @@ class TheseusWrapper:
         self._shadow_history = list(messages)
         
         if not model:
-            if self._provider == "openai": model = "gpt-4o-mini"
-            elif self._provider == "anthropic": model = "claude-3-5-sonnet-latest"
-            elif self._provider == "ollama": model = "llama3"
-            else: model = "gpt-4o-mini"
+            if self._provider == "openai":
+                model = "gpt-4o-mini"
+            elif self._provider == "anthropic":
+                model = "claude-3-5-sonnet-latest"
+            elif self._provider == "ollama":
+                model = "llama3"
+            else:
+                model = "gpt-4o-mini"
 
         full_model = model
         # Prevent colon-to-slash replacement if model already has ollama/ prefix 
@@ -644,8 +1138,17 @@ class TheseusWrapper:
         if hasattr(self._client, "timeout") and "timeout" not in kwargs:
             kwargs["timeout"] = self._client.timeout
 
+        # Common role-aware policy resolution backed by the startup capability cache.
+        policy = self.resolve_llm_policy(model=model)
+        if not policy["effective"].get("tool_call", False):
+            kwargs.pop("tools", None)
+            kwargs.pop("tool_choice", None)
+            kwargs.pop("parallel_tool_calls", None)
+
         try:
-            return litellm.completion(model=full_model, messages=messages, **kwargs)
+            raw = litellm.completion(model=full_model, messages=messages, **kwargs)
+            self._record_passive_capability_discovery(model=full_model, raw_response=raw)
+            return raw
         except Exception as e:
             logger.error(f"litellm call failed: {e}")
             raise
@@ -667,7 +1170,12 @@ class TheseusWrapper:
             return f"{kernel_injection}\n{extra}"
         return kernel_injection
 
-    def propagate_headers(self) -> dict[str, str]:
+    def propagate_headers(
+        self,
+        *,
+        model: str | None = None,
+        role: str | None = None,
+    ) -> dict[str, str]:
         """
         Returns a dictionary of headers to be used when calling sub-agents.
         """
@@ -678,11 +1186,15 @@ class TheseusWrapper:
         kernel_data["is_readonly"] = True
         
         encoded_kernel = base64.b64encode(json.dumps(kernel_data).encode()).decode()
+        policy_metadata = self.propagate_policy_metadata(model=model, role=role)
         
         return {
             "X-CT-Kernel": encoded_kernel,
             "X-CT-Parent-Provider": self._provider,
-            "X-CT-Parent-Model": getattr(self, "_last_model", "unknown")
+            "X-CT-Parent-Model": getattr(self, "_last_model", "unknown"),
+            "X-CT-Policy-Role": str(policy_metadata["role"]),
+            "X-CT-Policy-Environment": str(policy_metadata["environment"]),
+            "X-CT-Policy": base64.b64encode(json.dumps(policy_metadata).encode()).decode(),
         }
 
     def _build_messages(
@@ -724,9 +1236,13 @@ class TheseusWrapper:
 
     def _extract_model(self, raw: Any, fallback: str | None) -> str:
         if isinstance(raw, dict) and "model" in raw:
-            return raw["model"]
+            model_name = raw["model"]
+            if isinstance(model_name, str):
+                return model_name
         if hasattr(raw, "model"):
-            return raw.model
+            model_name = getattr(raw, "model", None)
+            if isinstance(model_name, str):
+                return model_name
         return fallback or "unknown"
 
     def _run_divergence_engine(self, message: str, response: str, interaction_count: int = 0, skip_l3: bool = False) -> Any:
@@ -756,7 +1272,6 @@ class TheseusWrapper:
         Validates the rule; initiates the Reflective Endorsement
         flow if there is a plastic conflict.
         """
-        from ct_toolkit.endorsement.reflective import ReflectiveEndorsement
 
         re = ReflectiveEndorsement(
             kernel=self._kernel,

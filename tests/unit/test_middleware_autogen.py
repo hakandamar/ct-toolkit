@@ -5,8 +5,7 @@ Unit tests for ct_toolkit.middleware.autogen.TheseusAutoGenMiddleware.
 Uses mocks — does NOT require pyautogen to be installed.
 """
 import pytest
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 from ct_toolkit.middleware.autogen import (
     TheseusAutoGenMiddleware,
@@ -30,6 +29,7 @@ def _make_agent(name: str = "assistant") -> MagicMock:
     agent.name = name
     agent.register_reply = MagicMock()
     agent.register_hook = MagicMock()
+    agent.llm_config = None
     return agent
 
 
@@ -110,6 +110,19 @@ class TestApplyToAgent:
         # register_hook is NOT in spec — accessing it would raise AttributeError
         TheseusAutoGenMiddleware.apply_to_agent(agent, wrapper)   # should not raise
 
+    def test_apply_to_agent_injects_policy_metadata_into_llm_config(self, wrapper):
+        agent = _make_agent()
+        agent.llm_config = {
+            "model": "gpt-4o-mini",
+            "config_list": [{"model": "gpt-4o-mini", "api_params": {}}],
+        }
+
+        TheseusAutoGenMiddleware.apply_to_agent(agent, wrapper, role="judge")
+
+        assert agent.llm_config["metadata"]["ct_policy"]["role"] == "judge"
+        cfg_headers = agent.llm_config["config_list"][0]["api_params"]["headers"]
+        assert cfg_headers["X-CT-Policy-Role"] == "judge"
+
 
 # ── TheseusAutoGenMiddleware.wrap_config_list ─────────────────────────────────
 
@@ -147,6 +160,27 @@ class TestWrapConfigList:
         config_list = [original]
         TheseusAutoGenMiddleware.wrap_config_list(config_list, wrapper)
         assert "headers" not in original.get("api_params", {})
+
+    def test_wrap_config_list_injects_policy_metadata(self, wrapper):
+        config_list = [{"model": "gpt-4o-mini", "api_params": {}, "metadata": {}}]
+
+        result = TheseusAutoGenMiddleware.wrap_config_list(config_list, wrapper, role="sub")
+
+        assert result[0]["metadata"]["ct_policy"]["role"] == "sub"
+        assert result[0]["api_params"]["headers"]["X-CT-Policy-Role"] == "sub"
+        assert "X-CT-Policy-Environment" in result[0]["api_params"]["headers"]
+
+    def test_apply_policy_to_llm_config_updates_top_level_metadata(self, wrapper):
+        llm_config = {
+            "model": "gpt-4o-mini",
+            "metadata": {},
+            "config_list": [{"model": "gpt-4o-mini", "api_params": {}}],
+        }
+
+        result = TheseusAutoGenMiddleware.apply_policy_to_llm_config(llm_config, wrapper, role="judge")
+
+        assert result["metadata"]["ct_policy"]["role"] == "judge"
+        assert result["config_list"][0]["metadata"]["ct_policy"]["role"] == "judge"
 
 
 # ── _register_post_reply_hook ──────────────────────────────────────────────────

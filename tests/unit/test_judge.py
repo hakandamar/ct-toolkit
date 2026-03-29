@@ -124,3 +124,18 @@ class TestLLMJudge:
         assert "tools" not in kwargs
         assert "tool_choice" not in kwargs
         assert "parallel_tool_calls" not in kwargs
+
+    def test_judge_uses_common_policy_resolver_with_judge_role(self):
+        mock_client = MagicMock()
+        resolver = MagicMock(return_value={"effective": {"tool_call": False}})
+        judge = LLMJudge(
+            client=mock_client,
+            provider="openai",
+            model="gpt-4o-mini",
+            policy_resolver=resolver,
+        )
+
+        kwargs = judge._tool_call_guard_kwargs()
+
+        resolver.assert_called_once_with("gpt-4o-mini", "judge")
+        assert kwargs["tool_choice"] == "none"

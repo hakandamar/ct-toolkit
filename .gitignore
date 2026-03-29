@@ -43,6 +43,9 @@ GEMINI.md
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+.mypy.*
+.ruff.*
+.uv_*
 
 # Docs build
 docs/_build/

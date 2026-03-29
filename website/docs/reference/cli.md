@@ -20,6 +20,7 @@ ct-toolkit audit --url <URL> --kernel <KERNEL> [OPTIONS]
 *   `--provider`: LLM provider (openai, anthropic, ollama) (Default: `openai`).
 *   `--kernel`: Name of the Constitutional Kernel to use (Default: `general`).
 *   `--template`: Name of the Identity Template to use (Default: `general`).
+*   `--policy-environment`: Policy environment override (`dev`, `test`, `prod`) (Default: `prod`).
 *   `--model`: Specific model ID to test.
 *   `--max-probes`: Max number of probes to run.
 
@@ -42,6 +43,7 @@ ct-toolkit serve --kernel <KERNEL> --port <PORT> [OPTIONS]
 *   `--kernel`: Name of the Constitutional Kernel to use (Default: `general`).
 *   `--template`: Name of the Identity Template to use (Default: `general`).
 *   `--vault`: Path to the provenance log database (Default: `./ct_provenance.db`).
+*   `--policy-environment`: Policy environment override (`dev`, `test`, `prod`) (Default: `prod`).
 *   `--judge-provider`: LLM provider for L2/L3 judge calls (Default: `openai`).
 *   `--judge-model`: Specific model ID for L2/L3 judge calls.
 

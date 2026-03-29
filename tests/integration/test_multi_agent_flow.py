@@ -6,7 +6,6 @@ Integration tests for Phase 2: Multi-agent flow, propagation, and cascade blocki
 import pytest
 from unittest.mock import MagicMock, patch
 from ct_toolkit.core.wrapper import TheseusWrapper, WrapperConfig
-from ct_toolkit.core.kernel import ConstitutionalKernel
 from ct_toolkit.divergence.engine import DivergenceTier
 
 @pytest.fixture
@@ -58,7 +57,7 @@ def test_cascade_blocking_integration(mock_divergence, mock_icm_run, manager_wra
         mock_response.model = "mock-model"
         mock_comp.return_value = mock_response
         
-        response = manager_wrapper.chat("Dangerous request")
+        manager_wrapper.chat("Dangerous request")
         
         # Divergence Engine should set cascade_blocked
         # We need to access the engine result from the log or internal state if not in response
