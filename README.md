@@ -19,6 +19,7 @@ For full API reference, architecture details, examples, and integration guides, 
 
 - [**Live Examples & Case Studies**](https://hakandamar.github.io/ct-toolkit/examples/): Real-world scenarios like Financial Auditor Integrity.
 - [**FastAPI Integration Test Project**](https://github.com/hakandamar/ct-toolkit-fastapi): Reference FastAPI app for validating CT Toolkit end-to-end across L1/L2/L3 guardrails and provenance logs with local model infrastructure.
+- [**Deep Agents Integration Test Project**](https://github.com/hakandamar/ct-toolkit-deep-agents): Reference Deep Agents app for validating CT Toolkit end-to-end with hierarchical agent workflows, L1/L2/L3 guardrails, and provenance logs.
 
 ---
 
@@ -73,6 +74,8 @@ ct-toolkit list-templates
 ```
 
 If you want a runnable application example instead of a CLI-only flow, see [**ct-toolkit-fastapi**](https://github.com/hakandamar/ct-toolkit-fastapi), a small FastAPI validation project that developers can use to test CT Toolkit locally with automated endpoints and pytest coverage.
+
+For Deep Agents workflows, see [**ct-toolkit-deep-agents**](https://github.com/hakandamar/ct-toolkit-deep-agents), a reference integration project for validating CT Toolkit in multi-agent orchestration scenarios.
 
 ---
 
