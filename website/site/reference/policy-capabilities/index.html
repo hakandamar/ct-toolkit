@@ -12,31 +12,31 @@
         <meta name="author" content="Hakan Damar">
       
       
-        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/concepts/">
+        <link rel="canonical" href="https://hakandamar.github.io/ct-toolkit/reference/policy-capabilities/">
       
       
-        <link rel="prev" href="../get-started/first-guardrail/">
+        <link rel="prev" href="../wrapper-config/">
       
       
-        <link rel="next" href="why-ct-toolkit/">
+        <link rel="next" href="../constitutional-kernel/">
       
       
         
       
       
-      <link rel="icon" href="../assets/favicon.svg">
+      <link rel="icon" href="../../assets/favicon.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
-        <title>Core Concepts - CT Toolkit</title>
+        <title>Policy & Capability Metadata - CT Toolkit</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
   
@@ -85,9 +85,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/extra.css">
+      <link rel="stylesheet" href="../../assets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -112,7 +112,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#core-concepts" class="md-skip">
+        <a href="#policy-capability-metadata" class="md-skip">
           Skip to content
         </a>
       
@@ -132,9 +132,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="CT Toolkit" class="md-header__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
+    <a href="../.." title="CT Toolkit" class="md-header__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
       
-  <img src="../assets/logo.svg" alt="logo">
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -151,7 +151,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Core Concepts
+              Policy & Capability Metadata
             
           </span>
         </div>
@@ -263,7 +263,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -284,7 +284,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../get-started/" class="md-tabs__link">
+        <a href="../../get-started/" class="md-tabs__link">
           
   
   
@@ -302,13 +302,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../concepts/" class="md-tabs__link">
           
   
   
@@ -330,7 +328,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../integrations/" class="md-tabs__link">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -352,7 +350,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../guides/" class="md-tabs__link">
+        <a href="../../guides/" class="md-tabs__link">
           
   
   
@@ -370,11 +368,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../reference/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -396,7 +396,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../examples/" class="md-tabs__link">
+        <a href="../../examples/" class="md-tabs__link">
           
   
   
@@ -438,9 +438,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="CT Toolkit" class="md-nav__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
+    <a href="../.." title="CT Toolkit" class="md-nav__button md-logo" aria-label="CT Toolkit" data-md-component="logo">
       
-  <img src="../assets/logo.svg" alt="logo">
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     CT Toolkit
@@ -467,7 +467,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -527,7 +527,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../get-started/" class="md-nav__link ">
+            <a href="../../get-started/" class="md-nav__link ">
               
   
   
@@ -571,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../get-started/quickstart/" class="md-nav__link">
+      <a href="../../get-started/quickstart/" class="md-nav__link">
         
   
   
@@ -599,7 +599,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../get-started/installation/" class="md-nav__link">
+      <a href="../../get-started/installation/" class="md-nav__link">
         
   
   
@@ -627,7 +627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../get-started/local-models/" class="md-nav__link">
+      <a href="../../get-started/local-models/" class="md-nav__link">
         
   
   
@@ -655,7 +655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../get-started/first-guardrail/" class="md-nav__link">
+      <a href="../../get-started/first-guardrail/" class="md-nav__link">
         
   
   
@@ -687,8 +687,6 @@
       
   
   
-    
-  
   
   
     
@@ -718,23 +716,22 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../../concepts/" class="md-nav__link ">
               
   
   
@@ -752,13 +749,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_3" id="__nav_3_label" tabindex="">
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -778,7 +775,7 @@
   
   
     <li class="md-nav__item">
-      <a href="why-ct-toolkit/" class="md-nav__link">
+      <a href="../../concepts/why-ct-toolkit/" class="md-nav__link">
         
   
   
@@ -806,7 +803,7 @@
   
   
     <li class="md-nav__item">
-      <a href="identity-continuity/" class="md-nav__link">
+      <a href="../../concepts/identity-continuity/" class="md-nav__link">
         
   
   
@@ -834,7 +831,7 @@
   
   
     <li class="md-nav__item">
-      <a href="kernels/" class="md-nav__link">
+      <a href="../../concepts/kernels/" class="md-nav__link">
         
   
   
@@ -862,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="divergence/" class="md-nav__link">
+      <a href="../../concepts/divergence/" class="md-nav__link">
         
   
   
@@ -890,7 +887,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tiered-guardrails/" class="md-nav__link">
+      <a href="../../concepts/tiered-guardrails/" class="md-nav__link">
         
   
   
@@ -918,7 +915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="multi-agent/" class="md-nav__link">
+      <a href="../../concepts/multi-agent/" class="md-nav__link">
         
   
   
@@ -946,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="provenance/" class="md-nav__link">
+      <a href="../../concepts/provenance/" class="md-nav__link">
         
   
   
@@ -974,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reflective-endorsement/" class="md-nav__link">
+      <a href="../../concepts/reflective-endorsement/" class="md-nav__link">
         
   
   
@@ -1042,7 +1039,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../integrations/" class="md-nav__link ">
+            <a href="../../integrations/" class="md-nav__link ">
               
   
   
@@ -1086,7 +1083,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/langchain/" class="md-nav__link">
+      <a href="../../integrations/langchain/" class="md-nav__link">
         
   
   
@@ -1114,7 +1111,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/crewai/" class="md-nav__link">
+      <a href="../../integrations/crewai/" class="md-nav__link">
         
   
   
@@ -1142,7 +1139,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/autogen/" class="md-nav__link">
+      <a href="../../integrations/autogen/" class="md-nav__link">
         
   
   
@@ -1170,7 +1167,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integrations/deepagents/" class="md-nav__link">
+      <a href="../../integrations/deepagents/" class="md-nav__link">
         
   
   
@@ -1244,7 +1241,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../guides/" class="md-nav__link ">
+            <a href="../../guides/" class="md-nav__link ">
               
   
   
@@ -1288,7 +1285,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/custom-kernels/" class="md-nav__link">
+      <a href="../../guides/custom-kernels/" class="md-nav__link">
         
   
   
@@ -1316,7 +1313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/custom-templates/" class="md-nav__link">
+      <a href="../../guides/custom-templates/" class="md-nav__link">
         
   
   
@@ -1344,7 +1341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/cli-auditor/" class="md-nav__link">
+      <a href="../../guides/cli-auditor/" class="md-nav__link">
         
   
   
@@ -1372,7 +1369,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/passive-compression/" class="md-nav__link">
+      <a href="../../guides/passive-compression/" class="md-nav__link">
         
   
   
@@ -1400,7 +1397,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/enterprise/" class="md-nav__link">
+      <a href="../../guides/enterprise/" class="md-nav__link">
         
   
   
@@ -1428,7 +1425,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/fine-tuning/" class="md-nav__link">
+      <a href="../../guides/fine-tuning/" class="md-nav__link">
         
   
   
@@ -1456,7 +1453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/compliance/" class="md-nav__link">
+      <a href="../../guides/compliance/" class="md-nav__link">
         
   
   
@@ -1488,6 +1485,8 @@
       
   
   
+    
+  
   
   
     
@@ -1525,22 +1524,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -1558,13 +1558,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1584,7 +1584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/theseus-wrapper/" class="md-nav__link">
+      <a href="../theseus-wrapper/" class="md-nav__link">
         
   
   
@@ -1612,7 +1612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/wrapper-config/" class="md-nav__link">
+      <a href="../wrapper-config/" class="md-nav__link">
         
   
   
@@ -1637,10 +1637,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../reference/policy-capabilities/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policy & Capability Metadata
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1656,6 +1683,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registry-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registry file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#effective-policy-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Effective policy resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-metadata-payload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard metadata payload
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#middleware-exposure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Middleware exposure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#policy-environment-at-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy environment at runtime
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1668,7 +1770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/constitutional-kernel/" class="md-nav__link">
+      <a href="../constitutional-kernel/" class="md-nav__link">
         
   
   
@@ -1696,7 +1798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/divergence-engine/" class="md-nav__link">
+      <a href="../divergence-engine/" class="md-nav__link">
         
   
   
@@ -1724,7 +1826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/compression-guard/" class="md-nav__link">
+      <a href="../compression-guard/" class="md-nav__link">
         
   
   
@@ -1752,7 +1854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/provenance-log/" class="md-nav__link">
+      <a href="../provenance-log/" class="md-nav__link">
         
   
   
@@ -1780,7 +1882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/compatibility/" class="md-nav__link">
+      <a href="../compatibility/" class="md-nav__link">
         
   
   
@@ -1808,7 +1910,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/kernels-templates/" class="md-nav__link">
+      <a href="../kernels-templates/" class="md-nav__link">
         
   
   
@@ -1836,7 +1938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/cli/" class="md-nav__link">
+      <a href="../cli/" class="md-nav__link">
         
   
   
@@ -1864,7 +1966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/exceptions/" class="md-nav__link">
+      <a href="../exceptions/" class="md-nav__link">
         
   
   
@@ -1892,7 +1994,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/project-status/" class="md-nav__link">
+      <a href="../project-status/" class="md-nav__link">
         
   
   
@@ -1964,7 +2066,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../examples/" class="md-nav__link ">
+            <a href="../../examples/" class="md-nav__link ">
               
   
   
@@ -2008,7 +2110,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/staged-approval/" class="md-nav__link">
+      <a href="../../examples/staged-approval/" class="md-nav__link">
         
   
   
@@ -2036,7 +2138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/ssc-financial-auditor/" class="md-nav__link">
+      <a href="../../examples/ssc-financial-auditor/" class="md-nav__link">
         
   
   
@@ -2064,7 +2166,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/hierarchical-safety/" class="md-nav__link">
+      <a href="../../examples/hierarchical-safety/" class="md-nav__link">
         
   
   
@@ -2092,7 +2194,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/standalone-auditor/" class="md-nav__link">
+      <a href="../../examples/standalone-auditor/" class="md-nav__link">
         
   
   
@@ -2120,7 +2222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/litellm-guardrails/" class="md-nav__link">
+      <a href="../../examples/litellm-guardrails/" class="md-nav__link">
         
   
   
@@ -2148,7 +2250,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/military-medical/" class="md-nav__link">
+      <a href="../../examples/military-medical/" class="md-nav__link">
         
   
   
@@ -2196,6 +2298,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registry-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registry file
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#effective-policy-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Effective policy resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#standard-metadata-payload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard metadata payload
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#middleware-exposure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Middleware exposure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#policy-environment-at-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy environment at runtime
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2219,7 +2384,7 @@
   
   
     <li class="md-path__item">
-      <a href=".." class="md-path__link">
+      <a href="../.." class="md-path__link">
         
   <span class="md-ellipsis">
     Home
@@ -2237,10 +2402,10 @@
     
     
       <li class="md-path__item">
-        <a href="./" class="md-path__link">
+        <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Core Concepts
+    Reference
   </span>
 
         </a>
@@ -2262,48 +2427,62 @@
   
 
 
-<h1 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h1>
-<p>Understanding CT Toolkit's architecture helps you use it effectively. Start here.</p>
-<div class="grid cards">
+<h1 id="policy-capability-metadata">Policy &amp; Capability Metadata<a class="headerlink" href="#policy-capability-metadata" title="Permanent link">&para;</a></h1>
+<p>CT Toolkit resolves role-based execution policy through a startup capability registry and exposes the result as standardized metadata across middleware.</p>
+<h2 id="registry-file">Registry file<a class="headerlink" href="#registry-file" title="Permanent link">&para;</a></h2>
+<p>Default registry path:</p>
 <ul>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m15.07 11.25-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a4 4 0 0 1 4-4 4 4 0 0 1 4 4 3.2 3.2 0 0 1-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10c0-5.53-4.5-10-10-10"/></svg></span> <strong>Why CT Toolkit?</strong></p>
-<hr />
-<p>Why existing guardrails (Llama-Guard, rule engines) are insufficient for autonomous agents — and what CT Toolkit does differently.</p>
-<p><a href="why-ct-toolkit/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Read the rationale</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 2v6H2V2zM2 22v-6h2v6zm3-10c0 1.11-.89 2-2 2a2 2 0 1 1 2-2m19-6v12c0 1.11-.89 2-2 2H10a2 2 0 0 1-2-2v-4l-2-2 2-2V6a2 2 0 0 1 2-2h12c1.11 0 2 .89 2 2"/></svg></span> <strong>Identity Continuity &amp; SSC</strong></p>
-<hr />
-<p>What Sequential Self-Compression is, why it matters, and how CT Toolkit prevents it.</p>
-<p><a href="identity-continuity/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Identity continuity</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m9 16v-2H6v2zm3-4v-2H6v2z"/></svg></span> <strong>Constitutional Kernels</strong></p>
-<hr />
-<p>Axiomatic Anchors vs. Plastic Commitments. The mathematical identity anchor of your agent.</p>
-<p><a href="kernels/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Kernels</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.96 11.31C10.82 8.1 11.5 6 13 6s2.18 2.1 3.04 5.31C17 14.92 18.1 19 22 19v-2c-2.2 0-3-2.46-4.03-6.2C17.08 7.46 16.15 4 13 4s-4.08 3.46-4.97 6.8C7.03 14.54 6.2 17 4 17V2H2v20h20v-2H4v-1c3.9 0 5-4.08 5.96-7.69"/></svg></span> <strong>Divergence Engine</strong></p>
-<hr />
-<p>The three-tier analysis pipeline: L1 ECS → L2 LLM-as-judge → L3 ICM.</p>
-<p><a href="divergence/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Divergence Engine</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 2v6h2v3H5c-1.11 0-2 .89-2 2v3H1v6h6v-6H5v-3h6v3H9v6h6v-6h-2v-3h6v3h-2v6h6v-6h-2v-3c0-1.11-.89-2-2-2h-6V8h2V2z"/></svg></span> <strong>Multi-Agent Hierarchy</strong></p>
-<hr />
-<p>How kernel constraints propagate from mother to sub-agents, and how cascade blocking works.</p>
-<p><a href="multi-agent/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Multi-agent</a></p>
-</li>
-<li>
-<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23 16v-.5a2.5 2.5 0 0 0-5 0v.5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1m-1 0h-3v-.5a1.5 1.5 0 0 1 3 0M7 8.9h4V7H7a5 5 0 0 0 0 10h4v-1.9H7a3.1 3.1 0 0 1 0-6.2M8 11v2h8v-2m-3 4.1V17h2v-1.9M17 7h-4v1.9h4a3.09 3.09 0 0 1 2.94 2.1 5 5 0 0 1 .56 0h1.4A5 5 0 0 0 17 7"/></svg></span> <strong>Provenance &amp; Compliance</strong></p>
-<hr />
-<p>The HMAC hash chain, tamper detection, and how to prove identity integrity to regulators.</p>
-<p><a href="provenance/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Provenance</a></p>
-</li>
+<li><code>config/llm_capability.yaml</code></li>
 </ul>
-</div>
+<p>This file stores:</p>
+<ul>
+<li>Provider/model capabilities (<code>text</code>, <code>image</code>, <code>audio</code>, <code>video</code>, <code>tool_call</code>, <code>reasoning</code>)</li>
+<li>Role policies (<code>main</code>, <code>sub</code>, <code>judge</code>, <code>l3</code>)</li>
+<li>Environment overrides (<code>dev</code>, <code>test</code>, <code>prod</code>)</li>
+</ul>
+<h2 id="effective-policy-resolution">Effective policy resolution<a class="headerlink" href="#effective-policy-resolution" title="Permanent link">&para;</a></h2>
+<p>Use <code>TheseusWrapper.resolve_llm_policy()</code> to merge:</p>
+<ol>
+<li>Role defaults</li>
+<li>Registry <code>role_policies</code></li>
+<li>Environment override block</li>
+<li>Model capability constraints</li>
+</ol>
+<p>Example:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">policy</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">resolve_llm_policy</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;judge&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">policy</span><span class="p">[</span><span class="s2">&quot;effective&quot;</span><span class="p">][</span><span class="s2">&quot;tool_call&quot;</span><span class="p">])</span>  <span class="c1"># False</span>
+</span></code></pre></div>
+<h2 id="standard-metadata-payload">Standard metadata payload<a class="headerlink" href="#standard-metadata-payload" title="Permanent link">&para;</a></h2>
+<p>Use <code>TheseusWrapper.propagate_policy_metadata()</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;main&quot;</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="s2">&quot;prod&quot;</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  <span class="s2">&quot;effective&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="s2">&quot;audio&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="s2">&quot;video&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="s2">&quot;multimodal&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="s2">&quot;tool_call&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="s2">&quot;reasoning&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  <span class="p">},</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="middleware-exposure">Middleware exposure<a class="headerlink" href="#middleware-exposure" title="Permanent link">&para;</a></h2>
+<p>CT Toolkit now exposes this payload consistently:</p>
+<ul>
+<li>LangChain: <code>TheseusChatModel.policy_metadata</code> and <code>generation_info["ct_policy"]</code></li>
+<li>CrewAI: <code>crew.ct_policy</code>, <code>agent.ct_policy</code>, and <code>metadata["ct_policy"]</code></li>
+<li>Deep Agents: <code>metadata["ct_policy"]</code> in wrapped factory calls and helper config</li>
+<li>AutoGen: <code>llm_config.metadata.ct_policy</code> and <code>config_list[*].metadata.ct_policy</code></li>
+</ul>
+<h2 id="policy-environment-at-runtime">Policy environment at runtime<a class="headerlink" href="#policy-environment-at-runtime" title="Permanent link">&para;</a></h2>
+<p>You can select environment-level overrides via:</p>
+<ul>
+<li><code>WrapperConfig(policy_environment="dev" | "test" | "prod")</code></li>
+<li>CLI: <code>ct-toolkit audit --policy-environment test</code></li>
+<li>CLI: <code>ct-toolkit serve --policy-environment prod</code></li>
+</ul>
 
 
 
@@ -2341,7 +2520,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../get-started/first-guardrail/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Your First Guardrail">
+          <a href="../wrapper-config/" class="md-footer__link md-footer__link--prev" aria-label="Previous: WrapperConfig">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2351,20 +2530,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Your First Guardrail
+                WrapperConfig
               </div>
             </div>
           </a>
         
         
           
-          <a href="why-ct-toolkit/" class="md-footer__link md-footer__link--next" aria-label="Next: Why CT Toolkit?">
+          <a href="../constitutional-kernel/" class="md-footer__link md-footer__link--next" aria-label="Next: ConstitutionalKernel">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Why CT Toolkit?
+                ConstitutionalKernel
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -2430,12 +2609,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "navigation.footer", "navigation.indexes", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "content.tooltips", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "stable", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
-        <script src="../javascripts/mathjax.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       

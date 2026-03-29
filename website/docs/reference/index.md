@@ -3,85 +3,57 @@
 Complete API reference for CT Toolkit.
 
 <div class="grid cards" markdown>
-
-- **TheseusWrapper**
-
-  ***
-
-  The main entry point. Wraps any LLM client with identity protection.
-
-  [:octicons-arrow-right-24: TheseusWrapper](theseus-wrapper.md)
-
-- **WrapperConfig**
-
-  ***
-
-  All configuration options with types, defaults, and examples.
-
-  [:octicons-arrow-right-24: WrapperConfig](wrapper-config.md)
-
-- **Policy & Capability Metadata**
-
-  ***
-
-  Role-based policy resolution, capability registry, and standardized metadata surfaces.
-
-  [:octicons-arrow-right-24: Policy & Capability Metadata](policy-capabilities.md)
-
-- **ConstitutionalKernel**
-
-  ***
-
-  Loading, merging, validating, and updating kernels programmatically.
-
-  [:octicons-arrow-right-24: ConstitutionalKernel](constitutional-kernel.md)
-
-- **Divergence Engine**
-
-  ***
-
-  `DivergenceEngine`, `DivergenceResult`, `DivergenceTier`, `ElasticityScheduler`.
-
-  [:octicons-arrow-right-24: Divergence Engine](divergence-engine.md)
-
-- **Context Compression Guard**
-
-  ***
-
-  Manages context window usage and applies compression strategies.
-
-  [:octicons-arrow-right-24: Context Compression Guard](compression-guard.md)
-
-- **Provenance Log**
-
-  ***
-
-  Recording, verifying, exporting, and rolling back the HMAC hash chain.
-
-  [:octicons-arrow-right-24: ProvenanceLog](provenance-log.md)
-
-- **Compatibility Matrix**
-
-  ***
-
-  Which template + kernel combinations are Native, Compatible, or Conflicting.
-
-  [:octicons-arrow-right-24: Compatibility Matrix](compatibility.md)
-
-- **Kernels & Templates**
-
-  ***
-
-  YAML specification for creating custom kernels and identity templates.
-
-  [:octicons-arrow-right-24: Kernels & Templates](kernels-templates.md)
-
-- **Exceptions**
-
-  ***
-
-  Full exception hierarchy with usage examples.
-
-  [:octicons-arrow-right-24: Exceptions](exceptions.md)
+<ul>
+  <li>
+    <p><strong>TheseusWrapper</strong></p>
+    <p>The main entry point. Wraps any LLM client with identity protection.</p>
+    <p><a href="theseus-wrapper/">TheseusWrapper</a></p>
+  </li>
+  <li>
+    <p><strong>WrapperConfig</strong></p>
+    <p>All configuration options with types, defaults, and examples.</p>
+    <p><a href="wrapper-config/">WrapperConfig</a></p>
+  </li>
+  <li>
+    <p><strong>Policy &amp; Capability Metadata</strong></p>
+    <p>Role-based policy resolution, capability registry, and standardized metadata surfaces.</p>
+    <p><a href="policy-capabilities/">Policy &amp; Capability Metadata</a></p>
+  </li>
+  <li>
+    <p><strong>ConstitutionalKernel</strong></p>
+    <p>Loading, merging, validating, and updating kernels programmatically.</p>
+    <p><a href="constitutional-kernel/">ConstitutionalKernel</a></p>
+  </li>
+  <li>
+    <p><strong>Divergence Engine</strong></p>
+    <p><code>DivergenceEngine</code>, <code>DivergenceResult</code>, <code>DivergenceTier</code>, <code>ElasticityScheduler</code>.</p>
+    <p><a href="divergence-engine/">Divergence Engine</a></p>
+  </li>
+  <li>
+    <p><strong>Context Compression Guard</strong></p>
+    <p>Manages context window usage and applies compression strategies.</p>
+    <p><a href="compression-guard/">Context Compression Guard</a></p>
+  </li>
+  <li>
+    <p><strong>Provenance Log</strong></p>
+    <p>Recording, verifying, exporting, and rolling back the HMAC hash chain.</p>
+    <p><a href="provenance-log/">ProvenanceLog</a></p>
+  </li>
+  <li>
+    <p><strong>Compatibility Matrix</strong></p>
+    <p>Which template + kernel combinations are Native, Compatible, or Conflicting.</p>
+    <p><a href="compatibility/">Compatibility Matrix</a></p>
+  </li>
+  <li>
+    <p><strong>Kernels &amp; Templates</strong></p>
+    <p>YAML specification for creating custom kernels and identity templates.</p>
+    <p><a href="kernels-templates/">Kernels &amp; Templates</a></p>
+  </li>
+  <li>
+    <p><strong>Exceptions</strong></p>
+    <p>Full exception hierarchy with usage examples.</p>
+    <p><a href="exceptions/">Exceptions</a></p>
+  </li>
+</ul>
 
 </div>

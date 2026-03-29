@@ -1518,6 +1518,8 @@
       
         
       
+        
+      
     
     
     
@@ -1709,10 +1711,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#propagate_headers-dictstr-str" class="md-nav__link">
+  <a href="#resolve_llm_policymodelnone-rolenone-dictstr-any" class="md-nav__link">
     <span class="md-ellipsis">
       
-        propagate_headers() → dict[str, str]
+        resolve_llm_policy(model=None, role=None) → dict[str, Any]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#propagate_policy_metadatamodelnone-rolenone-dictstr-any" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        propagate_policy_metadata(model=None, role=None) → dict[str, Any]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#propagate_headers-modelnone-rolenone-dictstr-str" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        propagate_headers(*, model=None, role=None) → dict[str, str]
       
     </span>
   </a>
@@ -1770,6 +1794,34 @@
     
   
     WrapperConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../policy-capabilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policy & Capability Metadata
   
 
     
@@ -2392,10 +2444,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#propagate_headers-dictstr-str" class="md-nav__link">
+  <a href="#resolve_llm_policymodelnone-rolenone-dictstr-any" class="md-nav__link">
     <span class="md-ellipsis">
       
-        propagate_headers() → dict[str, str]
+        resolve_llm_policy(model=None, role=None) → dict[str, Any]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#propagate_policy_metadatamodelnone-rolenone-dictstr-any" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        propagate_policy_metadata(model=None, role=None) → dict[str, Any]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#propagate_headers-modelnone-rolenone-dictstr-str" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        propagate_headers(*, model=None, role=None) → dict[str, str]
       
     </span>
   </a>
@@ -2533,8 +2607,29 @@
 <p>Initiate the Reflective Endorsement flow for a plastic conflict.</p>
 <h3 id="export_provenance_log-listdict"><code>export_provenance_log() → list[dict]</code><a class="headerlink" href="#export_provenance_log-listdict" title="Permanent link">&para;</a></h3>
 <p>Verify chain integrity and export all log entries.</p>
-<h3 id="propagate_headers-dictstr-str"><code>propagate_headers() → dict[str, str]</code><a class="headerlink" href="#propagate_headers-dictstr-str" title="Permanent link">&para;</a></h3>
+<h3 id="resolve_llm_policymodelnone-rolenone-dictstr-any"><code>resolve_llm_policy(model=None, role=None) → dict[str, Any]</code><a class="headerlink" href="#resolve_llm_policymodelnone-rolenone-dictstr-any" title="Permanent link">&para;</a></h3>
+<p>Resolve effective role policy from startup capability registry + environment overrides.</p>
+<h3 id="propagate_policy_metadatamodelnone-rolenone-dictstr-any"><code>propagate_policy_metadata(model=None, role=None) → dict[str, Any]</code><a class="headerlink" href="#propagate_policy_metadatamodelnone-rolenone-dictstr-any" title="Permanent link">&para;</a></h3>
+<p>Return middleware-friendly policy metadata payload:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;sub&quot;</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="s2">&quot;effective&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="s2">&quot;tool_call&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="s2">&quot;reasoning&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="s2">&quot;multimodal&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="o">...</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="p">}</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="propagate_headers-modelnone-rolenone-dictstr-str"><code>propagate_headers(*, model=None, role=None) → dict[str, str]</code><a class="headerlink" href="#propagate_headers-modelnone-rolenone-dictstr-str" title="Permanent link">&para;</a></h3>
 <p>Generate HTTP headers for sub-agent kernel propagation.</p>
+<p>Includes policy headers:</p>
+<ul>
+<li><code>X-CT-Policy-Role</code></li>
+<li><code>X-CT-Policy-Environment</code></li>
+<li><code>X-CT-Policy</code> (base64 JSON payload)</li>
+</ul>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

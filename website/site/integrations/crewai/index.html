@@ -1610,6 +1610,8 @@
       
         
       
+        
+      
     
     
     
@@ -1709,6 +1711,34 @@
     
   
     WrapperConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/policy-capabilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Policy & Capability Metadata
   
 
     
@@ -2399,8 +2429,13 @@
 </span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">crew</span><span class="o">.</span><span class="n">kickoff</span><span class="p">()</span>
 </span></code></pre></div>
 <p>After <code>apply_to_crew()</code>, each agent's <code>llm</code> is replaced with a <code>TheseusChatModel</code> configured with the manager's kernel as read-only constraints.</p>
+<p>Crew-level and agent-level policy metadata are also attached in a standard form:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">crew</span><span class="o">.</span><span class="n">ct_policy</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">researcher</span><span class="o">.</span><span class="n">ct_policy</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">researcher</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ct_policy&quot;</span><span class="p">])</span>
+</span></code></pre></div>
 <h2 id="single-agent">Single agent<a class="headerlink" href="#single-agent" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">TheseusCrewMiddleware</span><span class="o">.</span><span class="n">wrap_agent</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">manager</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">TheseusCrewMiddleware</span><span class="o">.</span><span class="n">wrap_agent</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">manager</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <ul>
@@ -2411,16 +2446,16 @@
 <li><strong>Passive Protection:</strong> Sub-agents benefit from universal passive compression detection to monitor if the LLM provider silently summarizes the agent's context.</li>
 </ul>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">WrapperConfig</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">manager_config</span> <span class="o">=</span> <span class="n">WrapperConfig</span><span class="p">(</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">compression_passive_detection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">compression_threshold</span><span class="o">=</span><span class="mf">0.88</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">)</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">manager</span> <span class="o">=</span> <span class="n">TheseusWrapper</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">manager_config</span><span class="p">)</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># Sub-agents in the crew will inherit these settings automatically</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">TheseusCrewMiddleware</span><span class="o">.</span><span class="n">apply_to_crew</span><span class="p">(</span><span class="n">crew</span><span class="p">,</span> <span class="n">manager</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">WrapperConfig</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">manager_config</span> <span class="o">=</span> <span class="n">WrapperConfig</span><span class="p">(</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">compression_passive_detection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">compression_threshold</span><span class="o">=</span><span class="mf">0.88</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">manager</span> <span class="o">=</span> <span class="n">TheseusWrapper</span><span class="p">(</span><span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">manager_config</span><span class="p">)</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># Sub-agents in the crew will inherit these settings automatically</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="n">TheseusCrewMiddleware</span><span class="o">.</span><span class="n">apply_to_crew</span><span class="p">(</span><span class="n">crew</span><span class="p">,</span> <span class="n">manager</span><span class="p">)</span>
 </span></code></pre></div>
 
 
