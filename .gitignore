@@ -46,6 +46,7 @@ htmlcov/
 .mypy.*
 .ruff.*
 .uv_*
+coverage.xml
 
 # Docs build
 docs/_build/
