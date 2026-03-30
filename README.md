@@ -7,6 +7,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/ct-toolkit.svg)](https://pypi.org/project/ct-toolkit/)
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue.svg)](https://hakandamar.github.io/ct-toolkit/)
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit)
+[![codecov](https://codecov.io/gh/hakandamar/ct-toolkit/graph/badge.svg?token=2OTO27N02C)](https://codecov.io/gh/hakandamar/ct-toolkit)
 
 CT Toolkit is an open-source security layer designed to preserve the **identity continuity** of AI agents over time. It implements the **Nested Agentic Architecture (NAA)** framework to prevent **Sequential Self-Compression (SSC)** in multi-agent hierarchies.
 
@@ -81,12 +82,12 @@ For Deep Agents workflows, see [**ct-toolkit-deep-agents**](https://github.com/h
 
 ## 🚦 Project Health & Status
 
-| Metric           | Status                                                  |
-| :--------------- | :------------------------------------------------------ |
-| **Tests**        | ✅ 330 passed, 0 failed (100% success rate, 93% coverage)                       |
+| Metric           | Status                                                                                                                                                                                                              |
+| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Tests**        | ✅ 330 passed, 0 failed (100% success rate, 93% coverage)                                                                                                                                                           |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ v0.3.20: Capability registry + role/environment policy metadata standardized across middleware  |
-| **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)   |
+| **Last Phase**   | ✅ v0.3.20: Capability registry + role/environment policy metadata standardized across middleware                                                                                                                   |
+| **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)                                                                                                                                                               |
 
 ### Framework & Model Support
 

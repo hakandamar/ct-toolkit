@@ -77,7 +77,7 @@ providers:
           tool_call: true
           reasoning: false
         source: passive_discovery
-        last_checked: 1774811979.732142
+        last_checked: 1774859865.5056489
       claude-3-5-sonnet-latest:
         capabilities:
           text: true
@@ -88,7 +88,7 @@ providers:
           tool_call: true
           reasoning: false
         source: refresh_discovery
-        last_checked: 1774810048.3291678
+        last_checked: 1774859827.367305
       gpt-4o:
         capabilities:
           text: true
@@ -99,7 +99,7 @@ providers:
           tool_call: true
           reasoning: false
         source: passive_discovery
-        last_checked: 1774811975.536077
+        last_checked: 1774859859.332979
       claude-3-5-haiku-latest:
         capabilities:
           text: true
@@ -110,7 +110,7 @@ providers:
           tool_call: true
           reasoning: false
         source: refresh_discovery
-        last_checked: 1774811241.856798
+        last_checked: 1774859861.3893278
     defaults:
       capabilities:
         text: true
@@ -121,7 +121,7 @@ providers:
         tool_call: true
         reasoning: false
       source: startup_handshake
-      last_checked: 1774811980.395139
+      last_checked: 1774859867.048343
     refresh_interval_s: 3600
   anthropic:
     models: {}
@@ -135,7 +135,7 @@ providers:
         tool_call: true
         reasoning: false
       source: startup_handshake
-      last_checked: 1774811979.903092
+      last_checked: 1774859865.880411
     refresh_interval_s: 3600
   ollama:
     models:
@@ -149,7 +149,7 @@ providers:
           tool_call: true
           reasoning: false
         source: passive_discovery
-        last_checked: 1774811977.0993202
+        last_checked: 1774859862.800935
     defaults:
       capabilities:
         text: true
@@ -160,7 +160,7 @@ providers:
         tool_call: false
         reasoning: false
       source: startup_handshake
-      last_checked: 1774811979.845918
+      last_checked: 1774859865.742059
     refresh_interval_s: 3600
   unknown:
     models: {}
@@ -174,7 +174,7 @@ providers:
         tool_call: false
         reasoning: false
       source: startup_handshake
-      last_checked: 1774811979.8747158
+      last_checked: 1774859865.811776
     refresh_interval_s: 3600
   google:
     models: {}
@@ -188,6 +188,6 @@ providers:
         tool_call: true
         reasoning: false
       source: startup_handshake
-      last_checked: 1774811975.6235578
+      last_checked: 1774859859.5555332
     refresh_interval_s: 3600
-updated_at: 1774811980.3951402
+updated_at: 1774859867.0483441
