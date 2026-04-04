@@ -154,12 +154,16 @@ nav:
   - Reference:
       - reference/index.md
       - TheseusWrapper: reference/theseus-wrapper.md
+      - AsyncTheseusWrapper: reference/async-wrapper.md
       - WrapperConfig: reference/wrapper-config.md
       - Policy & Capability Metadata: reference/policy-capabilities.md
       - ConstitutionalKernel: reference/constitutional-kernel.md
       - Divergence Engine: reference/divergence-engine.md
       - ContextCompressionGuard: reference/compression-guard.md
       - Provenance Log: reference/provenance-log.md
+      - Circuit Breaker: reference/circuit-breaker.md
+      - Metrics & Monitoring: reference/metrics.md
+      - Sensitive Data Masking: reference/sensitive-data-masking.md
       - Compatibility Matrix: reference/compatibility.md
       - Kernels & Templates: reference/kernels-templates.md
       - CLI Reference: reference/cli.md

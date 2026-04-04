@@ -1520,6 +1520,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -1592,6 +1600,34 @@
     
   
     TheseusWrapper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async-wrapper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AsyncTheseusWrapper
   
 
     
@@ -1778,6 +1814,62 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#llmjudge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLMJudge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LLMJudge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timeout-retry-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timeout &amp; Retry Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmrunner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ICMRunner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMRunner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timeout-retry-configuration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timeout &amp; Retry Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#elasticityscheduler" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1840,6 +1932,90 @@
     
   
     Provenance Log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../circuit-breaker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Circuit Breaker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics & Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sensitive-data-masking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensitive Data Masking
   
 
     
@@ -2305,6 +2481,62 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#llmjudge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLMJudge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LLMJudge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timeout-retry-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timeout &amp; Retry Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmrunner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ICMRunner
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMRunner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timeout-retry-configuration_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timeout &amp; Retry Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#elasticityscheduler" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2398,6 +2630,15 @@
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">request_text</span><span class="p">,</span> <span class="n">response_text</span><span class="p">)</span>
 </span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Timeout &amp; Retry</p>
+<p>L2 Judge ve L3 ICM çağrıları otomatik timeout ve retry logic ile korunmaktadır:</p>
+<ul>
+<li><strong>L2 Judge:</strong> 30 saniye timeout, 2 retries with exponential backoff</li>
+<li><strong>L3 ICM:</strong> 60 saniye timeout, 2 retries with exponential backoff</li>
+</ul>
+<p>Retry'ler sadece geçici hatalar için yapılır (rate limit, timeout, connection error).</p>
+</div>
 <h2 id="divergenceresult-fields">DivergenceResult fields<a class="headerlink" href="#divergenceresult-fields" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2450,17 +2691,61 @@
 </tr>
 </tbody>
 </table>
-<h2 id="elasticityscheduler">ElasticityScheduler<a class="headerlink" href="#elasticityscheduler" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElasticityScheduler</span><span class="p">,</span> <span class="n">RiskProfile</span>
+<h2 id="llmjudge">LLMJudge<a class="headerlink" href="#llmjudge" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.l2_judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMJudge</span><span class="p">,</span> <span class="n">JudgeVerdict</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">scheduler</span> <span class="o">=</span> <span class="n">ElasticityScheduler</span><span class="p">(</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">base_thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">),</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">max_thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">),</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">growth_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">risk_profile</span><span class="o">=</span><span class="n">RiskProfile</span><span class="p">(</span><span class="n">has_tool_calling</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mcp_server_count</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">calculate_thresholds</span><span class="p">(</span><span class="n">interaction_count</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">judge</span> <span class="o">=</span> <span class="n">LLMJudge</span><span class="p">(</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">client</span><span class="o">=</span><span class="n">openai</span><span class="o">.</span><span class="n">OpenAI</span><span class="p">(),</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">result</span> <span class="o">=</span> <span class="n">judge</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">request_text</span><span class="o">=</span><span class="s2">&quot;user question&quot;</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">response_text</span><span class="o">=</span><span class="s2">&quot;model response&quot;</span><span class="p">,</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">)</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Verdict: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">verdict</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Confidence: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">confidence</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="timeout-retry-configuration">Timeout &amp; Retry Configuration<a class="headerlink" href="#timeout-retry-configuration" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Module-level configuration</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.l2_judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">JUDGE_TIMEOUT_SECONDS</span><span class="p">,</span> <span class="n">JUDGE_MAX_RETRIES</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeout: </span><span class="si">{</span><span class="n">JUDGE_TIMEOUT_SECONDS</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>  <span class="c1"># 30 seconds</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retries: </span><span class="si">{</span><span class="n">JUDGE_MAX_RETRIES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>    <span class="c1"># 2</span>
+</span></code></pre></div>
+<h2 id="icmrunner">ICMRunner<a class="headerlink" href="#icmrunner" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.l3_icm</span><span class="w"> </span><span class="kn">import</span> <span class="n">ICMRunner</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">runner</span> <span class="o">=</span> <span class="n">ICMRunner</span><span class="p">(</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">client</span><span class="o">=</span><span class="n">openai</span><span class="o">.</span><span class="n">OpenAI</span><span class="p">(),</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">provider</span><span class="o">=</span><span class="s2">&quot;openai&quot;</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">template</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">)</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">report</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</span></code></pre></div>
+<h3 id="timeout-retry-configuration_1">Timeout &amp; Retry Configuration<a class="headerlink" href="#timeout-retry-configuration_1" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.l3_icm</span><span class="w"> </span><span class="kn">import</span> <span class="n">ICM_TIMEOUT_SECONDS</span><span class="p">,</span> <span class="n">ICM_MAX_RETRIES</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeout: </span><span class="si">{</span><span class="n">ICM_TIMEOUT_SECONDS</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>  <span class="c1"># 60 seconds</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max retries: </span><span class="si">{</span><span class="n">ICM_MAX_RETRIES</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>    <span class="c1"># 2</span>
+</span></code></pre></div>
+<h2 id="elasticityscheduler">ElasticityScheduler<a class="headerlink" href="#elasticityscheduler" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ct_toolkit.divergence.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElasticityScheduler</span><span class="p">,</span> <span class="n">RiskProfile</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">scheduler</span> <span class="o">=</span> <span class="n">ElasticityScheduler</span><span class="p">(</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">base_thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">,</span> <span class="mf">0.50</span><span class="p">),</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">max_thresholds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">),</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">growth_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">risk_profile</span><span class="o">=</span><span class="n">RiskProfile</span><span class="p">(</span><span class="n">has_tool_calling</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mcp_server_count</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">)</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">calculate_thresholds</span><span class="p">(</span><span class="n">interaction_count</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
 </span></code></pre></div>
 
 

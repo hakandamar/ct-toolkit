@@ -17,6 +17,14 @@ engine = DivergenceEngine(
 result = engine.analyze(request_text, response_text)
 ```
 
+!!! tip "Timeout & Retry"
+    L2 Judge ve L3 ICM çağrıları otomatik timeout ve retry logic ile korunmaktadır:
+    
+    - **L2 Judge:** 30 saniye timeout, 2 retries with exponential backoff
+    - **L3 ICM:** 60 saniye timeout, 2 retries with exponential backoff
+    
+    Retry'ler sadece geçici hatalar için yapılır (rate limit, timeout, connection error).
+
 ## DivergenceResult fields
 
 | Field | Type | Description |
@@ -29,6 +37,62 @@ result = engine.analyze(request_text, response_text)
 | `l3_report` | `ICMReport \| None` | Probe battery results |
 | `action_required` | `bool` | Whether intervention is needed |
 | `cascade_blocked` | `bool` | Whether to halt sub-agent propagation |
+
+## LLMJudge
+
+```python
+from ct_toolkit.divergence.l2_judge import LLMJudge, JudgeVerdict
+
+judge = LLMJudge(
+    client=openai.OpenAI(),
+    provider="openai",
+    model="gpt-4o-mini",
+)
+
+result = judge.evaluate(
+    request_text="user question",
+    response_text="model response",
+    kernel=kernel,
+)
+
+print(f"Verdict: {result.verdict}")
+print(f"Confidence: {result.confidence}")
+```
+
+### Timeout & Retry Configuration
+
+```python
+# Module-level configuration
+from ct_toolkit.divergence.l2_judge import JUDGE_TIMEOUT_SECONDS, JUDGE_MAX_RETRIES
+
+print(f"Timeout: {JUDGE_TIMEOUT_SECONDS}s")  # 30 seconds
+print(f"Max retries: {JUDGE_MAX_RETRIES}")    # 2
+```
+
+## ICMRunner
+
+```python
+from ct_toolkit.divergence.l3_icm import ICMRunner
+
+runner = ICMRunner(
+    client=openai.OpenAI(),
+    provider="openai",
+    kernel=kernel,
+    template="general",
+)
+
+report = runner.run()
+print(report.summary())
+```
+
+### Timeout & Retry Configuration
+
+```python
+from ct_toolkit.divergence.l3_icm import ICM_TIMEOUT_SECONDS, ICM_MAX_RETRIES
+
+print(f"Timeout: {ICM_TIMEOUT_SECONDS}s")  # 60 seconds
+print(f"Max retries: {ICM_MAX_RETRIES}")    # 2
+```
 
 ## ElasticityScheduler
 

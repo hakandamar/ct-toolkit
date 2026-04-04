@@ -50,6 +50,21 @@ Complete API reference for CT Toolkit.
     <p><a href="kernels-templates/">Kernels &amp; Templates</a></p>
   </li>
   <li>
+    <p><strong>Circuit Breaker</strong></p>
+    <p>Prevents cascading failures when LLM providers are down or rate-limited.</p>
+    <p><a href="circuit-breaker/">Circuit Breaker</a></p>
+  </li>
+  <li>
+    <p><strong>Metrics & Monitoring</strong></p>
+    <p>Thread-safe metrics collection for monitoring and observability.</p>
+    <p><a href="metrics/">Metrics</a></p>
+  </li>
+  <li>
+    <p><strong>AsyncTheseusWrapper</strong></p>
+    <p>Async-compatible TheseusWrapper with circuit breaker integration.</p>
+    <p><a href="async-wrapper/">AsyncTheseusWrapper</a></p>
+  </li>
+  <li>
     <p><strong>Exceptions</strong></p>
     <p>Full exception hierarchy with usage examples.</p>
     <p><a href="exceptions/">Exceptions</a></p>

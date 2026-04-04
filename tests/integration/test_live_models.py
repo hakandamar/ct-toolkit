@@ -13,14 +13,14 @@ def test_live_model_connectivity():
     Verifies that the toolkit can connect to a real/local LLM endpoint
     and perform a basic chat + divergence scoring flow.
     """
-    API_URL = os.environ.get("CT_LIVE_API_URL", "http://172.20.10.9:11434")
+    API_URL = os.environ.get("CT_LIVE_API_URL")
     LLM_MODEL = os.environ.get("CT_LIVE_LLM_MODEL", "qwen/qwen3-coder-30b")
     EMB_MODEL = os.environ.get("CT_LIVE_EMB_MODEL", "text-embedding-qwen3-embedding-0.6b")
     
     # Initialize client
     client = openai.OpenAI(
         base_url=f"{API_URL}/v1",
-        api_key=os.environ.get("OPENAI_API_KEY", "dummy")
+        api_key="test-key-no-secret"  # Placeholder for local testing only
     )
     
     # 1. Initialize Wrapper
@@ -56,11 +56,11 @@ def test_live_drift_simulation():
     """
     Simulates a sequence of interactions to verify longitudinal drift detection.
     """
-    API_URL = os.environ.get("CT_LIVE_API_URL", "http://172.20.10.9:11434")
+    API_URL = os.environ.get("CT_LIVE_API_URL")
     LLM_MODEL = os.environ.get("CT_LIVE_LLM_MODEL", "qwen/qwen3-coder-30b")
     EMB_MODEL = os.environ.get("CT_LIVE_EMB_MODEL", "text-embedding-qwen3-embedding-0.6b")
 
-    client = openai.OpenAI(base_url=f"{API_URL}/v1", api_key="dummy")
+    client = openai.OpenAI(base_url=f"{API_URL}/v1", api_key="test-key-no-secret")
     config = WrapperConfig(
         template="general",
         embedding_client=client,
@@ -108,10 +108,10 @@ def test_live_icm_reasoning_extraction():
     """
     Verifies reasoning extraction from real model outputs using the local Qwen-3.
     """
-    API_URL = os.environ.get("CT_LIVE_API_URL", "http://172.20.10.9:11434")
+    API_URL = os.environ.get("CT_LIVE_API_URL")
     LLM_MODEL = os.environ.get("CT_LIVE_LLM_MODEL", "qwen/qwen3-coder-30b")
 
-    client = openai.OpenAI(base_url=f"{API_URL}/v1", api_key="dummy")
+    client = openai.OpenAI(base_url=f"{API_URL}/v1", api_key="test-key-no-secret")
     
     # We use the ICMRunner directly or via DivergenceEngine
     from ct_toolkit.divergence.l3_icm import ICMRunner

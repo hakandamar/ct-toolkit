@@ -25,6 +25,7 @@ from typing import Any
 
 from ct_toolkit.core.exceptions import ChainIntegrityError, VaultError
 from ct_toolkit.utils.logger import get_logger
+from ct_toolkit.utils.sensitive_masker import SensitiveDataMasker, LogSanitizer
 
 logger = get_logger(__name__)
 
@@ -75,19 +76,30 @@ class ProvenanceLog:
     """
 
     GENESIS_HASH = "0" * 64  # prev_hash of the first entry
+    
+    # Maximum sizes for request/response text to prevent log bloat
+    MAX_REQUEST_LOG_LENGTH = 2000
+    MAX_RESPONSE_LOG_LENGTH = 4000
 
     def __init__(
         self,
         vault_type: str = "local",
         vault_path: str = "./ct_provenance.db",
         hmac_key: bytes | None = None,
+        mask_sensitive_data: bool = True,
     ) -> None:
         self._vault_type = vault_type
         self._vault_path = Path(vault_path)
         self._hmac_key = hmac_key or self._load_or_generate_key()
         self._lock = threading.RLock()
+        
+        # Sensitive data masking
+        self._mask_sensitive_data = mask_sensitive_data
+        self._masker = SensitiveDataMasker(mask_pii=True) if mask_sensitive_data else None
+        self._log_sanitizer = LogSanitizer()
+        
         self._conn = self._init_db()
-        logger.info(f"ProvenanceLog initialized | vault={vault_path}")
+        logger.info(f"ProvenanceLog initialized | vault={vault_path} | masking={mask_sensitive_data}")
 
     # ── Record ──────────────────────────────────────────────────────────────────
 
@@ -105,13 +117,20 @@ class ProvenanceLog:
         with self._lock:
             prev_hash = self._get_last_entry_hash()
 
+            # Mask sensitive data in metadata before storing
+            safe_metadata = self._sanitize_metadata(metadata or {})
+            
+            # Sanitize and truncate text for logging
+            safe_request = self._sanitize_text_for_log(request_text, self.MAX_REQUEST_LOG_LENGTH)
+            safe_response = self._sanitize_text_for_log(response_text, self.MAX_RESPONSE_LOG_LENGTH)
+
             entry = ProvenanceEntry(
                 id=str(uuid.uuid4()),
                 timestamp=time.time(),
-                request_hash=self._hash_text(request_text),
-                response_hash=self._hash_text(response_text),
+                request_hash=self._hash_text(safe_request),
+                response_hash=self._hash_text(safe_response),
                 divergence_score=divergence_score,
-                metadata=metadata or {},
+                metadata=safe_metadata,
                 prev_entry_hash=prev_hash,
                 status="active",
             )
@@ -122,6 +141,30 @@ class ProvenanceLog:
             self._write_entry(entry)
         logger.debug(f"Provenance recorded | id={entry.id} | divergence={divergence_score}")
         return entry.id
+    
+    def _sanitize_metadata(self, metadata: dict[str, Any]) -> dict[str, Any]:
+        """Sanitize metadata dictionary by masking sensitive values."""
+        if not self._masker:
+            return metadata
+        return self._masker.mask_metadata(metadata)
+    
+    def _sanitize_text_for_log(self, text: str, max_length: int = 4000) -> str:
+        """Sanitize text for safe logging."""
+        if not text:
+            return ""
+        
+        # First mask sensitive data
+        if self._masker:
+            text = self._masker.mask_text(text)
+        
+        # Then sanitize for log injection
+        text = self._log_sanitizer.sanitize(text)
+        
+        # Truncate if too long
+        if len(text) > max_length:
+            text = text[:max_length] + "...[TRUNCATED]"
+        
+        return text
 
     # ── Verification ──────────────────────────────────────────────────────────────
 

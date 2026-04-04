@@ -14,6 +14,7 @@ Design decisions:
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable
@@ -25,6 +26,11 @@ from pydantic import BaseModel, Field, ValidationError
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+# ── Retry Configuration ──────────────────────────────────────────────────────
+JUDGE_TIMEOUT_SECONDS = 30.0
+JUDGE_MAX_RETRIES = 2
+JUDGE_RETRY_BACKOFF_FACTOR = 2.0
 
 
 class JudgeVerdict(str, Enum):
@@ -128,6 +134,69 @@ class LLMJudge:
 
         self._api_key = getattr(client, "api_key", None)
 
+    # ── Retry Logic with Exponential Backoff ─────────────────────────────────────
+    
+    @staticmethod
+    def _call_with_retry(kwargs: dict[str, Any]) -> Any:
+        """
+        Call LLM with timeout and exponential backoff retry.
+        
+        Handles rate limits (429), timeouts, and transient errors.
+        """
+        last_exception = None
+        
+        for attempt in range(JUDGE_MAX_RETRIES + 1):
+            try:
+                # Add timeout if not already present
+                kwargs.setdefault("timeout", JUDGE_TIMEOUT_SECONDS)
+                
+                resp = litellm.completion(**kwargs)
+                return resp
+                
+            except litellm.exceptions.RateLimitError as e:
+                last_exception = e
+                if attempt < JUDGE_MAX_RETRIES:
+                    wait_time = JUDGE_RETRY_BACKOFF_FACTOR ** attempt
+                    logger.warning(
+                        f"Judge rate limited. Retrying in {wait_time}s "
+                        f"(attempt {attempt + 1}/{JUDGE_MAX_RETRIES})"
+                    )
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"Judge rate limit exceeded after {JUDGE_MAX_RETRIES} retries")
+                    
+            except litellm.exceptions.Timeout as e:
+                last_exception = e
+                if attempt < JUDGE_MAX_RETRIES:
+                    wait_time = JUDGE_RETRY_BACKOFF_FACTOR ** attempt
+                    logger.warning(
+                        f"Judge request timed out. Retrying in {wait_time}s "
+                        f"(attempt {attempt + 1}/{JUDGE_MAX_RETRIES})"
+                    )
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"Judge request timed out after {JUDGE_MAX_RETRIES} retries")
+                    
+            except litellm.exceptions.APIConnectionError as e:
+                last_exception = e
+                if attempt < JUDGE_MAX_RETRIES:
+                    wait_time = JUDGE_RETRY_BACKOFF_FACTOR ** attempt
+                    logger.warning(
+                        f"Judge API connection error. Retrying in {wait_time}s "
+                        f"(attempt {attempt + 1}/{JUDGE_MAX_RETRIES})"
+                    )
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"Judge API connection failed after {JUDGE_MAX_RETRIES} retries")
+                    
+            except Exception as e:
+                # Non-retryable errors (validation errors, auth errors, etc.)
+                logger.error(f"Judge non-retryable error: {type(e).__name__}: {e}")
+                raise
+        
+        # All retries exhausted
+        raise last_exception  # type: ignore[misc]
+
     @staticmethod
     def _default_model(provider: str) -> str:
         defaults = {
@@ -177,6 +246,7 @@ class LLMJudge:
                 ],
                 "max_tokens": 256,
                 "temperature": 0.0,
+                "timeout": JUDGE_TIMEOUT_SECONDS,
             }
 
             kwargs.update(self._tool_call_guard_kwargs())
@@ -186,7 +256,8 @@ class LLMJudge:
             if self._api_key:
                 kwargs["api_key"] = self._api_key
 
-            resp = litellm.completion(**kwargs)
+            # Use retry logic for resilient API calls
+            resp = self._call_with_retry(kwargs)
             data = self._parse_response(resp)
             
             result = JudgeResult(
@@ -202,7 +273,7 @@ class LLMJudge:
             )
             return result
         except Exception as e:
-            logger.warning(f"L2 Judge raw JSON evaluation failed: {type(e).__name__}. Falling back.")
+            logger.warning(f"L2 Judge evaluation failed after retries: {type(e).__name__}. Falling back.")
             return JudgeResult(
                 verdict=JudgeVerdict.UNCERTAIN,
                 confidence=0.0,

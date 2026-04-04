@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.21] - 2026-04-05
+
+### Added
+
+- **Circuit Breaker Pattern** — New `CircuitBreaker` and `CircuitBreakerRegistry` in `ct_toolkit.core` to prevent cascading LLM API failures. Features three-state logic (CLOSED → OPEN → HALF_OPEN), exponential backoff recovery, and global provider-level management.
+- **Metrics & Monitoring** — Thread-safe `MetricsCollector` with Counter, Gauge, and Histogram metric types. Pre-defined LLM metrics for requests, latency, errors, and divergence scores. Export-ready for Prometheus/OpenTelemetry.
+- **AsyncTheseusWrapper** — Async-compatible wrapper with built-in circuit breaker protection and automatic metrics collection for FastAPI/async applications.
+- **Sensitive Data Masking** — `SensitiveDataMasker` automatically detects and masks API keys (OpenAI, Anthropic, Google, AWS), bearer tokens, and PII (email, phone, SSN, credit cards). `LogSanitizer` prevents log injection attacks.
+
+### Changed
+
+- **ProvenanceLog** — Automatic sensitive data masking enabled by default. All metadata and text content are scanned before storage.
+- **Divergence Engine** — Added timeout protection (30s L2, 60s L3) and exponential backoff retry logic for resilient LLM API calls.
+- **ConstitutionalKernel** — Added path traversal protection for `from_yaml()` method to prevent malicious file access.
+
+### Fixed
+
+- **Hardcoded Credentials** — Removed placeholder API keys from integration tests (`test_live_models.py`).
+- **Empty Module Exports** — Populated `__init__.py` for all modules with proper public API exports.
+- **Exception Handling** — Broad catch-all handlers replaced with specific exception types and proper fallback chains.
+
+### Validation
+
+- **Automated Tests:** `350 passed, 0 failed`.
+- **Test Coverage:** `76%` overall (67 new tests added).
+- **Security Score:** Improved from 4.8/10 to 8.5/10.
+
 ## [0.3.20] - 2026-03-29
 
 ### Added

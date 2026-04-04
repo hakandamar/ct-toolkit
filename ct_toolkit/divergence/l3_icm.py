@@ -27,6 +27,11 @@ from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+# ── ICM Configuration ────────────────────────────────────────────────────────
+ICM_TIMEOUT_SECONDS = 60.0  # Longer timeout for ICM due to complex probes
+ICM_MAX_RETRIES = 2
+ICM_RETRY_BACKOFF_FACTOR = 2.0
+
 
 # ── Pydantic Models for Structured Responses ────────────────────────────────
 
@@ -361,7 +366,7 @@ class ICMRunner:
         # Ollama-compatible endpoints can be noisy/fragile with instructor structured
         # parsing paths; use raw mode directly for deterministic behavior.
         if self._provider == "ollama":
-            return self._call_model_raw_with_fallback(kwargs, structured_error=None)
+            return self._call_model_with_retry(kwargs)
 
         # ── Attempt 1: Structured call with instructor validation ────────
         try:
@@ -384,31 +389,87 @@ class ICMRunner:
                 f"Falling back to raw completion."
             )
 
-            return self._call_model_raw_with_fallback(kwargs, structured_error=e)
+            return self._call_model_with_retry(kwargs, structured_error=e)
 
-    @staticmethod
-    def _call_model_raw_with_fallback(kwargs: dict[str, Any], structured_error: Exception | None) -> str:
-        # ── Raw litellm.completion without structured validation ────────
-        try:
-            resp = litellm.completion(**kwargs)
-            content = ICMRunner._extract_response_content(resp)
-            logger.info("L3 ICM raw fallback succeeded")
-            return content
-
-        except Exception as fallback_e:
-            # ── Safe error response ────────
-            if structured_error is None:
-                logger.error(
-                    f"L3 ICM raw call failed: raw={type(fallback_e).__name__}. "
-                    f"Returning error placeholder for graceful degradation."
-                )
-            else:
-                logger.error(
-                    f"L3 ICM both structured and raw calls failed: "
-                    f"structured={type(structured_error).__name__}, raw={type(fallback_e).__name__}. "
-                    f"Returning error placeholder for graceful degradation."
-                )
-            return "[ERROR: Model call failed, unable to assess response]"
+    @classmethod
+    def _call_model_with_retry(
+        cls,
+        kwargs: dict[str, Any],
+        structured_error: Exception | None = None,
+    ) -> str:
+        """
+        Call model with timeout and exponential backoff retry.
+        
+        Handles rate limits (429), timeouts, and transient errors.
+        """
+        last_exception = None
+        
+        for attempt in range(ICM_MAX_RETRIES + 1):
+            try:
+                resp = litellm.completion(**kwargs)
+                content = cls._extract_response_content(resp)
+                if attempt > 0:
+                    logger.info(f"L3 ICM call succeeded on retry {attempt}")
+                return content
+                
+            except litellm.exceptions.RateLimitError as e:
+                last_exception = e
+                if attempt < ICM_MAX_RETRIES:
+                    wait_time = ICM_RETRY_BACKOFF_FACTOR ** attempt
+                    logger.warning(
+                        f"L3 ICM rate limited. Retrying in {wait_time}s "
+                        f"(attempt {attempt + 1}/{ICM_MAX_RETRIES})"
+                    )
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"L3 ICM rate limit exceeded after {ICM_MAX_RETRIES} retries")
+                    
+            except litellm.exceptions.Timeout as e:
+                last_exception = e
+                if attempt < ICM_MAX_RETRIES:
+                    wait_time = ICM_RETRY_BACKOFF_FACTOR ** attempt
+                    logger.warning(
+                        f"L3 ICM request timed out. Retrying in {wait_time}s "
+                        f"(attempt {attempt + 1}/{ICM_MAX_RETRIES})"
+                    )
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"L3 ICM request timed out after {ICM_MAX_RETRIES} retries")
+                    
+            except litellm.exceptions.APIConnectionError as e:
+                last_exception = e
+                if attempt < ICM_MAX_RETRIES:
+                    wait_time = ICM_RETRY_BACKOFF_FACTOR ** attempt
+                    logger.warning(
+                        f"L3 ICM API connection error. Retrying in {wait_time}s "
+                        f"(attempt {attempt + 1}/{ICM_MAX_RETRIES})"
+                    )
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"L3 ICM API connection failed after {ICM_MAX_RETRIES} retries")
+                    
+            except Exception as e:
+                # Non-retryable errors
+                logger.error(f"L3 ICM non-retryable error: {type(e).__name__}: {e}")
+                if structured_error is None:
+                    logger.error(
+                        f"L3 ICM raw call failed: raw={type(e).__name__}. "
+                        f"Returning error placeholder for graceful degradation."
+                    )
+                else:
+                    logger.error(
+                        f"L3 ICM both structured and raw calls failed: "
+                        f"structured={type(structured_error).__name__}, raw={type(e).__name__}. "
+                        f"Returning error placeholder for graceful degradation."
+                    )
+                return "[ERROR: Model call failed, unable to assess response]"
+        
+        # All retries exhausted
+        logger.error(
+            f"L3 ICM all retries exhausted. Last error: {type(last_exception).__name__}. "
+            f"Returning error placeholder for graceful degradation."
+        )
+        return "[ERROR: Model call failed after retries, unable to assess response]"
 
     def _format_model_name(self) -> str:
         """Format model name according to provider conventions."""
@@ -436,6 +497,7 @@ class ICMRunner:
             ],
             "max_tokens": 512,
             "temperature": 0.0,
+            "timeout": ICM_TIMEOUT_SECONDS,
         }
 
         kwargs.update(self._tool_call_guard_kwargs())

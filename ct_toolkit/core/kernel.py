@@ -6,10 +6,11 @@ and plastic commitments that can be extended by the user.
 """
 from __future__ import annotations
 
+import os
 import yaml
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Union, Protocol
 
 from ct_toolkit.core.exceptions import (
     AxiomaticViolationError,
@@ -65,13 +66,44 @@ class ConstitutionalKernel:
         self.is_readonly = is_readonly
 
     @classmethod
-    def from_yaml(cls, path) -> ConstitutionalKernel:
-        if hasattr(path, "open"):
-            with path.open("r", encoding="utf-8") as f:
-                data = yaml.safe_load(f)
-        else:
+    def from_yaml(cls, path: Any) -> "ConstitutionalKernel":
+        """
+        Loads a kernel from a YAML file.
+        
+        Args:
+            path: Path to the YAML file (string, Path object, or Traversable).
+            
+        Returns:
+            ConstitutionalKernel instance.
+            
+        Raises:
+            CTToolkitError: If path traversal is detected.
+            FileNotFoundError: If the file does not exist.
+            yaml.YAMLError: If the YAML file is malformed.
+        """
+        # Path traversal protection - only check for string paths
+        if isinstance(path, str):
+            resolved_path = os.path.realpath(path)
+            base_dir = os.path.realpath(Path(__file__).parent.parent)
+            if not resolved_path.startswith(base_dir):
+                # Allow loading from user-specified directories but validate
+                # that the path doesn't contain traversal sequences
+                if ".." in path.split(os.sep):
+                    raise CTToolkitError(
+                        f"Potential path traversal detected: {path}. "
+                        "Path traversal sequences are not allowed for security reasons."
+                    )
+        
+        # Handle different path types - str check first to avoid Pylance errors
+        if isinstance(path, str):
             with open(path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
+        elif hasattr(path, "open") and callable(getattr(path, "open", None)):
+            # Path or Traversable objects
+            with path.open("r", encoding="utf-8") as f:  # type: ignore[union-attr]
+                data = yaml.safe_load(f)
+        else:
+            raise CTToolkitError(f"Unsupported path type: {type(path).__name__}. Expected str, Path, or Traversable.")
         
         if not isinstance(data, dict):
             data = {}
