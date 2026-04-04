@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.23] - 2026-04-05
+
+### Security
+
+- **Dependency: litellm authentication bypass (Critical)** — Upgraded `litellm` from `>=1.40.0` to `>=1.83.0` to patch CVE-2026-35030. The OIDC userinfo cache used `token[:20]` as the cache key, allowing an attacker to craft a token whose first 20 characters match a legitimate user's cached token and inherit their identity. (CVSS v4: 9.4)
+- **Dependency: litellm privilege escalation (High)** — Upgraded `litellm` to `>=1.83.0` to patch CVE-2026-35029. The `/config/update` endpoint did not enforce admin role authorization, allowing authenticated users to modify proxy configuration, register custom endpoint handlers with attacker-controlled Python code, and read arbitrary server files. (CVSS v4: 8.7)
+
 ## [0.3.22] - 2026-04-05
 
 ### Changed
