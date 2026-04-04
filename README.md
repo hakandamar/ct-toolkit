@@ -84,7 +84,7 @@ For Deep Agents workflows, see [**ct-toolkit-deep-agents**](https://github.com/h
 
 | Metric           | Status                                                                                                                                                                                                              |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Tests**        | ✅ 350 passed, 0 failed (100% success rate, 76% coverage)                                                                                                                                                           |
+| **Tests**        | ✅ 397 passed, 3 skipped (100% success rate, 90% coverage)                                                                                                                                                           |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
 | **Last Phase**   | ✅ v0.3.21: Production hardening — Circuit breaker, metrics, async support, sensitive data masking, timeout/retry logic, path traversal protection                                                                 |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)                                                                                                                                                               |

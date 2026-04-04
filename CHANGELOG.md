@@ -30,8 +30,8 @@ _(Note: This project uses `python-semantic-release` for automated versioning and
 
 ### Validation
 
-- **Automated Tests:** `350 passed, 0 failed`.
-- **Test Coverage:** `76%` overall (67 new tests added).
+- **Automated Tests:** `397 passed, 3 skipped, 0 failed`.
+- **Test Coverage:** `90%` overall (67 new tests added).
 - **Security Score:** Improved from 4.8/10 to 8.5/10.
 
 ## [0.3.20] - 2026-03-29
