@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.22] - 2026-04-05
+
+### Changed
+
+- **CI/CD Pipeline** — Switched from `pip install build pytest pytest-cov` to `uv sync --all-extras --dev` for proper dependency installation in GitHub Actions. This resolves the `ModuleNotFoundError` for `litellm`, `openai`, `torch`, `typer`, `numpy`, `yaml`, and `langchain_core` during test collection.
+
+### Validation
+
+- **Automated Tests:** `397 passed, 3 skipped, 0 failed`.
+- **Test Coverage:** `90%` overall.
+
 ## [0.3.21] - 2026-04-05
 
 ### Added
