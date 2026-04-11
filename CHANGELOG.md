@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
-## [0.3.24] - 2026-04-11
+## [0.3.25] - 2026-04-11
+
+### Changed
+- Version bump: All project metadata and runtime version constants updated to 0.3.25 for release consistency.
+
+### Security
+- Same as 0.3.24: cryptography 46.0.7, langchain-core 1.2.28 vulnerability remediations.
+
+## [0.3.24] - 2026-04-11 (skipped)
 
 ### Security
 
