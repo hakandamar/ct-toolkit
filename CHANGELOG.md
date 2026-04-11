@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.24] - 2026-04-11
+
+### Security
+
+- **Dependency: cryptography** — Upgraded to `>=46.0.7` to pick up upstream security fixes and regenerate lockfile artifacts with the patched release.
+- **Dependency: langchain-core** — Upgraded to `>=1.2.28` to remediate the incomplete f-string validation issue reported by dependency scanning.
+
+### CI/CD
+
+- **Release guardrail** — Added a release workflow validation step that fails if the pushed git tag version (for example `v0.3.24`) does not match `[project].version` in `pyproject.toml`, preventing accidental republish attempts of an old version.
+
 ## [0.3.23] - 2026-04-05
 
 ### Security
