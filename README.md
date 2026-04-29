@@ -86,7 +86,7 @@ For Deep Agents workflows, see [**ct-toolkit-deep-agents**](https://github.com/h
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Tests**        | ✅ 397 passed, 3 skipped (100% success rate, 90% coverage)                                                                                                                                                          |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ v0.3.26: Security patches — litellm 1.83.7 vulnerability remediations                                                                                                             |
+| **Last Phase**   | ✅ v0.3.27: Security patches — litellm 1.83.7 + langchain-core 1.3.0 + langsmith 0.7.31 vulnerability remediations                                                                                                             |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)                                                                                                                                                               |
 
 ### Framework & Model Support

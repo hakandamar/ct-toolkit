@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.27] - 2026-04-30
+
+### Security
+- langchain-core: Updated to 1.3.0
+- langsmith: Updated to 0.7.31+ (streaming token bypass fix)
+
 ## [0.3.26] - 2026-04-30
 
 ### Security
