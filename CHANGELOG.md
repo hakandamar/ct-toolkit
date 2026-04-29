@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.26] - 2026-04-30
+
+### Security
+- litellm 1.83.7: SQL Injection (CVE-2026-35140), Auth bypass (CVE-2026-35030), Command execution, SSTI vulnerability remediations.
+
 ## [0.3.25] - 2026-04-11
 
 ### Changed
