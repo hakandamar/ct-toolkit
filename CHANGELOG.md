@@ -7,23 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.28] - 2026-05-10
+
+### Security
+
+- langchain-core: Updated to 1.3.3
+
 ## [0.3.27] - 2026-04-30
 
 ### Security
+
 - langchain-core: Updated to 1.3.0
 - langsmith: Updated to 0.7.31+ (streaming token bypass fix)
 
 ## [0.3.26] - 2026-04-30
 
 ### Security
+
 - litellm 1.83.7: SQL Injection (CVE-2026-35140), Auth bypass (CVE-2026-35030), Command execution, SSTI vulnerability remediations.
 
 ## [0.3.25] - 2026-04-11
 
 ### Changed
+
 - Version bump: All project metadata and runtime version constants updated to 0.3.25 for release consistency.
 
 ### Security
+
 - Same as 0.3.24: cryptography 46.0.7, langchain-core 1.2.28 vulnerability remediations.
 
 ## [0.3.24] - 2026-04-11 (skipped)

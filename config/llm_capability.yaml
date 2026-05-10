@@ -121,7 +121,7 @@ providers:
         tool_call: true
         reasoning: false
       source: startup_handshake
-      last_checked: 1775867714.607475
+      last_checked: 1778376203.13362
     refresh_interval_s: 3600
   anthropic:
     models: {}
@@ -190,4 +190,4 @@ providers:
       source: startup_handshake
       last_checked: 1775346851.807541
     refresh_interval_s: 3600
-updated_at: 1775867714.607476
+updated_at: 1778376203.133622
