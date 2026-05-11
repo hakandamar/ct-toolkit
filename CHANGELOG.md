@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.29] - 2026-05-11
+
+### Security
+
+- litellm: Updated to 1.83.14+ (sandbox escape and SQL injection hardening)
+- urllib3: Updated to 2.7.0+ (decompression-bomb and sensitive header exposure fixes)
+- aiohttp: Adjusted constraint to 3.13.4+ for compatibility while maintaining security patches
+
 ## [0.3.28] - 2026-05-10
 
 ### Security
