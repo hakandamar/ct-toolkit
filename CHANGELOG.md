@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.30] - 2026-05-15
+
+### Security
+
+- langsmith: Updated to 0.8.0+ (public prompt pull trust boundary fix — blocks pulling public prompts by owner/name by default)
+
 ## [0.3.29] - 2026-05-11
 
 ### Security

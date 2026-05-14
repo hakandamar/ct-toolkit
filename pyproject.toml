@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ct-toolkit"
-version = "0.3.29"
+version = "0.3.30"
 description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -28,7 +28,7 @@ dependencies = [
     "typer[all]>=0.12.0",
     "fastapi>=0.110.0",
     "uvicorn>=0.29.0",
-    "langsmith>=0.7.31", # Streaming token bypass fix in 0.7.31
+    "langsmith>=0.8.0", # Security: block public prompt pull by default (CVE-like trust boundary issue)
     "urllib3>=2.7.0",    # Fix: Decompression-bomb safeguards and sensitive header exposure (Dependabot #30, #31)
 ]
 
