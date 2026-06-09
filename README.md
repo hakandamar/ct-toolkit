@@ -86,7 +86,7 @@ For Deep Agents workflows, see [**ct-toolkit-deep-agents**](https://github.com/h
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Tests**        | ✅ 397 passed, 3 skipped (100% success rate, 90% coverage)                                                                                                                                                          |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ v0.3.31: Security patches for idna (CVE-2024-3651) and pymdown-extensions (path traversal bypass)                                                                                                        |
+| **Last Phase**   | ✅ v0.3.32: Security patches for aiohttp and Starlette Dependabot alerts                                                                                                                                      |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)                                                                                                                                                               |
 
 ### Framework & Model Support

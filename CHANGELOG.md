@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.32] - 2026-06-09
+
+### Security
+
+- aiohttp: Updated to 3.14.0+ to remediate cross-origin redirect cookie leakage and unsafe deserialization vulnerabilities reported by Dependabot.
+- Starlette: Added an explicit 1.0.1+ runtime constraint to remediate Host header validation poisoning of request URL paths.
+
 ## [0.3.30] - 2026-05-15
 
 ### Security

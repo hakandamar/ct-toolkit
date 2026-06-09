@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ct-toolkit"
-version = "0.3.31"
+version = "0.3.32"
 description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,7 +15,7 @@ keywords = ["llm", "ai-safety", "identity-continuity", "guardrails", "alignment"
 dependencies = [
     "instructor>=1.3.0",
     "litellm>=1.83.14", # SQL Injection (CVE-2026-35140) + Auth bypass (CVE-2026-35030) + Cmd exec + SSTI fix + Sandbox escape fix in 1.83.14
-    "aiohttp>=3.13.4", # Fix: Duplicate Host headers, CRLF injection, SSRF, DoS (v3.13.4 contains critical fixes)
+    "aiohttp>=3.14.0", # Fix: cross-origin redirect cookie leak + unsafe deserialization (Dependabot #35, #36)
     "numpy>=1.26.0",
     "pyyaml>=6.0",
     "pydantic>=2.5.0",
@@ -27,6 +27,7 @@ dependencies = [
     "pyasn1>=0.6.3",
     "typer[all]>=0.12.0",
     "fastapi>=0.110.0",
+    "starlette>=1.0.1", # Fix: Host header validation poisoning request.url.path (Dependabot #37)
     "uvicorn>=0.29.0",
     "langsmith>=0.8.0", # Security: block public prompt pull by default (CVE-like trust boundary issue)
     "urllib3>=2.7.0",    # Fix: Decompression-bomb safeguards and sensitive header exposure (Dependabot #30, #31)
