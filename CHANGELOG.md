@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.33] - 2026-06-29
+
+### Security
+
+- cryptography: Updated to 48.0.1+ (GHSA-537c-gmf6-5ccf: removes vulnerable OpenSSL bundled in cryptography wheels)
+- starlette: Updated to 1.3.1+ (CVE-2026-54282 host header poisoning + CVE-2026-54283 form limits bypass enabling DoS; fixes Dependabot #39 and #41)
+- langsmith: Updated to 0.8.18+ (GHSA-f4xh-w4cj-qxq8: TracingMiddleware arbitrary server-side file read; fixes Dependabot #42)
+- torch: Open alert (CVE-2025-3000, GHSA-rrmf-rvhw-rf47) — memory corruption via torch.jit.script; no upstream patch available yet, awaiting PyTorch fix
+
 ## [0.3.32] - 2026-06-09
 
 ### Security
