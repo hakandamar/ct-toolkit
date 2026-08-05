@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.35] - 2026-08-05
+
+### Security
+
+- cryptography: Updated to 50.0.0 — fixes PKCS#7 EnvelopedData decryption Bleichenbacher oracle (CVE, Dependabot #65).
+- torch: Updated ml extras constraint to 2.13.0+ (resolved to 2.13.0) — fixes memory corruption via torch.jit.script (Dependabot #43).
+
 ## [0.3.34] - 2026-08-05
 
 ### Security

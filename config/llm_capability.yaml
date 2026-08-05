@@ -77,7 +77,7 @@ providers:
           tool_call: true
           reasoning: false
         source: passive_discovery
-        last_checked: 1785887818.538273
+        last_checked: 1785889103.5006971
       claude-3-5-sonnet-latest:
         capabilities:
           text: true
@@ -99,7 +99,7 @@ providers:
           tool_call: true
           reasoning: false
         source: passive_discovery
-        last_checked: 1785887814.0281541
+        last_checked: 1785889098.882192
       claude-3-5-haiku-latest:
         capabilities:
           text: true
@@ -121,7 +121,7 @@ providers:
         tool_call: true
         reasoning: false
       source: startup_handshake
-      last_checked: 1785887819.3404999
+      last_checked: 1785889104.3165288
     refresh_interval_s: 3600
   anthropic:
     models: {}
@@ -135,7 +135,7 @@ providers:
         tool_call: true
         reasoning: false
       source: startup_handshake
-      last_checked: 1785887818.7290082
+      last_checked: 1785889103.7138
     refresh_interval_s: 3600
   ollama:
     models:
@@ -149,7 +149,7 @@ providers:
           tool_call: true
           reasoning: false
         source: passive_discovery
-        last_checked: 1785887815.906968
+        last_checked: 1785889100.8567328
     defaults:
       capabilities:
         text: true
@@ -160,7 +160,7 @@ providers:
         tool_call: false
         reasoning: false
       source: startup_handshake
-      last_checked: 1785887818.6580858
+      last_checked: 1785889103.626886
     refresh_interval_s: 3600
   unknown:
     models: {}
@@ -174,7 +174,7 @@ providers:
         tool_call: false
         reasoning: false
       source: startup_handshake
-      last_checked: 1785887818.694602
+      last_checked: 1785889103.677485
     refresh_interval_s: 3600
   google:
     models: {}
@@ -188,6 +188,6 @@ providers:
         tool_call: true
         reasoning: false
       source: startup_handshake
-      last_checked: 1785887814.131692
+      last_checked: 1785889098.989509
     refresh_interval_s: 3600
-updated_at: 1785887819.340501
+updated_at: 1785889104.31653

@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=78.0.0", "wheel"]
+requires = ["setuptools>=83.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "ct-toolkit"
-version = "0.3.34"
+version = "0.3.35"
 description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
 requires-python = ">=3.11, <3.14"
