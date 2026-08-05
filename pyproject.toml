@@ -1,13 +1,13 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=78.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "ct-toolkit"
-version = "0.3.33"
+version = "0.3.34"
 description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11, <3.14"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Hakan Damar" }]
 keywords = ["llm", "ai-safety", "identity-continuity", "guardrails", "alignment"]
@@ -15,7 +15,8 @@ keywords = ["llm", "ai-safety", "identity-continuity", "guardrails", "alignment"
 dependencies = [
     "instructor>=1.3.0",
     "litellm>=1.83.14", # SQL Injection (CVE-2026-35140) + Auth bypass (CVE-2026-35030) + Cmd exec + SSTI fix + Sandbox escape fix in 1.83.14
-    "aiohttp>=3.14.0", # Fix: cross-origin redirect cookie leak + unsafe deserialization (Dependabot #35, #36)
+    "aiohttp>=3.14.3", # Fix: cross-origin redirect cookie leak + unsafe deserialization (Dependabot #35, #36) + WebSocket/HTTP smuggling/parser (Dependabot #62-64)
+    "pillow>=11.3.0",  # Fix: 15+ vulnerabilities incl JPEG2000 DoS, RankFilter OOB, bomb bypass, TGA leak, EPS DoS, etc (Dependabot #44-56)
     "numpy>=1.26.0",
     "pyyaml>=6.0",
     "pydantic>=2.5.0",
@@ -24,7 +25,7 @@ dependencies = [
     "httpx>=0.27.0",
     "rich>=13.0.0",          # For CLI reporting
     "jinja2>=3.1.0",
-    "pyasn1>=0.6.3",
+    "pyasn1>=0.6.4", # Fix: BER/CER/DER DoS + REAL resource consumption + OID quadratic complexity (Dependabot #58, #59, #61)
     "typer[all]>=0.12.0",
     "fastapi>=0.110.0",
     "starlette>=1.3.1", # Fix: CVE-2026-54282/54283 form limits bypass & host header poisoning (Dependabot #39, #41)
@@ -44,7 +45,7 @@ langchain = ["langchain-core>=1.3.3"]
 # crewai   = ["crewai>=1.10.0"]
 autogen   = ["pyautogen>=0.4.0"]
 docs     = ["mkdocs-material>=9.5.0", "pymdown-extensions>=10.21.3"]  # Fix: path traversal bypass in pymdownx.snippets
-ml       = ["torch>=2.0.0"]
+ml       = ["torch>=2.6.0"]  # Fix: memory corruption via torch.jit.script (Dependabot Low)
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",

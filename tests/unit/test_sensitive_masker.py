@@ -1,7 +1,6 @@
 """
 Tests for ct_toolkit.utils.sensitive_masker
 """
-import pytest
 from ct_toolkit.utils.sensitive_masker import SensitiveDataMasker, LogSanitizer
 
 

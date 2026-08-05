@@ -17,11 +17,9 @@ Usage:
 from __future__ import annotations
 
 import time
-import math
 import threading
 from typing import Any
 from dataclasses import dataclass, field
-from collections import defaultdict
 
 
 @dataclass

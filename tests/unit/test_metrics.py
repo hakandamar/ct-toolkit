@@ -1,7 +1,6 @@
 """
 Tests for ct_toolkit.utils.metrics
 """
-import pytest
 from ct_toolkit.utils.metrics import (
     MetricsCollector,
     CounterMetric,

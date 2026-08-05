@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.34] - 2026-08-05
+
+### Security
+
+- pillow: Updated to 11.3.0+ (resolved to 12.3.0) — bulk fix for 15+ Dependabot alerts including JPEG2000 tiled decode DoS, RankFilter heap OOB write via integer overflow, decompression bomb bypasses in BdfFontFile/GdImageFile/FontFile/PcfFontFile/PdfParser, McIdas AREA OOB read, Image.paste/crop signed coordinate overflow, ImageCmsTransform heap OOB write via output mode mismatch, TGA RLE encoder heap data leak, EPS infinite loop DoS, and Windows shell command injection.
+- aiohttp: Updated to 3.14.3+ — fixes WebSocket compressed frame acceptance without negotiated permessage-deflate (Moderate), out-of-bounds heap read in C HTTP response parser error path (High), and HTTP request smuggling via WebSocket upgrade (Moderate).
+- pyasn1: Updated to 0.6.4+ — fixes BER/CER/DER decoder DoS via unbounded long-form tag IDs (High), uncontrolled resource consumption when converting decoded REAL values (High), and quadratic complexity in OBJECT IDENTIFIER/RELATIVE-OID processing (High).
+- setuptools: Updated build-system requirement to 78.0.0+ (resolved to 81.0.0) — fixes MANIFEST.in exclusion bypass via Unicode normalization collision (NFC/NFD) on macOS APFS/HFS+ (Moderate).
+- torch: Updated ml extras constraint to 2.6.0+ — fixes memory corruption via torch.jit.script (Low).
+- pymdown-extensions: Constraint already at 10.21.3+ (sufficient for b64 path traversal fix).
+
+### Changed
+
+- requires-python: Constrained to `>=3.11, <3.14` to resolve autogen extras dependency resolution conflicts.
+
+### Validation
+
+- **Automated Tests:** `397 passed, 3 skipped`.
+- **Dependency Audit:** Lock file regenerated with `uv lock --upgrade` for pillow, pyasn1, aiohttp, setuptools, pymdown-extensions.
+
 ## [0.3.33] - 2026-06-29
 
 ### Security

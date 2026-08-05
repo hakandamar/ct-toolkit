@@ -20,8 +20,8 @@ from __future__ import annotations
 import time
 import threading
 from enum import Enum
-from typing import Callable, Any
-from dataclasses import dataclass, field
+from typing import Any
+from dataclasses import dataclass
 
 from ct_toolkit.utils.logger import get_logger
 

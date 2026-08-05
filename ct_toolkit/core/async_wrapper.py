@@ -16,11 +16,10 @@ from __future__ import annotations
 import asyncio
 import time
 from typing import Any, Optional
-from pathlib import Path
 
 from ct_toolkit.core.wrapper import TheseusWrapper, CTResponse, WrapperConfig
 from ct_toolkit.core.circuit_breaker import CircuitBreaker, CircuitBreakerError, CircuitBreakerRegistry
-from ct_toolkit.utils.metrics import get_metrics_collector, MetricsCollector
+from ct_toolkit.utils.metrics import get_metrics_collector
 from ct_toolkit.utils.logger import get_logger
 
 logger = get_logger(__name__)

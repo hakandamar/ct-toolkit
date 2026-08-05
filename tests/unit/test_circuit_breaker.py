@@ -8,7 +8,6 @@ from ct_toolkit.core.circuit_breaker import (
     CircuitBreakerError,
     CircuitBreakerRegistry,
     CircuitState,
-    CircuitBreakerStats,
 )
 
 
