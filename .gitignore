@@ -50,3 +50,6 @@ coverage.xml
 
 # Docs build
 docs/_build/
+
+# Local security review plans
+plans/

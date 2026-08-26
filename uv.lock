@@ -455,7 +455,7 @@ wheels = [
 
 [[package]]
 name = "ct-toolkit"
-version = "0.3.35"
+version = "0.3.36"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },

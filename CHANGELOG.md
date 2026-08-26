@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.36] - 2026-08-26
+
+### Security
+
+- **L2 Judge SSTI** — Removed unsandboxed Jinja2 rendering from judge prompts. Kernel rules, user requests, and model responses are now inserted as literal text without template evaluation.
+- **Profile Supply Chain Integrity** — `ct-toolkit setup` now verifies every downloaded kernel, identity, and probe file against a trusted SHA-256 manifest shipped in the wheel. Downloads require validated HTTPS and same-origin redirects; unverified downloads are rejected.
+- **Rule Validation** — Replaced substring-only conflict checks with Unicode normalization, case folding, and complete-word matching to prevent trivial keyword-boundary bypasses.
+
+### Added
+
+- Added `ct_toolkit/profile_checksums.sha256` as the trusted profile integrity manifest.
+- Profile setup now verifies all files before writing any of them and exits non-zero on download or integrity failures.
+
+### Validation
+
+- **Automated Tests:** `397 passed, 3 skipped`.
+- **Lint:** `ruff check` passed for changed Python modules.
+- **Build:** Wheel build completed successfully.
+
 ## [0.3.35] - 2026-08-05
 
 ### Security

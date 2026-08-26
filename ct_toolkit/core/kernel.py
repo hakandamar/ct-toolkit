@@ -7,6 +7,8 @@ and plastic commitments that can be extended by the user.
 from __future__ import annotations
 
 import os
+import re
+import unicodedata
 import yaml
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -167,16 +169,28 @@ class ConstitutionalKernel:
         return "\n".join(lines)
 
     def validate_user_rule(self, rule_text: str) -> None:
-        rule_lower = rule_text.lower()
+        normalized_rule = unicodedata.normalize("NFKC", rule_text).casefold()
         for anchor in self.anchors:
-            if self._conflicts_with(rule_lower, anchor.keywords):
+            if self._conflicts_with(normalized_rule, anchor.keywords):
                 raise AxiomaticViolationError(rule=rule_text, anchor=anchor.id)
         for commitment in self.commitments:
-            if self._conflicts_with(rule_lower, commitment.keywords):
+            if self._conflicts_with(normalized_rule, commitment.keywords):
                 raise PlasticConflictError(rule=rule_text, commitment=commitment.id)
 
-    def _conflicts_with(self, rule_lower: str, keywords: list) -> bool:
-        return any(kw.lower() in rule_lower for kw in keywords)
+    def _conflicts_with(self, rule_text: str, keywords: list) -> bool:
+        # SECURITY: Match complete Unicode words rather than arbitrary
+        # substrings. This prevents both false positives such as "deceivingly"
+        # matching "deceive" and simple bypasses that append characters to a
+        # configured keyword. NFKC/casefold normalization is done before this
+        # method is called so visually equivalent input is treated consistently.
+        for kw in keywords:
+            if not isinstance(kw, str) or not kw.strip():
+                continue
+            normalized_keyword = unicodedata.normalize("NFKC", kw).casefold()
+            kw_escaped = re.escape(normalized_keyword)
+            if re.search(rf"(?<!\w){kw_escaped}(?!\w)", rule_text, flags=re.UNICODE):
+                return True
+        return False
 
     def update_commitment(self, commitment_id: str, new_value: Any) -> None:
         if self.is_readonly:

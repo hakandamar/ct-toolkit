@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ct-toolkit"
-version = "0.3.35"
+version = "0.3.36"
 description = "Computational Theseus Toolkit — Identity Continuity Guardrails for Agentic Systems"
 readme = "README.md"
 requires-python = ">=3.11, <3.14"
@@ -76,6 +76,7 @@ include = ["ct_toolkit*"]
 [tool.setuptools.package-data]
 "ct_toolkit.kernels" = ["*.yaml"]
 "ct_toolkit.identity.templates" = ["*.yaml"]
+"ct_toolkit" = ["profile_checksums.sha256"]
 
 [project.scripts]
 ct-toolkit = "ct_toolkit.cli:app"

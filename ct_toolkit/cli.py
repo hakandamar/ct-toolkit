@@ -5,6 +5,13 @@ Main entry point for the Theseus Guard / CT Toolkit CLI.
 """
 from __future__ import annotations
 
+import hashlib
+import re
+import ssl
+import urllib.error
+import urllib.parse
+import urllib.request
+from importlib.resources import files as package_files
 from pathlib import Path
 from typing import Optional
 
@@ -24,6 +31,58 @@ app = typer.Typer(
 )
 
 console = Console()
+
+_PROFILE_CHECKSUM_RESOURCE = "profile_checksums.sha256"
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _load_trusted_profile_checksums() -> dict[str, str]:
+    """Load the out-of-band profile hashes shipped in the installed wheel."""
+    manifest = package_files("ct_toolkit").joinpath(_PROFILE_CHECKSUM_RESOURCE)
+    checksums: dict[str, str] = {}
+    for line_number, line in enumerate(manifest.read_text(encoding="ascii").splitlines(), 1):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split(maxsplit=1)
+        if len(parts) != 2 or not _SHA256.fullmatch(parts[0]):
+            raise RuntimeError(f"Invalid profile checksum manifest at line {line_number}")
+        filename = parts[1].strip()
+        if Path(filename).name != filename:
+            raise RuntimeError(f"Invalid profile filename in checksum manifest: {filename}")
+        checksums[filename] = parts[0]
+    if not checksums:
+        raise RuntimeError("Trusted profile checksum manifest is empty")
+    return checksums
+
+
+class _NoDowngradeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Allow redirects only to the same HTTPS origin."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        original = urllib.parse.urlparse(req.full_url)
+        redirected = urllib.parse.urlparse(newurl)
+        if (
+            redirected.scheme != "https"
+            or redirected.hostname != original.hostname
+            or redirected.port != original.port
+        ):
+            raise urllib.error.URLError(f"Refusing unsafe redirect to {newurl}")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def _download_profile_file(url: str) -> bytes:
+    """Download one profile file over validated HTTPS without unsafe redirects."""
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme != "https" or not parsed.hostname:
+        raise urllib.error.URLError(f"Refusing non-HTTPS URL: {url}")
+    opener = urllib.request.build_opener(
+        _NoDowngradeRedirectHandler(),
+        urllib.request.HTTPSHandler(context=ssl.create_default_context()),
+    )
+    request = urllib.request.Request(url, headers={"User-Agent": "ct-toolkit-setup/1.0"})
+    with opener.open(request) as response:
+        return response.read()
 
 BANNER = r"""
   _______ _    _ ______  _____ ______ _    _  _____    _____ _    _          _____  _____  
@@ -178,53 +237,82 @@ def setup(
     dest_dir: str = typer.Option("./config", "--dest", help="Destination folder (default: ./config)"),
     verify_checksums: bool = typer.Option(True, "--verify-checksums/--no-verify-checksums", help="Download and verify SHA256 checksums"),
 ):
-    """Download a CT-Toolkit profile (kernel, identity, probes) from the official GitHub repository."""
-    import urllib.request
-    import hashlib
-    
+    """Download a CT-Toolkit profile (kernel, identity, probes) from the official GitHub repository.
+
+    SECURITY: The previous implementation only self-computed SHA-256 of the
+    just-downloaded payload, which is a no-op against an active MITM or a
+    compromised upstream. We now require the out-of-band known-good checksum
+    manifest shipped in the installed wheel and refuse the download if the
+    live bytes do not match. We additionally pin the download to HTTPS, refuse
+    cross-origin redirects, and require certificate validation against the
+    system trust store.
+    """
     base_url = f"https://raw.githubusercontent.com/hakandamar/ct-toolkit/{repo_branch}/examples/agent_dna_config"
-    target_dir = Path(dest_dir)
-    target_dir.mkdir(parents=True, exist_ok=True)
-    
+
+    if not verify_checksums:
+        console.print(
+            "[bold red]Refusing to download without checksum verification.[/bold red]\n"
+            "The profile must match the trusted checksum manifest shipped with CT Toolkit."
+        )
+        raise typer.Exit(code=2)
+
+    try:
+        trusted_checksums = _load_trusted_profile_checksums()
+    except Exception as exc:
+        console.print(f"[bold red]Trusted checksum manifest unavailable:[/bold red] {exc}")
+        raise typer.Exit(code=1)
+
     base_name = profile.replace("_kernel", "") if profile.endswith("_kernel") else profile
     if base_name == profile:
         kernel_file = f"{profile}_kernel.yaml"
     else:
         kernel_file = f"{profile}.yaml"
-        
+
     identity_file = f"{base_name}_identity.yaml"
     probes_file = f"{base_name}_probes.json"
-    
+
     files_to_download = [kernel_file, identity_file, probes_file]
-    
-    def _download_file(url: str, dest_path: Path) -> bytes:
-        """Download a file and return its content."""
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req) as response:
-            return response.read()
-    
-    def _compute_sha256(data: bytes) -> str:
-        """Compute SHA256 hex digest of data."""
-        return hashlib.sha256(data).hexdigest()
-    
+
+    missing_hashes = [filename for filename in files_to_download if filename not in trusted_checksums]
+    if missing_hashes:
+        console.print(
+            "[bold red]No trusted checksum is pinned for:[/bold red] "
+            + ", ".join(missing_hashes)
+        )
+        raise typer.Exit(code=2)
+
+    target_dir = Path(dest_dir)
+
     with console.status(f"[bold green]Downloading '{profile}' profile from GitHub...[/bold green]"):
         has_errors = False
+        downloaded: dict[str, bytes] = {}
         checksums: dict[str, str] = {}
-        
+
         for filename in files_to_download:
             url = f"{base_url}/{filename}"
-            dest_path = target_dir / filename
             try:
-                content = _download_file(url, dest_path)
-                checksums[filename] = _compute_sha256(content)
-                with open(dest_path, "wb") as f:
-                    f.write(content)
-                console.print(f"[green]✓ Saved {filename} to {dest_path}[/green]")
+                content = _download_profile_file(url)
+                actual = hashlib.sha256(content).hexdigest()
+                expected = trusted_checksums[filename]
+                if actual != expected:
+                    raise ValueError(
+                        f"checksum mismatch (expected {expected}, got {actual})"
+                    )
+                downloaded[filename] = content
+                console.print(f"[green]✓ Verified {filename}[/green]")
             except Exception as e:
                 console.print(f"[red]✗ Failed to download {filename} from {url}:[/red] {e}")
                 has_errors = True
-        
-        # Write checksums file for future verification
+
+        # Do not write any profile until every downloaded file has passed the
+        # trusted hash check.
+        if not has_errors:
+            target_dir.mkdir(parents=True, exist_ok=True)
+            for filename, content in downloaded.items():
+                (target_dir / filename).write_bytes(content)
+                checksums[filename] = hashlib.sha256(content).hexdigest()
+
+        # Write the verified hashes for transparency/audit.
         if checksums and not has_errors:
             checksum_path = target_dir / f"{profile}_checksums.sha256"
             try:
@@ -234,12 +322,16 @@ def setup(
                 console.print(f"[dim]Checksums saved to {checksum_path}[/dim]")
             except Exception as e:
                 console.print(f"[yellow]Warning: Could not save checksums file: {e}[/yellow]")
-                
+
     if not has_errors:
         console.print(f"\n[bold blue]Profile '{profile}' setup complete![/bold blue]")
-        console.print(f"You can now use this kernel by setting [bold]kernel_name='{kernel_file.replace('.yaml','')}'[/bold] in TheseusWrapper")
+        console.print(
+            f"You can now use this kernel by setting "
+            f"[bold]kernel_name='{kernel_file.replace('.yaml','')}'[/bold] in TheseusWrapper"
+        )
     else:
         console.print(f"\n[bold yellow]Profile '{profile}' setup finished with some errors.[/bold yellow]")
+        raise typer.Exit(code=1)
 
 @app.command()
 def list_kernels():

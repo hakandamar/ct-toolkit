@@ -72,11 +72,20 @@ ct-toolkit audit --url http://localhost:11434/v1 --kernel defense
 # List available kernels and templates
 ct-toolkit list-kernels
 ct-toolkit list-templates
+
+# Download a verified profile from the official repository
+ct-toolkit setup personal_kernel --dest ./config
 ```
 
 If you want a runnable application example instead of a CLI-only flow, see [**ct-toolkit-fastapi**](https://github.com/hakandamar/ct-toolkit-fastapi), a small FastAPI validation project that developers can use to test CT Toolkit locally with automated endpoints and pytest coverage.
 
 For Deep Agents workflows, see [**ct-toolkit-deep-agents**](https://github.com/hakandamar/ct-toolkit-deep-agents), a reference integration project for validating CT Toolkit in multi-agent orchestration scenarios.
+
+### Security Hardening
+
+The profile setup command fails closed by default. Downloaded kernel, identity, and probe files must match the trusted SHA-256 manifest packaged with CT Toolkit before they are written to disk. HTTPS certificate validation is enabled and redirects to another host or scheme are rejected.
+
+The L2 judge does not evaluate Jinja2 expressions in user requests or model responses. Rule validation normalizes Unicode input and requires configured conflict keywords to match complete words, preventing simple substring and keyword-boundary bypasses.
 
 ---
 
@@ -86,7 +95,7 @@ For Deep Agents workflows, see [**ct-toolkit-deep-agents**](https://github.com/h
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Tests**        | ✅ 397 passed, 3 skipped (100% success rate, 90% coverage)                                                                                                                                                          |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ v0.3.35: Security patches for cryptography, torch — closing remaining Dependabot alerts                                                                                                                  |
+| **Last Phase**   | ✅ v0.3.36: High-severity security hardening for L2 prompts, profile downloads, and rule validation                                                                                                       |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)                                                                                                                                                               |
 
 ### Framework & Model Support
