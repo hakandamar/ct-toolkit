@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.37] - 2026-09-10
+
+### Security
+
+- **mkdocs-material DOM XSS** — Upgraded `mkdocs-material` from `9.7.6` to `9.7.7` to fix DOM-based XSS in search suggestions via the query parameter (Dependabot #66).
+
 ## [0.3.36] - 2026-08-26
 
 ### Security
