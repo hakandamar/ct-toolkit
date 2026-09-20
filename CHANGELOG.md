@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.38] - 2026-09-20
+
+### Security
+
+- **AnyIO** — Updated the runtime requirement to `anyio>=4.14.2`, fixing the process-pool stderr deadlock and TLS IDNA certificate spoofing vulnerabilities (Dependabot #67 and #68).
+
 ## [0.3.37] - 2026-09-10
 
 ### Security
