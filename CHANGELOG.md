@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _(Note: This project uses `python-semantic-release` for automated versioning and changelog generation. Future automated releases will append updates here.)_
 
+## [0.3.39] - 2026-10-08
+
+### Security
+
+- **urllib3** — Updated the runtime requirement to `urllib3>=2.8.0` (resolved to 2.8.0), fixing the Chunked Deflate streaming infinite loop (GHSA-gh4c-6fx4-qh6g, Dependabot #69). 2.8.0 also fixes HTTPS proxy TLS configuration being ignored or overridden, and unbounded chunk-size line memory buffering.
+- **LiteLLM** — Updated the runtime requirement to `litellm>=1.104.0` (resolved to 1.104.2), fixing authenticated SSRF and provider-credential exfiltration via unvalidated request-body routing parameters (Dependabot #70).
+
+### Validation
+
+- **Automated Tests:** `397 passed, 3 skipped`.
+
 ## [0.3.38] - 2026-09-20
 
 ### Security

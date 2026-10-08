@@ -95,7 +95,7 @@ The L2 judge does not evaluate Jinja2 expressions in user requests or model resp
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Tests**        | ✅ 397 passed, 3 skipped (100% success rate, 90% coverage)                                                                                                                                                          |
 | **Downloads**    | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ct-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=MAGENTA&left_text=downloads)](https://pepy.tech/projects/ct-toolkit) |
-| **Last Phase**   | ✅ v0.3.38: AnyIO >=4.14.2 fixes process-pool stderr deadlock and TLS IDNA certificate spoofing (Dependabot #67/#68)                                                     |
+| **Last Phase**   | ✅ v0.3.39: urllib3 >=2.8.0 and LiteLLM >=1.104.0 fix Chunked Deflate infinite loop and authenticated SSRF / provider-credential exfiltration (Dependabot #69/#70)                                                     |
 | **Current Goal** | 🔶 Phase 7: Multi-Agent Synchronization (Integration)                                                                                                                                                               |
 
 ### Framework & Model Support
